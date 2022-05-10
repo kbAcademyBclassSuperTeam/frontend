@@ -11,8 +11,8 @@
     </div>
     <div class="chatbot-screen col-8 d-flex justify-content-center align-items-center">
         <div class="chatbot-screen-main d-flex justify-content-center align-items-center">
-            <h2>시작하기</h2>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loadTerms">모달</button>
+            <a href="/main" class="start">시작하기</a>
+            {% comment %} <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loadTerms">모달</button> {% endcomment %}
         </div>
     </div>
     <div class="modal fade" id="loadTerms" tabindex="-1" aria-labelledby="loadTermsLabel" aria-hidden="true">
@@ -67,6 +67,12 @@
         height: 60%;
         background-color: #6e6053;
         color: #f8a70c;
+    }
+
+    .start {
+      font-size: 20px;
+      {% comment %} text-decoration: underline; {% endcomment %}
+      color : white;
     }
 
 </style>
