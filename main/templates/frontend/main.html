@@ -26,15 +26,14 @@
                 } ,
                 error: function (error) {
                    // console.log(error);
-                   search_var = '0'
-               }
+                  search_var = '0'
+              }
             }) 	
             return search_var
         }
     
         function promise_search(texts){
             return new Promise((resolve, reject) => {
-    
                 let target = search(texts)
                 // 0.4초 안에 통신이 안되면, 에러 발생( promise 객체 이용 )
                 setTimeout(() => {
@@ -140,7 +139,6 @@
           }
         }
     </script>
-   
 </head>
 <body>
 <div class="main-frame row">
@@ -156,7 +154,7 @@
         <div class="body">
           <div class="receive">
             <div class="word">
-            "좋은 아침입니다! AI 행원 ㅇㅇㅇ입니다.” <br><br>
+            "좋은 하루입니다! AI 행원 ㅇㅇㅇ입니다.” <br><br>
             “무엇을 도와드릴까요?”
             </div>
             <div class="quick-container">
