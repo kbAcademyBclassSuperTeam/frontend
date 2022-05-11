@@ -46,6 +46,90 @@
                 }, 400)
             })
         }
+
+        function make_body(target_num, texts){
+          if (target_num == 2){
+            // 입금
+            chatBody.innerHTML += '<div class="receive">“입금을 도와드리겠습니다. 카드 또는 통장을 넣어주세요.”</div>'
+            chatBody.innerHTML += '<div class="send">바람개비</div>'
+            //chatBody.innerHTML += '<div class="receive">“(로딩 10초)”</div>'
+            setTimeout(() => {
+              chatBody.innerHTML += '<div class="receives">“보내실 금액을 투입구에 넣어주세요.”</div>'
+              chatBody.innerHTML += '<div class="send">바람개비</div>'
+              setTimeout(() => {
+                chatBody.innerHTML += '<div class="receive">"이용해 주셔서 감사합니다!"</div>',
+                chatBody.innerHTML += '<div class="receive">“5초 후 자동으로 메인 화면으로 복귀합니다.”</div>'
+                setTimeout(() => {
+                  window.location.href = '/main/';
+                },5000);
+              }, 10000);
+            }, 10000);
+          } else if( target_num == 6){
+            // 출금
+            chatBody.innerHTML += '<div class="receive">“출금을 도와드리겠습니다. 카드 또는 통장을 넣어주세요.”</div>'
+            chatBody.innerHTML += '<div class="receive">“(로딩 10초)”</div>'
+            setTimeout(() => 
+            chatBody.innerHTML += '<div class="receive">“출금하실 금액을 입력해주세요.”</div>'
+            , 2000);
+            chatBody.innerHTML += '<div class="receive">“(로딩 10초)”</div>'
+            setTimeout(() => 
+            chatBody.innerHTML += '<div class="receive">“이용해 주셔서 감사합니다!“</div>',
+            chatBody.innerHTML += '<div class="receive">“5초 후 자동으로 메인 화면으로 복귀합니다.”</div>'
+            , 2000);
+          } else if( target_num == 1){
+            // 송금
+            chatBody.innerHTML += '<div class="receive">“송금을 도와드리겠습니다. 송금 유형을 선택해주세요.”</div>'
+            chatBody.innerHTML += '<div class="receive">“카드 또는 통장을 넣어주세요.”</div>'
+            chatBody.innerHTML += '<div class="receive">“(로딩 10초)”</div>'
+            setTimeout(() => 
+            chatBody.innerHTML += '<div class="receive">“받는 사람의 계좌번호를 입력해 주세요.”</div>'
+            , 2000);
+            chatBody.innerHTML += '<div class="receive">“(로딩 10초)”</div>'
+            setTimeout(() => 
+            chatBody.innerHTML += '<div class="receive">“이용해 주셔서 감사합니다!“</div>',
+            chatBody.innerHTML += '<div class="receive">“5초 후 자동으로 메인 화면으로 복귀합니다.”</div>'
+            , 2000);
+          } else if( target_num == 3){
+            // 조회
+            chatBody.innerHTML += '<div class="receive">“계좌조회를 도와드리겠습니다. 카드 또는 통장을 넣어주세요.”</div>'
+            chatBody.innerHTML += '<div class="receive">“비밀번호를 입력해주세요.”</div>'
+            chatBody.innerHTML += '<div class="receive">“(로딩 10초)”</div>'
+            setTimeout(() => 
+            chatBody.innerHTML += '<div class="receive">“이용해 주셔서 감사합니다!“</div>',
+            chatBody.innerHTML += '<div class="receive">“5초 후 자동으로 메인 화면으로 복귀합니다.”</div>'
+            , 2000);
+          } else if( target_num == 4){
+            // 개설
+            chatBody.innerHTML += '<div class="receive">“계좌개설을 도와드리겠습니다. 약관을 읽고 동의 버튼을 눌러주세요”</div>'
+            chatBody.innerHTML += '<div class="receive">“약관에 동의해 주세요.”</div>'
+            chatBody.innerHTML += '<div class="receive">“(로딩 10초)”</div>'
+            chatBody.innerHTML += '<div class="receive">“신분증을 촬영해 주세요.”</div>'
+            setTimeout(() =>  
+            chatBody.innerHTML += '<div class="receive">“이용해 주셔서 감사합니다!“</div>',
+            chatBody.innerHTML += '<div class="receive">“5초 후 자동으로 메인 화면으로 복귀합니다.”</div>'
+            , 2000);
+          } else if( target_num == 5){
+            // 발급
+            chatBody.innerHTML += '<div class="receive">“카드발급을 도와드리겠습니다. 약관을 읽고 동의 버튼을 눌러주세요”</div>'
+            chatBody.innerHTML += '<div class="receive">“약관에 동의해 주세요.”</div>'
+            chatBody.innerHTML += '<div class="receive">“(로딩 10초)”</div>'
+            chatBody.innerHTML += '<div class="receive">“신분증을 촬영해 주세요.”</div>'
+            setTimeout(() => 
+            chatBody.innerHTML += '<div class="receive">“이용해 주셔서 감사합니다!“</div>',
+            chatBody.innerHTML += '<div class="receive">“5초 후 자동으로 메인 화면으로 복귀합니다.”</div>'
+            , 2000);
+          } else if ( target_num == 0){
+            // 발급
+            chatBody.innerHTML += '<div class="receive">“다시 말씀해주세요.”</div>'
+  
+          } else if ( target_num == 7){
+            // 발급
+            if (texts == '안녕하세요'){
+              chatBody.innerHTML += '<div class="receive">"안녕하세요.”</div>'
+  
+            }
+          }
+        }
     </script>
    
 </head>
@@ -120,7 +204,51 @@
 
 <script>
 
+  document.body.style.overflow = "hidden"
+
+  const chatForm = document.querySelector(".form");
+  const chatInput = document.querySelector(".form_input");
   const chatBody = document.querySelector(".body");
+
+  function handleChatSubmit(event) {
+
+    {% comment %} function checkValue(inputValue) {
+      const list = {
+        "송금" : true,
+        "입금" : true,
+      }
+      if (list[inputValue] === undefined)
+        return false
+      return true
+    } {% endcomment %}
+
+    event.preventDefault();
+    if (chatInput.value == "")
+      return;
+    const inputValue = chatInput.value;
+    const objBody = document.querySelector(".body"); // by minseok kim
+    objBody.scrollTop = objBody.scrollHeight;
+
+    chatBody.innerHTML += "<div class='send'>" + inputValue + "</div>"
+    chatInput.value = "";
+
+    let target = promise_search(inputValue)
+          .then()
+          .catch((error) => {
+              console.log(error)
+          })
+
+      async function logItems(target) {
+        var target_num = await target;
+        make_body(target_num, inputValue)
+      }    
+      logItems(target)
+  }
+
+  chatForm.addEventListener("submit", handleChatSubmit);
+  
+
+
 
   window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   
@@ -158,121 +286,12 @@
 
       async function logItems(target) {
         var target_num = await target;
-        if (target_num == 2){
-          // 입금
-          chatBody.innerHTML += '<div class="receive">“입금을 도와드리겠습니다. 카드 또는 통장을 넣어주세요.”</div>'
-          chatBody.innerHTML += '<div class="send">바람개비</div>'
-          //chatBody.innerHTML += '<div class="receive">“(로딩 10초)”</div>'
-          setTimeout(() => {
-            chatBody.innerHTML += '<div class="receive">“보내실 금액을 투입구에 넣어주세요.”</div>'
-            chatBody.innerHTML += '<div class="send">바람개비</div>'
-            setTimeout(() => {
-              chatBody.innerHTML += '<div class="receive">"이용해 주셔서 감사합니다!"</div>',
-              chatBody.innerHTML += '<div class="receive">“5초 후 자동으로 메인 화면으로 복귀합니다.”</div>'
-              setTimeout(() => {
-                window.location.href = '/main/';
-              },5000);
-            }, 10000);
-          }, 10000);
-        } else if( target_num == 6){
-          // 출금
-          chatBody.innerHTML += '<div class="receive">“출금을 도와드리겠습니다. 카드 또는 통장을 넣어주세요.”</div>'
-          chatBody.innerHTML += '<div class="receive">“(로딩 10초)”</div>'
-          setTimeout(() => 
-          chatBody.innerHTML += '<div class="receive">“출금하실 금액을 입력해주세요.”</div>'
-          , 2000);
-          chatBody.innerHTML += '<div class="receive">“(로딩 10초)”</div>'
-          setTimeout(() => 
-          chatBody.innerHTML += '<div class="receive">“이용해 주셔서 감사합니다!“</div>',
-          chatBody.innerHTML += '<div class="receive">“5초 후 자동으로 메인 화면으로 복귀합니다.”</div>'
-          , 2000);
-        } else if( target_num == 1){
-          // 송금
-          chatBody.innerHTML += '<div class="receive">“송금을 도와드리겠습니다. 송금 유형을 선택해주세요.”</div>'
-          chatBody.innerHTML += '<div class="receive">“카드 또는 통장을 넣어주세요.”</div>'
-          chatBody.innerHTML += '<div class="receive">“(로딩 10초)”</div>'
-          setTimeout(() => 
-          chatBody.innerHTML += '<div class="receive">“받는 사람의 계좌번호를 입력해 주세요.”</div>'
-          , 2000);
-          chatBody.innerHTML += '<div class="receive">“(로딩 10초)”</div>'
-          setTimeout(() => 
-          chatBody.innerHTML += '<div class="receive">“이용해 주셔서 감사합니다!“</div>',
-          chatBody.innerHTML += '<div class="receive">“5초 후 자동으로 메인 화면으로 복귀합니다.”</div>'
-          , 2000);
-        } else if( target_num == 3){
-          // 조회
-          chatBody.innerHTML += '<div class="receive">“계좌조회를 도와드리겠습니다. 카드 또는 통장을 넣어주세요.”</div>'
-          chatBody.innerHTML += '<div class="receive">“비밀번호를 입력해주세요.”</div>'
-          chatBody.innerHTML += '<div class="receive">“(로딩 10초)”</div>'
-          setTimeout(() => 
-          chatBody.innerHTML += '<div class="receive">“이용해 주셔서 감사합니다!“</div>',
-          chatBody.innerHTML += '<div class="receive">“5초 후 자동으로 메인 화면으로 복귀합니다.”</div>'
-          , 2000);
-        } else if( target_num == 4){
-          // 개설
-          chatBody.innerHTML += '<div class="receive">“계좌개설을 도와드리겠습니다. 약관을 읽고 동의 버튼을 눌러주세요”</div>'
-          chatBody.innerHTML += '<div class="receive">“약관에 동의해 주세요.”</div>'
-          chatBody.innerHTML += '<div class="receive">“(로딩 10초)”</div>'
-          chatBody.innerHTML += '<div class="receive">“신분증을 촬영해 주세요.”</div>'
-          setTimeout(() => 
-          chatBody.innerHTML += '<div class="receive">“이용해 주셔서 감사합니다!“</div>',
-          chatBody.innerHTML += '<div class="receive">“5초 후 자동으로 메인 화면으로 복귀합니다.”</div>'
-          , 2000);
-        } else if( target_num == 5){
-          // 발급
-          chatBody.innerHTML += '<div class="receive">“카드발급을 도와드리겠습니다. 약관을 읽고 동의 버튼을 눌러주세요”</div>'
-          chatBody.innerHTML += '<div class="receive">“약관에 동의해 주세요.”</div>'
-          chatBody.innerHTML += '<div class="receive">“(로딩 10초)”</div>'
-          chatBody.innerHTML += '<div class="receive">“신분증을 촬영해 주세요.”</div>'
-          setTimeout(() => 
-          chatBody.innerHTML += '<div class="receive">“이용해 주셔서 감사합니다!“</div>',
-          chatBody.innerHTML += '<div class="receive">“5초 후 자동으로 메인 화면으로 복귀합니다.”</div>'
-          , 2000);
-        } else if ( target_num == 0){
-          // 발급
-          chatBody.innerHTML += '<div class="receive">“다시 말씀해주세요.”</div>'
-
-        } else if ( target_num == 7){
-          // 발급
-          if (texts == '안녕하세요'){
-            chatBody.innerHTML += '<div class="receive">"안녕하세요.”</div>'
-
-          }
-        }
+        make_body(target_num, texts)
       }    
       logItems(target)
   };
 
-  document.body.style.overflow = "hidden"
-
-  const chatForm = document.querySelector(".form");
-  const chatInput = document.querySelector(".form_input");
-
-  function handleChatSubmit(event) {
-
-    function checkValue(inputValue) {
-      const list = {
-        "송금" : true,
-        "입금" : true,
-      }
-      if (list[inputValue] === undefined)
-        return false
-      return true
-    }
-
-    event.preventDefault();
-    const inputValue = chatInput.value;
-    chatBody.innerHTML += "<div class='send'>" + inputValue + "</div>"
-    chatInput.value = "";
-    if (checkValue(inputValue) === false)
-      chatBody.innerHTML += '<div class="receive">“죄송합니다. 고객님, 다시 한 번 말씀해주시겠습니까?"</div>'
-    
-    const objBody = document.querySelector(".body"); // by minseok kim
-    objBody.scrollTop = objBody.scrollHeight;
-  }
-
-  chatForm.addEventListener("submit", handleChatSubmit);
-  
+ 
 </script>
 
 <style scoped>
