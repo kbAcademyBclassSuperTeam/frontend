@@ -9,7 +9,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home!</title>
-    <link href="./bootstrap4/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    {% comment %} <link href="./bootstrap4/css/bootstrap.min.css" rel="stylesheet" type="text/css"> {% endcomment %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script>
         function search(texts) {
@@ -47,18 +47,26 @@
             })
         }
 
-        function make_body(target_num, texts){
+        function make_body(target_num, texts) {
+          const objBody = document.querySelector(".body"); // by minseok kim
+
           if (target_num == 2){
             // 입금
             chatBody.innerHTML += '<div class="receive">“입금을 도와드리겠습니다. 카드 또는 통장을 넣어주세요.”</div>'
+            objBody.scrollTop = objBody.scrollHeight;
             chatBody.innerHTML += '<div class="send">바람개비</div>'
+            objBody.scrollTop = objBody.scrollHeight;
             //chatBody.innerHTML += '<div class="receive">“(로딩 10초)”</div>'
             setTimeout(() => {
-              chatBody.innerHTML += '<div class="receives">“보내실 금액을 투입구에 넣어주세요.”</div>'
+              chatBody.innerHTML += '<div class="receive">“보내실 금액을 투입구에 넣어주세요.”</div>'
+              objBody.scrollTop = objBody.scrollHeight;
               chatBody.innerHTML += '<div class="send">바람개비</div>'
+              objBody.scrollTop = objBody.scrollHeight;
               setTimeout(() => {
                 chatBody.innerHTML += '<div class="receive">"이용해 주셔서 감사합니다!"</div>',
+                objBody.scrollTop = objBody.scrollHeight;
                 chatBody.innerHTML += '<div class="receive">“5초 후 자동으로 메인 화면으로 복귀합니다.”</div>'
+                objBody.scrollTop = objBody.scrollHeight;
                 setTimeout(() => {
                   window.location.href = '/main/';
                 },5000);
@@ -119,13 +127,14 @@
             chatBody.innerHTML += '<div class="receive">“5초 후 자동으로 메인 화면으로 복귀합니다.”</div>'
             , 2000);
           } else if ( target_num == 0){
-            // 발급
+            // 오류
             chatBody.innerHTML += '<div class="receive">“다시 말씀해주세요.”</div>'
-  
+            objBody.scrollTop = objBody.scrollHeight;
           } else if ( target_num == 7){
             // 발급
             if (texts == '안녕하세요'){
               chatBody.innerHTML += '<div class="receive">"안녕하세요.”</div>'
+              objBody.scrollTop = objBody.scrollHeight;
   
             }
           }
@@ -152,13 +161,13 @@
             </div>
             <div class="quick-container">
               <div><빠른 업무></div>
-              <button class="quick_btn">1. 입금</button>
-              <button class="quick_btn">2. 출금</button>
-              <button class="quick_btn">3. 송금</button>
-              <button class="quick_btn">4. 계좌조회</button>
-              <button class="quick_btn">5. 계좌개설</button>
-              <button class="quick_btn">6. 카드발급</button>
-              <button class="quick_btn">7. 상품소개</button>
+              <button class="quick_btn" id="btn_2" value="2">1. 입금</button>
+              <button class="quick_btn" id="btn_6" value="6">2. 출금</button>
+              <button class="quick_btn" id="btn_1" value="1">3. 송금</button>
+              <button class="quick_btn" id="btn_3" value="3">4. 계좌조회</button>
+              <button class="quick_btn" id="btn_4" value="4">5. 계좌개설</button>
+              <button class="quick_btn" id="btn_5" value="5">6. 카드발급</button>
+              <button class="quick_btn" id="btn_7" value="7">7. 상품소개</button>
             </div>
             <div class="padding"></div>
           </div>
@@ -209,29 +218,46 @@
   const chatForm = document.querySelector(".form");
   const chatInput = document.querySelector(".form_input");
   const chatBody = document.querySelector(".body");
+  const btn1 = document.querySelector("#btn_1");
+  const btn2 = document.querySelector("#btn_2");
+  const btn3 = document.querySelector("#btn_3");
+  const btn4 = document.querySelector("#btn_4");
+  const btn5 = document.querySelector("#btn_5");
+  const btn6 = document.querySelector("#btn_6");
+  const btn7 = document.querySelector("#btn_7");
+
+  function handleQuickBtn(event) {
+    list = {
+      "1" : "송금을 선택하셨습니다.",
+      "2" : "입금을 선택하셨습니다.",
+      "3" : "계좌조회을 선택하셨습니다.",
+      "4" : "계좌개설을 선택하셨습니다.",
+      "5" : "카드발급을 선택하셨습니다.",
+      "6" : "출금을 선택하셨습니다.",
+      "7" : "상품소개을 선택하셨습니다.",
+    }
+
+    const objBody = document.querySelector(".body"); // by minseok kim
+    const target_num = event.target.value
+    const inputValue = list[target_num]
+
+    chatBody.innerHTML += "<div class='send'>" + inputValue + "</div>"
+    objBody.scrollTop = objBody.scrollHeight;
+    make_body(target_num, inputValue);
+  }
 
   function handleChatSubmit(event) {
 
-    {% comment %} function checkValue(inputValue) {
-      const list = {
-        "송금" : true,
-        "입금" : true,
-      }
-      if (list[inputValue] === undefined)
-        return false
-      return true
-    } {% endcomment %}
-
+    const objBody = document.querySelector(".body"); // by minseok kim
     event.preventDefault();
     if (chatInput.value == "")
       return;
     const inputValue = chatInput.value;
-    const objBody = document.querySelector(".body"); // by minseok kim
-    objBody.scrollTop = objBody.scrollHeight;
 
     chatBody.innerHTML += "<div class='send'>" + inputValue + "</div>"
     chatInput.value = "";
 
+    objBody.scrollTop = objBody.scrollHeight;
     let target = promise_search(inputValue)
           .then()
           .catch((error) => {
@@ -246,9 +272,13 @@
   }
 
   chatForm.addEventListener("submit", handleChatSubmit);
-  
-
-
+  btn1.addEventListener("click", handleQuickBtn);
+  btn2.addEventListener("click", handleQuickBtn);
+  btn3.addEventListener("click", handleQuickBtn);
+  btn4.addEventListener("click", handleQuickBtn);
+  btn5.addEventListener("click", handleQuickBtn);
+  btn6.addEventListener("click", handleQuickBtn);
+  btn7.addEventListener("click", handleQuickBtn);
 
   window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   
@@ -263,7 +293,8 @@
   
   let p = null;
   
-  recognition.start();
+  {% comment %} recognition.start(); {% endcomment %}
+  {% comment %} recognition.stop(); {% endcomment %}
   recognition.onstart = function() {
       makeNewTextContent(); // 음성 인식 시작시마다 새로운 문단을 추가한다.
     };
@@ -274,7 +305,6 @@
     recognition.onresult = function(e) {
       let texts = Array.from(e.results)
       .map(results => results[0].transcript).join("");
-      
       
       chatBody.innerHTML += "<div class='send'>" + texts + "</div>"
 
