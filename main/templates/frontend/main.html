@@ -90,6 +90,16 @@
           utterThis.rate = 1; //속도
           window.speechSynthesis.speak(utterThis);
           }
+          document.addEventListener("click", function(e) {
+            var t = e.target;
+            var input = t.previousElementSibling;
+            var speacklist=["안녕하세요","저는 에이아이 행원입니다","만나서 반갑습니다"];
+            for(var j=0;j<speacklist.length;j++) {
+                speech(speacklist[j]);
+            }
+            return;
+            //speech("안녕하세요");
+          });
           if (target_num == 2){
             // 입금
             chatBody.innerHTML += '<div class="receive">“입금을 도와드리겠습니다. 카드 또는 통장을 넣어주세요.”</div>'
