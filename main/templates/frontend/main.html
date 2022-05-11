@@ -163,8 +163,54 @@
       async function logItems(target) {
         var target_num = await target;
         console.log(target_num)
+        /*
+        var voices = [];
+
+        function setVoiceList() {
+            voices = window.speechSynthesis.getVoices();
+        }
+        setVoiceList();
+        if (window.speechSynthesis.onvoiceschanged !== undefined) {
+            window.speechSynthesis.onvoiceschanged = setVoiceList;
+        }
+        function speech(txt) {
+            if(!window.speechSynthesis) {
+                alert("음성 재생을 지원하지 않는 브라우저입니다. 크롬, 파이어폭스 등의 최신 브라우저를 이용하세요");
+            return;
+            }
+        var lang = 'ko-KR';
+        var utterThis = new SpeechSynthesisUtterance(txt);
+        
+        utterThis.onend = function (event) {
+            console.log('end');
+        };
+        utterThis.onerror = function(event) {
+            console.log('error', event);
+        };
+        
+        
+        var voiceFound = false;
+        for(var i = 0; i < voices.length ; i++) {
+            if(voices[i].lang.indexOf(lang) >= 0 || voices[i].lang.indexOf(lang.replace('-', '_')) >= 0) {
+                utterThis.voice = voices[i];
+                voiceFound = true;
+            }
+        }
+        
+        if(!voiceFound) {
+            alert('voice not found');
+            return;
+        }
+        
+        utterThis.lang = lang;
+        utterThis.pitch = 1;
+        utterThis.rate = 1; //속도
+        window.speechSynthesis.speak(utterThis);
+        } 
+        */
         if (target_num == 2){
           // 입금
+          
           chatBody.innerHTML += '<div class="receive">“입금을 도와드리겠습니다. 카드 또는 통장을 넣어주세요.”</div>'
           chatBody.innerHTML += '<div class="receive">“(로딩 10초)”</div>'
           setTimeout(() => 
@@ -175,6 +221,10 @@
           chatBody.innerHTML += '<div class="receive">"이용해 주셔서 감사합니다!"</div>',
           chatBody.innerHTML += '<div class="receive">“5초 후 자동으로 메인 화면으로 복귀합니다.”</div>'
           , 2000);
+          var second = ['입금을 도와드리겠습니다. 카드 또는 통장을 넣어주세요.','보내실 금액을 투입구에 넣어주세요.',
+        '이용해 주셔서 감사합니다!','5초 후 자동으로 메인 화면으로 복귀합니다.']
+          
+
         } else if( target_num == 6){
           // 출금
           chatBody.innerHTML += '<div class="receive">“출금을 도와드리겠습니다. 카드 또는 통장을 넣어주세요.”</div>'
