@@ -17,10 +17,15 @@
       function setVoiceList() {
           voices = window.speechSynthesis.getVoices();
       }
-      setVoiceList();
+      {% comment %} setVoiceList(); {% endcomment %}
       if (window.speechSynthesis.onvoiceschanged !== undefined) {
           window.speechSynthesis.onvoiceschanged = setVoiceList;
+
       }
+{% comment %} 
+      async function startProgram() {
+        await setVoiceList();
+      } {% endcomment %}
 
       function speech(txt) {
           if(!window.speechSynthesis) {
@@ -37,21 +42,28 @@
       utterThis.onerror = function(event) {
           console.log('error', event);
       };
-      
-      
+
+      /*
       var voiceFound = false;
-      for(var i = 0; i < voices.length ; i++) {
+      utterThis.voice = voices[12];
+      
+      for(var i = 0; i < voices.length ; i++) { // 20
           if(voices[i].lang.indexOf(lang) >= 0 || voices[i].lang.indexOf(lang.replace('-', '_')) >= 0) {
               utterThis.voice = voices[i];
+              console.log("i : ", i);
               voiceFound = true;
           }
       }
       
+      
+      
       if(!voiceFound) {
           alert('voice not found');
           return;
-      }
+      }*/
       
+
+      utterThis.voice = voices[12];
       utterThis.lang = lang;
       utterThis.pitch = 1;
       utterThis.rate = 1; //속도
@@ -110,90 +122,53 @@
         }
 
         function make_body(target_num, texts){
-          /*
-          // tts 시작
-          var voices = [];
 
-          function setVoiceList() {
-              voices = window.speechSynthesis.getVoices();
-          }
-          setVoiceList();
-          if (window.speechSynthesis.onvoiceschanged !== undefined) {
-              window.speechSynthesis.onvoiceschanged = setVoiceList;
-          }
-
-          function speech(txt) {
-              if(!window.speechSynthesis) {
-                  alert("음성 재생을 지원하지 않는 브라우저입니다. 크롬, 파이어폭스 등의 최신 브라우저를 이용하세요");
-              return;
-              }
-
-          var lang = 'ko-KR';
-          var utterThis = new SpeechSynthesisUtterance(txt);
-          
-          utterThis.onend = function (event) {
-              console.log('end');
-          };
-          utterThis.onerror = function(event) {
-              console.log('error', event);
-          };
-          
-          
-          var voiceFound = false;
-          for(var i = 0; i < voices.length ; i++) {
-              if(voices[i].lang.indexOf(lang) >= 0 || voices[i].lang.indexOf(lang.replace('-', '_')) >= 0) {
-                  utterThis.voice = voices[i];
-                  voiceFound = true;
-              }
-          }
-          
-          if(!voiceFound) {
-              alert('voice not found');
-              return;
-          }
-          
-          utterThis.lang = lang;
-          utterThis.pitch = 1;
-          utterThis.rate = 1; //속도
-          window.speechSynthesis.speak(utterThis);
-          }
-*/
-          document.addEventListener("click", function(e) {
-            var t = e.target;
-            var input = t.previousElementSibling;
-            var speacklist=["안녕하세요","저는 에이아이 행원입니다","만나서 반갑습니다"];
+          function ttsStart(speacklist) {
             for(var j=0;j<speacklist.length;j++) {
                 speech(speacklist[j]);
             }
             return;
-            //speech("안녕하세요");
-          });
-
+          }
 
           const objBody = document.querySelector(".body"); // by minseok kim
 
           if (target_num == 2){
             // 입금
-            chatBody.innerHTML += '<div class="receive">“입금을 도와드리겠습니다. 카드 또는 통장을 넣어주세요.”</div>'
+            sentence = ["입금을 도와드리겠습니다. 카드 또는 통장을 넣어주세요."]
+            chatBody.innerHTML += '<div class="receive">' + sentence + '</div>'
             objBody.scrollTop = objBody.scrollHeight;
-            chatBody.innerHTML += '<div class="send">바람개비</div>'
+            ttsStart(sentence);
+
+            sentence = ["..."]
+            chatBody.innerHTML += '<div class="receive">'+ sentence +'</div>'
             objBody.scrollTop = objBody.scrollHeight;
-            //chatBody.innerHTML += '<div class="receive">“(로딩 10초)”</div>'
+
+            
             setTimeout(() => {
-              chatBody.innerHTML += '<div class="receive">“보내실 금액을 투입구에 넣어주세요.”</div>'
+              sentence = ["보내실 금액을 투입구에 넣어주세요."]
+              chatBody.innerHTML += '<div class="receive">' + sentence + '</div>'
+              ttsStart(sentence);
               objBody.scrollTop = objBody.scrollHeight;
-              chatBody.innerHTML += '<div class="send">바람개비</div>'
+
+              sentence = ["..."]
+              chatBody.innerHTML += '<div class="receive">'+ sentence +'</div>'
               objBody.scrollTop = objBody.scrollHeight;
+
               setTimeout(() => {
-                chatBody.innerHTML += '<div class="receive">"이용해 주셔서 감사합니다!"</div>',
+                sentence = ["이용해 주셔서 감사합니다!"]
+                chatBody.innerHTML += '<div class="receive">'+ sentence +'</div>'
                 objBody.scrollTop = objBody.scrollHeight;
-                chatBody.innerHTML += '<div class="receive">“5초 후 자동으로 메인 화면으로 복귀합니다.”</div>'
+                ttsStart(sentence);
+
+                sentence = ["5초 후 자동으로 메인 화면으로 복귀합니다."]
+                chatBody.innerHTML += '<div class="receive">'+ sentence +'</div>'
                 objBody.scrollTop = objBody.scrollHeight;
+                ttsStart(sentence);
                 setTimeout(() => {
                   window.location.href = '/main/';
-                },5000);
-              }, 5000);
-            }, 5000);
+                },10000);
+              }, 10000);
+            }, 10000);
           } else if( target_num == 6){
             // 출금
             chatBody.innerHTML += '<div class="receive">“출금을 도와드리겠습니다. 카드 또는 통장을 넣어주세요.”</div>'
@@ -440,7 +415,6 @@
       }    
       logItems(target)
   };
-
  
 </script>
 
