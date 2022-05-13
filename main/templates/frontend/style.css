@@ -1,0 +1,104 @@
+.main-frame {
+    height: 56rem;
+}
+
+.ai-screen-title {
+    background-color: #f8a70c;
+    height: 10%;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.ai-screen-main {
+    background-color: black;
+    height: 90%;
+}
+
+.chatbot-screen {
+  max-height : 100%;
+  background-color : #F0F0F0;
+}
+
+.body {
+  height : 95%;
+  overflow : auto;
+}
+
+.input_bar {
+  height : 5%;
+  width : 100%;
+  background-color : #FFFFFF;
+}
+
+.form_input {
+  width : 85%;
+  height : 5%;
+  font-size : 20px;
+  border : transparent;
+}
+
+.btn {
+  padding : 0px;
+  width : 10%;
+}
+
+.container {
+  padding : 0px;
+  width: 70%;
+  height : 100%;
+  background-color: #9bbbd4;
+}
+
+.send {
+  border-radius : 1em;
+  background-color : #FFFFFF;
+  margin-top : 10px;
+  margin-right : 10px;
+  padding-right: 15px;
+  padding-left : 15px;
+  width : 40%;
+  margin-left: auto;
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+.receive {
+  border-radius : 1em;
+  background-color : #FFFFFF;
+  margin-top : 10px;
+  margin-right : 10px;
+  margin-left : 10px;
+  padding-right: 15px;
+  padding-left : 15px;
+  width : 40%;
+  height : auto;
+  margin-right: auto;
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+.quick-container {
+  border : 2px solid #F0F0F0;
+  border-radius : 0.5em;
+  text-align : center;
+  padding-bottom : 10px;
+  margin : 10px;
+}
+
+.quick_btn {
+  width : 97%;
+  border-radius : 0.5em;
+  border : transparent;
+  margin-top : 5px;
+}
+
+.word {
+  padding-top : 15px;
+  margin-bottom : 15px;
+}
+
+.padding {
+  padding : 5px;
+}
