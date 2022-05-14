@@ -1,154 +1,158 @@
+
 {% extends "base.html" %}
 
 {% block content %}
 
+
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home!</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-    <link rel="stylesheet" href="templates/frontend/style.css">
-    <script>
-      // tts 시작
-      var voices = [];
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <title>Home!</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+  <script>
+    // tts 시작
+    var voices = [];
 
-      function setVoiceList() {
-          voices = window.speechSynthesis.getVoices();
-      }
+    function setVoiceList() {
+        voices = window.speechSynthesis.getVoices();
+    }
 
-      if (window.speechSynthesis.onvoiceschanged !== undefined) {
-          window.speechSynthesis.onvoiceschanged = setVoiceList;
+    if (window.speechSynthesis.onvoiceschanged !== undefined) {
+        window.speechSynthesis.onvoiceschanged = setVoiceList;
 
-      }
+    }
 
-      function speech(txt) {
-          if(!window.speechSynthesis) {
-              alert("음성 재생을 지원하지 않는 브라우저입니다. 크롬, 파이어폭스 등의 최신 브라우저를 이용하세요");
-          return;
-          }
-
-      var lang = 'ko-KR';
-      var utterThis = new SpeechSynthesisUtterance(txt);
-      
-      utterThis.onend = function (event) {
-          console.log('end');
-      };
-      utterThis.onerror = function(event) {
-          console.log('error', event);
-      };
-
-      var voiceFound = false;
-      for(var i = 0; i < voices.length ; i++) { // 20
-          if(voices[i].lang.indexOf(lang) >= 0 || voices[i].lang.indexOf(lang.replace('-', '_')) >= 0) {
-              utterThis.voice = voices[i];
-              voiceFound = true;
-          }
-      }
-
-      if(!voiceFound) {
-          alert('voice not found');
-          return;
-      }
-      
-      utterThis.lang = lang;
-      utterThis.pitch = 1;
-      utterThis.rate = 1; //속도
-      window.speechSynthesis.speak(utterThis);
-      }
-
-      window.addEventListener("load", function(e) {
-        setTimeout(() => {
-        var t = e.target;
-        var input = t.previousElementSibling;
-        var speacklist=[
-        "좋은 하루입니다! AI 행원 루나스입니다.",
-         "무엇을 도와드릴까요?",
-         "입금, 출금, 송금, 계좌조회, 계좌개설, 카드발급이 가능합니다.",
-         ];
-
-        for(var j=0;j<1;j++) {
-            console.log(speacklist[j]);
-            speech(speacklist[j]);
-        }
+    function speech(txt) {
+        if(!window.speechSynthesis) {
+            alert("음성 재생을 지원하지 않는 브라우저입니다. 크롬, 파이어폭스 등의 최신 브라우저를 이용하세요");
         return;
-      }, 1000);
-      });
+        }
 
-      // tts 끝
-        function search(texts) {
-            let search_key = texts
-            let search_var = ''
-            $.ajax({ 
-                type: "GET", 
-                url:'search/', 
-                data : { 'search_key':search_key}, 
-                dataType: 'json',
-                async:false,
-                success:function(data){ 
-                    search_var = data['search_key']
-                } ,
-                error: function (error) {
-                   // console.log(error);
-                  search_var = '0'
-              }
-            }) 	
-            return search_var
-        } 
+    var lang = 'ko-KR';
+    var utterThis = new SpeechSynthesisUtterance(txt);
     
-        function promise_search(texts){
-            return new Promise((resolve, reject) => {
-                let target = search(texts)
-                // 0.4초 안에 통신이 안되면, 에러 발생( promise 객체 이용 )
-                setTimeout(() => {
-                    if (target != undefined){
-                        resolve(target)
-                    } else {
-                        reject('서버에 문제가 발생하여 인식하지 못했습니다.\n 다시 시도해주세요.')
-                    }
-                }, 400)
-            })
+    utterThis.onend = function (event) {
+        console.log('end');
+    };
+    utterThis.onerror = function(event) {
+        console.log('error', event);
+    };
+
+    var voiceFound = false;
+    for(var i = 0; i < voices.length ; i++) { // 20
+        if(voices[i].lang.indexOf(lang) >= 0 || voices[i].lang.indexOf(lang.replace('-', '_')) >= 0) {
+            utterThis.voice = voices[i];
+            voiceFound = true;
         }
+    }
 
-        function make_body(target_num, texts){
-          const objBody = document.querySelector(".body"); // by minseok kim
+    if(!voiceFound) {
+        alert('voice not found');
+        return;
+    }
+    
+    utterThis.lang = lang;
+    utterThis.pitch = 1;
+    utterThis.rate = 1; //속도
+    window.speechSynthesis.speak(utterThis);
+    }
 
-          function addChat(sentence) {
-            chatBody.innerHTML += '<div class="receive">' + sentence + '</div>'
-            objBody.scrollTop = objBody.scrollHeight;
-            speech(sentence);
-          }
+    window.addEventListener("load", function(e) {
+      setTimeout(() => {
+      var t = e.target;
+      var input = t.previousElementSibling;
+      var speacklist=[
+      "좋은 하루입니다! AI 행원 루나스입니다.",
+        "무엇을 도와드릴까요?",
+        "입금, 출금, 송금, 계좌조회, 계좌개설, 카드발급이 가능합니다.",
+        ];
 
-          function addChatNoTts(sentence) {
-            chatBody.innerHTML += '<div class="receive">' + sentence + '</div>'
-            objBody.scrollTop = objBody.scrollHeight;
+      for(var j=0;j<1;j++) {
+          console.log(speacklist[j]);
+          speech(speacklist[j]);
+      }
+      return;
+    }, 1000);
+    });
 
-          }
-          function printAndTTS(senlist) {
-            var delaySec = 3000;
-            for(let j =0; j<senlist.length ; j++) {
-              var anonFunc = function(j) {
-                setTimeout(() => {
-                  if(senlist[j]=="...") addChatNoTts(senlist[j]);
-                  else if (senlist[j]!="") addChat(senlist[j]);
-                  else window.location.href = '/main/';   
-                }, j*delaySec)
-              }
-              anonFunc(j);
+    // tts 끝
+      function search(texts) {
+          let search_key = texts
+          let search_var = ''
+          $.ajax({ 
+              type: "GET", 
+              url:'search/', 
+              data : { 'search_key':search_key}, 
+              dataType: 'json',
+              async:false,
+              success:function(data){ 
+                  search_var = data['search_key']
+              } ,
+              error: function (error) {
+                  // console.log(error);
+                search_var = '0'
             }
-          }
+          }) 	
+          return search_var
+      } 
+  
+      function promise_search(texts){
+          return new Promise((resolve, reject) => {
+              let target = search(texts)
+              // 0.4초 안에 통신이 안되면, 에러 발생( promise 객체 이용 )
+              setTimeout(() => {
+                  if (target != undefined){
+                      resolve(target)
+                  } else {
+                      reject('서버에 문제가 발생하여 인식하지 못했습니다.\n 다시 시도해주세요.')
+                  }
+              }, 400)
+          })
+      }
 
-          // 타겟 넘버 별 TTS 시작 부분  
-          if texts == "안녕하세요":
-            addChat(target_num)
-          else:
-            printAndTTS(target_num)
-          // TTS end
-          
+      function make_body(target_num, texts){
+        const objBody = document.querySelector(".body"); 
+
+        function addChat(sentence) {
+          chatBody.innerHTML += '<div class="receive">' + sentence + '</div>'
+          objBody.scrollTop = objBody.scrollHeight;
+          speech(sentence);
         }
-    </script>
+
+        function addChatNoTts(sentence) {
+          chatBody.innerHTML += '<div class="receive">' + sentence + '</div>'
+          objBody.scrollTop = objBody.scrollHeight;
+
+        }
+        function printAndTTS(senlist) {
+          var delaySec = 3000;
+          for(let j =0; j<senlist.length ; j++) {
+            var anonFunc = function(j) {
+              setTimeout(() => {
+                if(senlist[j]=="...") addChatNoTts(senlist[j]);
+                else if (senlist[j]!="") addChat(senlist[j]);
+                else window.location.href = '/main/';   
+              }, j*delaySec)
+            }
+            anonFunc(j);
+          }
+        }
+
+        // 타겟 넘버 별 TTS 시작 부분  
+        if (texts == "안녕하세요"){
+          addChat(target_num)
+        }else{
+          printAndTTS(target_num)
+        }
+        // TTS end
+        
+      }
+  </script>
 
 </head>
 <body>
