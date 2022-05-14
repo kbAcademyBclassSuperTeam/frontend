@@ -14,6 +14,10 @@
   <title>Home!</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
   <script>
+
+
+
+    {% comment %} window.utterances = []; {% endcomment %}
     // tts 시작
     var voices = [];
 
@@ -26,7 +30,7 @@
 
     }
 
-    function speech(txt) {
+    function speech(txt, check=false) {
       
         if(!window.speechSynthesis) {
             alert("음성 재생을 지원하지 않는 브라우저입니다. 크롬, 파이어폭스 등의 최신 브라우저를 이용하세요");
@@ -62,6 +66,14 @@
 
     window.speechSynthesis.speak(utterThis);
 
+    utterThis.onend = function(event){
+      if (check){
+
+        recognition.start();
+      }
+    }
+
+
     }
 
     window.addEventListener("load", function(e) {
@@ -76,7 +88,7 @@
 
       for(var j=0;j<1;j++) {
           console.log(speacklist[j]);
-          speech(speacklist[j]);
+          speech(speacklist[j], true);
       }
       return;
     }, 1000);
@@ -121,24 +133,23 @@
         
         const objBody = document.querySelector(".body"); 
         
-        function addChat(sentence) {
+        function addChat(sentence, check=false) {
           chatBody.innerHTML += '<div class="receive">' + sentence + '</div>'
           objBody.scrollTop = objBody.scrollHeight;
-          speech(sentence);
+          speech(sentence, check);
         }
         
         function addChatNoTts(sentence) {
           chatBody.innerHTML += '<div class="receive">' + sentence + '</div>'
           objBody.scrollTop = objBody.scrollHeight;
-          
         }
-        function printAndTTS(senlist) {
+        function printAndTTS(senlist, check = false) {
           var delaySec = 3000;
           for(let j =0; j<senlist.length ; j++) {
             var anonFunc = function(j) {
               setTimeout(() => {
                 if(senlist[j]=="...") addChatNoTts(senlist[j]);
-                else if (senlist[j]!="") addChat(senlist[j]);
+                else if (senlist[j]!="") addChat(senlist[j], check);
                 else window.location.href = '/main/';   
               }, j*delaySec)
             }
@@ -146,16 +157,22 @@
           }
         }
         if(texts == 'button'){
-          console.log(target_num)
-          printAndTTS(search(target_num))
+          recognition.stop()  
+          printAndTTS(search(target_num), false)
+          console.log("시발")
 
           return
         }
 
         // 타겟 넘버 별 TTS 시작 부분  
         if (texts == "안녕하세요"){
-          addChat(target_num)
+          addChat(target_num, true)
         }else{
+          if (target_num == "다시 말씀해주세요"){
+            printAndTTS(target_num, true)
+            return
+
+          }
           printAndTTS(target_num)
         }
         // TTS end
@@ -248,6 +265,15 @@
   const btn6 = document.querySelector("#btn_6");
   const btn7 = document.querySelector("#btn_7");
 
+  chatForm.addEventListener("submit", handleChatSubmit);
+  btn1.addEventListener("click", handleQuickBtn);
+  btn2.addEventListener("click", handleQuickBtn);
+  btn3.addEventListener("click", handleQuickBtn);
+  btn4.addEventListener("click", handleQuickBtn);
+  btn5.addEventListener("click", handleQuickBtn);
+  btn6.addEventListener("click", handleQuickBtn);
+  btn7.addEventListener("click", handleQuickBtn);
+
   function handleQuickBtn(event) {
     list = {
       "1" : "송금을 선택하셨습니다.",
@@ -261,9 +287,7 @@
 
     const objBody = document.querySelector(".body");
     const target = event.target.value
-    console.log(target + "이거뭐야")
     const list_num = list[target]
-    console.log(list_num + "이거뭐야2")
 
     chatBody.innerHTML += "<div class='send'>" + list_num + "</div>"
     objBody.scrollTop = objBody.scrollHeight;
@@ -297,14 +321,8 @@
 
 
 
-  chatForm.addEventListener("submit", handleChatSubmit);
-  btn1.addEventListener("click", handleQuickBtn);
-  btn2.addEventListener("click", handleQuickBtn);
-  btn3.addEventListener("click", handleQuickBtn);
-  btn4.addEventListener("click", handleQuickBtn);
-  btn5.addEventListener("click", handleQuickBtn);
-  btn6.addEventListener("click", handleQuickBtn);
-  btn7.addEventListener("click", handleQuickBtn);
+
+
 
   window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   
@@ -319,7 +337,7 @@
   
   let p = null;
   
-  recognition.start();
+
 
 
   
@@ -328,7 +346,7 @@
       makeNewTextContent(); // 음성 인식 시작시마다 새로운 문단을 추가한다.
     };
     recognition.onend = function() {
-      recognition.start();
+      recognition.stop();
     };
     
     recognition.onresult = function(e) {
