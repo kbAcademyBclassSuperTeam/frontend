@@ -2,223 +2,185 @@
 
 {% block content %}
 
+
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home!</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-    <script>
-      // tts 시작
-      var voices = [];
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <title>Home!</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+  <script>
 
-      function setVoiceList() {
-          voices = window.speechSynthesis.getVoices();
-      }
 
-      if (window.speechSynthesis.onvoiceschanged !== undefined) {
-          window.speechSynthesis.onvoiceschanged = setVoiceList;
 
-      }
+    // tts 시작
+    var voices = [];
 
-      function speech(txt) {
-          if(!window.speechSynthesis) {
-              alert("음성 재생을 지원하지 않는 브라우저입니다. 크롬, 파이어폭스 등의 최신 브라우저를 이용하세요");
-          return;
-          }
+    function setVoiceList() {
+        voices = window.speechSynthesis.getVoices();
+    }
 
-      var lang = 'ko-KR';
-      var utterThis = new SpeechSynthesisUtterance(txt);
+    if (window.speechSynthesis.onvoiceschanged !== undefined) {
+        window.speechSynthesis.onvoiceschanged = setVoiceList;
+
+    }
+
+    function speech(txt, check=false) {
       
-      utterThis.onend = function (event) {
-          console.log('end');
-      };
-      utterThis.onerror = function(event) {
-          console.log('error', event);
-      };
-
-      var voiceFound = false;
-      for(var i = 0; i < voices.length ; i++) { // 20
-          if(voices[i].lang.indexOf(lang) >= 0 || voices[i].lang.indexOf(lang.replace('-', '_')) >= 0) {
-              utterThis.voice = voices[i];
-              voiceFound = true;
-          }
-      }
-
-      if(!voiceFound) {
-          alert('voice not found');
-          return;
-      }
-      
-      utterThis.lang = lang;
-      utterThis.pitch = 1;
-      utterThis.rate = 1; //속도
-      window.speechSynthesis.speak(utterThis);
-      }
-
-      window.addEventListener("load", function(e) {
-        setTimeout(() => {
-        var t = e.target;
-        var input = t.previousElementSibling;
-        var speacklist=[
-        "좋은 하루입니다! AI 행원 루나스입니다.",
-         "무엇을 도와드릴까요?",
-         "입금, 출금, 송금, 계좌조회, 계좌개설, 카드발급이 가능합니다.",
-         ];
-        for(var j=0;j<speacklist.length;j++) {
-            console.log(speacklist[j]);
-            speech(speacklist[j]);
-        }
+        if(!window.speechSynthesis) {
+            alert("음성 재생을 지원하지 않는 브라우저입니다. 크롬, 파이어폭스 등의 최신 브라우저를 이용하세요");
         return;
-        //speech("안녕하세요");
-      }, 1000);
-      });
+        }
 
-      // tts 끝
-        function search(texts) {
-            let search_key = texts
-            let search_var = ''
-            $.ajax({ 
-                type: "GET", 
-                url:'search/', 
-                data : { 'search_key':search_key}, 
-                dataType: 'json',
-                async:false,
-                success:function(data){ 
-                    search_var = data['search_key']
-                } ,
-                error: function (error) {
-                   // console.log(error);
-                  search_var = '0'
-              }
-            }) 	
-            return search_var
-        } 
+    var lang = 'ko-KR';
+    var utterThis = new SpeechSynthesisUtterance(txt);
     
-        function promise_search(texts){
-            return new Promise((resolve, reject) => {
-                let target = search(texts)
-                // 0.4초 안에 통신이 안되면, 에러 발생( promise 객체 이용 )
-                setTimeout(() => {
-                    if (target != undefined){
-                        resolve(target)
-                    } else {
-                        reject('서버에 문제가 발생하여 인식하지 못했습니다.\n 다시 시도해주세요.')
-                    }
-                }, 400)
-            })
+    utterThis.onend = function (event) {
+        console.log('end');
+    };
+    utterThis.onerror = function(event) {
+        console.log('error', event);
+    };
+
+    var voiceFound = false;
+    for(var i = 0; i < voices.length ; i++) { // 20
+        if(voices[i].lang.indexOf(lang) >= 0 || voices[i].lang.indexOf(lang.replace('-', '_')) >= 0) {
+            utterThis.voice = voices[i];
+            voiceFound = true;
         }
+    }
 
-        function make_body(target_num, texts){
-          const objBody = document.querySelector(".body"); // by minseok kim
+    if(!voiceFound) {
+        alert('voice not found');
+        return;
+    }
+    
+    utterThis.lang = lang;
+    utterThis.pitch = 1;
+    utterThis.rate = 1; //속도
 
-          function ttsStart(speacklist) {
-            for(var j=0;j<speacklist.length;j++) {
-                speech(speacklist[j]);
+    window.speechSynthesis.speak(utterThis);
+
+    utterThis.onend = function(event){
+      if (check){
+
+        recognition.start();
+      }
+    }
+
+
+    }
+
+    window.addEventListener("load", function(e) {
+      setTimeout(() => {
+      var t = e.target;
+      var input = t.previousElementSibling;
+      var speacklist=[
+      "좋은 하루입니다! AI 행원 루나스입니다.",
+        "무엇을 도와드릴까요?",
+        "입금, 출금, 송금, 계좌조회, 계좌개설, 카드발급이 가능합니다.",
+        ];
+
+      for(var j=0;j<1;j++) {
+          console.log(speacklist[j]);
+          speech(speacklist[j], true);
+      }
+      return;
+    }, 1000);
+    });
+
+    // tts 끝
+      function search(texts) {
+          let search_key = texts
+          let search_var = ''
+          $.ajax({ 
+              type: "GET", 
+              url:'search/', 
+              data : { 'search_key':search_key}, 
+              dataType: 'json',
+              async:false,
+              success:function(data){ 
+                  search_var = data['search_key']
+              } ,
+              error: function (error) {
+                  // console.log(error);
+                search_var = '0'
             }
-            return;
-          }
-
-          function addChat(sentence) {
-            chatBody.innerHTML += '<div class="receive">' + sentence + '</div>'
-            objBody.scrollTop = objBody.scrollHeight;
-            ttsStart(sentence);
-          }
-
-          function addChatNoTts(sentence) {
-            chatBody.innerHTML += '<div class="receive">' + sentence + '</div>'
-            objBody.scrollTop = objBody.scrollHeight;
-
-          }
-
-
-          if (target_num == 2){
-            // 입금
-            addChat(["입금을 도와드리겠습니다. 카드 또는 통장을 넣어주세요."]);
-            addChatNoTts(["..."]);
-            setTimeout(() => {
-              addChat(["보내실 금액을 투입구에 넣어주세요."]);
-              addChatNoTts(["..."]);
-              setTimeout(() => {
-                addChat(["이용해 주셔서 감사합니다!"]);
-                addChat(["5초 후 자동으로 메인 화면으로 복귀합니다."]);
-                setTimeout(() => {
-                  window.location.href = '/main/';
-                },10000);
-              }, 10000);
-            }, 10000);
-          } else if( target_num == 6){
-            // 출금
-            addChat(["출금을 도와드리겠습니다. 카드 또는 통장을 넣어주세요."])
-            addChatNoTts(["..."]);
-            setTimeout(() => {
-              addChat(["출금하실 금액을 입력해주세요."]);
-              addChatNoTts(["..."]);
-              setTimeout(() => {
-                addChat(["이용해 주셔서 감사합니다!"])
-                addChat(["5초 후 자동으로 메인 화면으로 복귀합니다."])
-                setTimeout(() => {
-                  window.location.href = '/main/';
-                },10000);
-              }, 10000);
-          }, 10000);
-          } else if( target_num == 1){
-            // 송금
-            chatBody.innerHTML += '<div class="receive">“송금을 도와드리겠습니다. 송금 유형을 선택해주세요.”</div>'
-            chatBody.innerHTML += '<div class="receive">“카드 또는 통장을 넣어주세요.”</div>'
-            chatBody.innerHTML += '<div class="receive">“(로딩 10초)”</div>'
-            setTimeout(() => 
-            chatBody.innerHTML += '<div class="receive">“받는 사람의 계좌번호를 입력해 주세요.”</div>'
-            , 2000);
-            chatBody.innerHTML += '<div class="receive">“(로딩 10초)”</div>'
-            setTimeout(() => 
-            chatBody.innerHTML += '<div class="receive">“이용해 주셔서 감사합니다!“</div>',
-            chatBody.innerHTML += '<div class="receive">“5초 후 자동으로 메인 화면으로 복귀합니다.”</div>'
-            , 2000);
-          } else if( target_num == 3){
-            // 조회
-            chatBody.innerHTML += '<div class="receive">“계좌조회를 도와드리겠습니다. 카드 또는 통장을 넣어주세요.”</div>'
-            chatBody.innerHTML += '<div class="receive">“비밀번호를 입력해주세요.”</div>'
-            chatBody.innerHTML += '<div class="receive">“(로딩 10초)”</div>'
-            setTimeout(() => 
-            chatBody.innerHTML += '<div class="receive">“이용해 주셔서 감사합니다!“</div>',
-            chatBody.innerHTML += '<div class="receive">“5초 후 자동으로 메인 화면으로 복귀합니다.”</div>'
-            , 2000);
-          } else if( target_num == 4){
-            // 개설
-            chatBody.innerHTML += '<div class="receive">“계좌개설을 도와드리겠습니다. 약관을 읽고 동의 버튼을 눌러주세요”</div>'
-            chatBody.innerHTML += '<div class="receive">“약관에 동의해 주세요.”</div>'
-            chatBody.innerHTML += '<div class="receive">“(로딩 10초)”</div>'
-            chatBody.innerHTML += '<div class="receive">“신분증을 촬영해 주세요.”</div>'
-            setTimeout(() =>  
-            chatBody.innerHTML += '<div class="receive">“이용해 주셔서 감사합니다!“</div>',
-            chatBody.innerHTML += '<div class="receive">“5초 후 자동으로 메인 화면으로 복귀합니다.”</div>'
-            , 2000);
-          } else if( target_num == 5){
-            // 발급
-            chatBody.innerHTML += '<div class="receive">“카드발급을 도와드리겠습니다. 약관을 읽고 동의 버튼을 눌러주세요”</div>'
-            chatBody.innerHTML += '<div class="receive">“약관에 동의해 주세요.”</div>'
-            chatBody.innerHTML += '<div class="receive">“(로딩 10초)”</div>'
-            chatBody.innerHTML += '<div class="receive">“신분증을 촬영해 주세요.”</div>'
-            setTimeout(() => 
-            chatBody.innerHTML += '<div class="receive">“이용해 주셔서 감사합니다!“</div>',
-            chatBody.innerHTML += '<div class="receive">“5초 후 자동으로 메인 화면으로 복귀합니다.”</div>'
-            , 2000);
-          } else if ( target_num == 0){
-            // 발급
-            chatBody.innerHTML += '<div class="receive">“다시 말씀해주세요.”</div>'
+          }) 	
+          return search_var
+      } 
   
-          } else if ( target_num == 7){
-            // 발급
-            if (texts == '안녕하세요'){
-              chatBody.innerHTML += '<div class="receive">"안녕하세요.”</div>'
-  
+      function promise_search(texts){
+          return new Promise((resolve, reject) => {
+              let target = search(texts)
+              // 0.4초 안에 통신이 안되면, 에러 발생( promise 객체 이용 )
+              setTimeout(() => {
+                  if (target != undefined){
+                      resolve(target)
+                  } else {
+                      reject('서버에 문제가 발생하여 인식하지 못했습니다.\n 다시 시도해주세요.')
+                  }
+              }, 400)
+          })
+      }
+
+      function make_body(target_num, texts){
+
+        
+        
+        const objBody = document.querySelector(".body"); 
+        
+        function addChat(sentence, check=false) {
+          chatBody.innerHTML += '<div class="receive">' + sentence + '</div>'
+          objBody.scrollTop = objBody.scrollHeight;
+          speech(sentence, check);
+        }
+        
+        function addChatNoTts(sentence) {
+          chatBody.innerHTML += '<div class="receive">' + sentence + '</div>'
+          objBody.scrollTop = objBody.scrollHeight;
+        }
+        function printAndTTS(senlist, check = false) {
+          var delaySec = 3000;
+          for(let j =0; j<senlist.length ; j++) {
+            var anonFunc = function(j) {
+              setTimeout(() => {
+                if(senlist[j]=="...") addChatNoTts(senlist[j]);
+                else if (senlist[j]!="") addChat(senlist[j], check);
+                else window.location.href = '/main/';   
+              }, j*delaySec)
             }
+            anonFunc(j);
           }
         }
-    </script>
+        if(texts == 'button'){
+          recognition.stop()  
+          printAndTTS(search(target_num), false)
+
+          return
+        }
+
+        // 타겟 넘버 별 TTS 시작 부분  
+        if (texts == "안녕하세요"){
+          addChat(target_num, true)
+        }else{
+          if (target_num == "다시 말씀해주세요"){
+            printAndTTS(target_num, true)
+            return
+
+          }
+          printAndTTS(target_num)
+        }
+        // TTS end
+        
+      }
+
+
+  </script>
 
 </head>
 <body>
@@ -291,6 +253,7 @@
 </div>
 
 <script>
+
   document.body.style.overflow = "hidden"
 
   const chatForm = document.querySelector(".form");
@@ -304,6 +267,15 @@
   const btn6 = document.querySelector("#btn_6");
   const btn7 = document.querySelector("#btn_7");
 
+  chatForm.addEventListener("submit", handleChatSubmit);
+  btn1.addEventListener("click", handleQuickBtn);
+  btn2.addEventListener("click", handleQuickBtn);
+  btn3.addEventListener("click", handleQuickBtn);
+  btn4.addEventListener("click", handleQuickBtn);
+  btn5.addEventListener("click", handleQuickBtn);
+  btn6.addEventListener("click", handleQuickBtn);
+  btn7.addEventListener("click", handleQuickBtn);
+
   function handleQuickBtn(event) {
     list = {
       "1" : "송금을 선택하셨습니다.",
@@ -315,18 +287,18 @@
       "7" : "상품소개을 선택하셨습니다.",
     }
 
-    const objBody = document.querySelector(".body"); // by minseok kim
-    const target_num = event.target.value
-    const inputValue = list[target_num]
+    const objBody = document.querySelector(".body");
+    const target = event.target.value
+    const list_num = list[target]
 
-    chatBody.innerHTML += "<div class='send'>" + inputValue + "</div>"
+    chatBody.innerHTML += "<div class='send'>" + list_num + "</div>"
     objBody.scrollTop = objBody.scrollHeight;
-    make_body(target_num, inputValue);
+    make_body(list_num, 'button');
   }
 
   function handleChatSubmit(event) {
 
-    const objBody = document.querySelector(".body"); // by minseok kim
+    const objBody = document.querySelector(".body");
     event.preventDefault();
     if (chatInput.value == "")
       return;
@@ -349,14 +321,10 @@
       logItems(target)
   }
 
-  chatForm.addEventListener("submit", handleChatSubmit);
-  btn1.addEventListener("click", handleQuickBtn);
-  btn2.addEventListener("click", handleQuickBtn);
-  btn3.addEventListener("click", handleQuickBtn);
-  btn4.addEventListener("click", handleQuickBtn);
-  btn5.addEventListener("click", handleQuickBtn);
-  btn6.addEventListener("click", handleQuickBtn);
-  btn7.addEventListener("click", handleQuickBtn);
+
+
+
+
 
   window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   
@@ -371,16 +339,25 @@
   
   let p = null;
   
-  recognition.start();
+
+
+
+  
   {% comment %} recognition.stop(); {% endcomment %}
   recognition.onstart = function() {
       makeNewTextContent(); // 음성 인식 시작시마다 새로운 문단을 추가한다.
     };
     recognition.onend = function() {
-      recognition.start();
+      recognition.stop();
     };
+
+    {% comment %} recognition.onspeechend = function() {
+      console.log('Speech has stopped being detected');
+      recognition.stop();
+    } {% endcomment %}
     
     recognition.onresult = function(e) {
+      console.log(e)
       let texts = Array.from(e.results)
       .map(results => results[0].transcript).join("");
       
@@ -394,121 +371,16 @@
 
       async function logItems(target) {
         var target_num = await target;
+
         make_body(target_num, texts)
       }    
       logItems(target)
   };
  
+
 </script>
 
-<style scoped>
 
-    .main-frame {
-        height: 56rem;
-    }
-
-    .ai-screen-title {
-        background-color: #f8a70c;
-        height: 10%;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-        font-weight: bold;
-    }
-
-    .ai-screen-main {
-        background-color: black;
-        height: 90%;
-    }
-    
-    .chatbot-screen {
-      max-height : 100%;
-      background-color : #F0F0F0;
-    }
-
-    .body {
-      height : 95%;
-      overflow : auto;
-    }
-
-    .input_bar {
-      height : 5%;
-      width : 100%;
-      background-color : #FFFFFF;
-    }
-
-    .form_input {
-      width : 85%;
-      height : 5%;
-      font-size : 20px;
-      border : transparent;
-    }
-
-    .btn {
-      padding : 0px;
-      width : 10%;
-    }
-
-    .container {
-      padding : 0px;
-      width: 70%;
-      height : 100%;
-      background-color: #9bbbd4;
-    }
-
-    .send {
-      border-radius : 1em;
-      background-color : #FFFFFF;
-      margin-top : 10px;
-      margin-right : 10px;
-      padding-right: 15px;
-      padding-left : 15px;
-      width : 40%;
-      margin-left: auto;
-      white-space: normal;
-      word-wrap: break-word;
-    }
-
-    .receive {
-      border-radius : 1em;
-      background-color : #FFFFFF;
-      margin-top : 10px;
-      margin-right : 10px;
-      margin-left : 10px;
-      padding-right: 15px;
-      padding-left : 15px;
-      width : 40%;
-      height : auto;
-      margin-right: auto;
-      white-space: normal;
-      word-wrap: break-word;
-    }
-
-    .quick-container {
-      border : 2px solid #F0F0F0;
-      border-radius : 0.5em;
-      text-align : center;
-      padding-bottom : 10px;
-      margin : 10px;
-    }
-
-    .quick_btn {
-      width : 97%;
-      border-radius : 0.5em;
-      border : transparent;
-      margin-top : 5px;
-    }
-
-    .word {
-      padding-top : 15px;
-      margin-bottom : 15px;
-    }
-
-    .padding {
-      padding : 5px;
-    }
-
-</style>
 </body>
 </html>
 
