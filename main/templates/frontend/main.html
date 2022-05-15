@@ -128,9 +128,8 @@
           })
       }
 
-      function make_body(target_num, texts){
+      function make_body(answer, texts, target_num){
 
-        
         
         const objBody = document.querySelector(".body"); 
         
@@ -150,6 +149,11 @@
             var anonFunc = function(j) {
               setTimeout(() => {
                 if(senlist[j]=="...") addChatNoTts(senlist[j]);
+                else if (senlist[j] == "모달-금액"){
+                  $('#amountModal').modal('show');
+                }else if (senlist[j] == "모달-비밀번호"){
+                  $('#passwdModal').modal('show');
+                }
                 else if (senlist[j]!="") addChat(senlist[j], check);
                 else window.location.href = '/main/';   
               }, j*delaySec)
@@ -159,21 +163,21 @@
         }
         if(texts == 'button'){
           recognition.stop()  
-          printAndTTS(search(target_num), false)
+          printAndTTS(search(answer), false)
 
           return
         }
 
         // 타겟 넘버 별 TTS 시작 부분  
         if (texts == "안녕하세요"){
-          addChat(target_num, true)
+          addChat(answer, true)
         }else{
-          if (target_num == "다시 말씀해주세요"){
-            printAndTTS(target_num, true)
+          if (answer == "다시 말씀해주세요"){
+            printAndTTS(answer, true)
             return
 
           }
-          printAndTTS(target_num)
+          printAndTTS(answer)
         }
         // TTS end
         
@@ -212,6 +216,15 @@
             </div>
             <div class="padding"></div>
           </div>
+          <div class="receive">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#passwdModal">모달</button>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#amountModal">모달</button>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#balanceModal">모달</button>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#termsModal">모달</button>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cardModal">모달</button>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#issueModal">모달</button>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addressModal">모달</button>
+          </div>
           {% comment %} <div class="receive">
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loadTerms">모달</button>
           </div> {% endcomment %}
@@ -224,28 +237,174 @@
         </div>
       </div>
     </div>
-    <div class="modal fade" id="loadTerms" tabindex="-1" aria-labelledby="loadTermsLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-xl">
+    <!--비밀번호 모달-->
+    <div class="modal fade" id="passwdModal" tabindex="-1" aria-labelledby="passwdModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+      <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="loadTerms">Modal title</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <h5 class="modal-title">비밀번호를 입력해주세요.</h5>
           </div>
-          <div class="modal-body">
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Rem minima qui possimus? Maiores neque rerum esse aperiam, temporibus labore voluptas ipsum voluptatum fuga quaerat aliquam assumenda vero deleniti quas! Velit!
-            Harum inventore quidem nam excepturi odio provident sit placeat, voluptate aliquam mollitia fuga eveniet magni soluta eum, voluptates ullam voluptatum odit? Laborum dolor quo delectus exercitationem magni fugiat esse nam?
-            Iusto sunt eos accusamus obcaecati totam ipsa rerum eaque quos, cumque voluptatibus! Odit possimus fugit ipsa quod earum enim adipisci optio doloribus nostrum saepe! Velit maxime alias placeat architecto. Ut.
-            Reiciendis magnam praesentium aliquam inventore repellat facere at eveniet assumenda dolorem, dolore, necessitatibus nesciunt enim labore. Perspiciatis labore hic deleniti placeat quidem voluptatibus. Assumenda labore similique et, voluptatem dolorem perferendis.
-            Nemo voluptatum blanditiis dolores, molestiae possimus accusamus. Illum, dolorem ab. Mollitia iusto ab voluptate incidunt praesentium, tenetur, ducimus magni temporibus cupiditate ex deserunt nobis ratione veniam id accusamus explicabo eligendi.
-            Voluptatum unde aliquid sint tempora provident perferendis iusto ad quia consequatur ex? Quaerat corrupti tenetur dolorum ut deleniti dignissimos quos, exercitationem recusandae voluptates blanditiis quia magni in tempora distinctio! Quas!
-            Explicabo est mollitia illo laboriosam neque. Nisi suscipit maxime quaerat dignissimos sequi blanditiis maiores molestias incidunt dolorum obcaecati, explicabo itaque inventore fuga, consequatur consequuntur beatae aspernatur, voluptatem officia numquam ex.
-            Maiores totam dicta vero odio rerum? Perspiciatis saepe fugiat consectetur exercitationem repudiandae quos minus? Tempora exercitationem omnis saepe, incidunt quod temporibus animi pariatur nostrum iusto, asperiores reiciendis iure dignissimos ratione.
-            Suscipit eum alias aspernatur ipsam, in magnam praesentium est fugiat nam sunt odit quia. Id iste, corporis labore cupiditate fugit dolore nulla blanditiis, laborum totam explicabo magni commodi aliquid quas.
-            Rerum ipsum ullam quis id quidem sequi reiciendis aut nisi asperiores recusandae debitis, ipsa molestias neque, aspernatur, vero esse nesciunt aperiam nemo harum amet. Debitis eligendi doloremque modi adipisci nesciunt?
+          <div class="form-group formCss">
+              <input class="form-control passwdInput" id="passwdModalInput" type="password" value="" readonly/>
+            <div class="btnGroup">
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_1" value="1" onclick="put_num(1 ,'password')">1</button>
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_2" value="2" onclick="put_num(2 ,'password')">2</button>
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_3" value="3" onclick="put_num(3 ,'password')">3</button>
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_4" value="4" onclick="put_num(4 ,'password')">4</button>
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_5" value="5" onclick="put_num(5 ,'password')">5</button>
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_6" value="6" onclick="put_num(6 ,'password')">6</button>
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_7" value="7" onclick="put_num(7 ,'password')">7</button>
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_8" value="8" onclick="put_num(8 ,'password')">8</button>
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_9" value="9" onclick="put_num(9 ,'password')">9</button>
+              <button class="btn btn-primary passwdBtn2" id="passwdBtn_reset" value="r" onclick="reset('password')">초기화</button>
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_0" value="0" onclick="put_num(0, 'password')">0</button>
+              <button class="btn btn-primary passwdBtn2" id="passwdBtn_clear" value="c" onclick="clearOne('password')">지움</button>
+            </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Save changes</button>
+            <button type="button" class="btn btn-primary footerBtn" id="passwordModalOK">확인</button>
+            <button type="button" class="btn btn-secondary footerBtn" id="passwordModalNO">취소</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--금액 모달-->
+    <div class="modal fade" id="amountModal" tabindex="-1" aria-labelledby="amountModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+      <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id=>출금하실 금액을 입력해주세요.</h5>
+          </div>
+          <div class="form-group formCss">
+            <input class="form-control passwdInput" id="amountModalInput" value="" readonly/>
+            <div class="btnGroup">
+              <button class="btn btn-primary passwdBtn" id="amountBtn_1" value="1" onclick="put_num(1, 'amount')">1</button>
+              <button class="btn btn-primary passwdBtn" id="amountBtn_2" value="2" onclick="put_num(2, 'amount')">2</button>
+              <button class="btn btn-primary passwdBtn" id="amountBtn_3" value="3" onclick="put_num(3, 'amount')">3</button>
+              <button class="btn btn-primary passwdBtn" id="amountBtn_4" value="4" onclick="put_num(4, 'amount')">4</button>
+              <button class="btn btn-primary passwdBtn" id="amountBtn_5" value="5" onclick="put_num(5, 'amount')">5</button>
+              <button class="btn btn-primary passwdBtn" id="amountBtn_6" value="6" onclick="put_num(6, 'amount')">6</button>
+              <button class="btn btn-primary passwdBtn" id="amountBtn_7" value="7" onclick="put_num(7, 'amount')">7</button>
+              <button class="btn btn-primary passwdBtn" id="amountBtn_8" value="8" onclick="put_num(8, 'amount')">8</button>
+              <button class="btn btn-primary passwdBtn" id="amountBtn_9" value="9" onclick="put_num(9, 'amount')">9</button>
+              <button class="btn btn-primary passwdBtn2" id="amountBtn_reset" value="r" onclick="reset('amount')">초기화</button>
+              <button class="btn btn-primary passwdBtn" id="amountBtn_0" value="0" onclick="put_num(0, 'amount')">0</button>
+              <button class="btn btn-primary passwdBtn2" id="amountBtn_clear" value="c" onclick="clearOne('amount')">지움</button>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary footerBtn" id="amountModalOK">확인</button>
+            <button type="button" class="btn btn-secondary footerBtn" id="amountModalNO">취소</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--계좌조회 모달-->
+    <div class="modal fade" id="balanceModal" tabindex="-1" aria-labelledby="balanceModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">계좌를 조회합니다.</h5>
+            <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+          </div>
+          <div class="form-group">
+            <table class="balanceTable">
+              <tr>
+                <td class="head">계좌이름 : </td>
+                <td>KB나라사랑우대통장</td>
+              </tr>
+              <tr>
+                <td class="head">계좌번호 : </td>
+                <td>123456-01-123456</td>
+              </tr>
+              <tr>
+                <td class="head">잔액 : </td>
+                <td>800,000,000 원</td>
+              </tr>
+              <tr>
+                <td class="head">출금가능금액 : </td>
+                <td>800,000,000 원</td>
+              </tr>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary footerBtn" id="balanceModalSEND">송금</button>
+            <button type="button" class="btn btn-secondary footerBtn" id="balanceModalWithdraw">출금</button>
+            <button type="button" class="btn btn-primary footerBtn" id="balanceModalOK">확인</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--약관동의 모달-->
+    <div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">약관을 읽고 동의해주세요.</h5>
+            <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+          </div>
+          <div class="terms" id="terms">
+            <div class="termsContent">
+              <embed src="{% static 'text/terms.txt' %}">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <div class="termsCheckbox">
+              <input type="checkbox" id="termsCheckbox"> 약관을 충분히 이해하였으며 동의합니다. </input>
+            </div>
+            <button type="button" class="btn btn-primary footerBtn" id="termsModalOK" disabled="true">확인</button>
+            <button type="button" class="btn btn-secondary footerBtn" id="termsModalNO">취소</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--카드추천 모달-->
+    <div class="modal fade" id="cardModal" tabindex="-1" aria-labelledby="cardModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">발급을 원하시는 카드를 선택해주세요.</h5>
+          </div>
+          <div class="cardList">
+            <div class="cardContent" id="cardContent">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary footerBtn" id="cardModalOK" disabled="true">확인</button>
+            <button type="button" class="btn btn-secondary footerBtn" id="cardModalNO">취소</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--카드발급 모달-->
+    <div class="modal fade" id="issueModal" tabindex="-1" aria-labelledby="issueModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-ms">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">카드를 발급하시겠습니까?</h5>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary footerBtn" id="issueModalOK">확인</button>
+            <button type="button" class="btn btn-secondary footerBtn" id="issueModalNO">취소</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--배송지입력 모달-->
+    <div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-ms">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">카드를 배송받을 주소를 입력해주세요.</h5>
+          </div>
+          <div>
+            <div class="addressContent" id="addressContent">
+              <input type="text" class="addressInput" id="addressInput">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary footerBtn" id="addressModalOK" disabled="true">확인</button>
+            <button type="button" class="btn btn-secondary footerBtn" id="addressModalNO">취소</button>
           </div>
         </div>
       </div>
@@ -253,6 +412,134 @@
 </div>
 
 <script>
+
+  // 비밀번호 모달 함수
+  amount = ""
+  password = ""
+  passwordTries = 0;
+  localStorage.setItem("password", "1234");
+
+  function put_num(value, modal) {
+    if (modal == "password")
+    {
+      var input = document.querySelector("#passwdModalInput")
+      input.value += value;
+      password = input.value;
+    }
+    else if (modal == "amount")
+    {
+      var input = document.querySelector("#amountModalInput")
+      if (input.value === "" && value === 0)
+        return ;
+      input.value = input.value.split(',').join("") + value;
+      input.value = input.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      amount = input.value
+    }
+  }
+
+  function reset(modal) {
+    if (modal == "password")
+    {
+      var input = document.querySelector("#passwdModalInput")
+      input.value = ""
+      password = input.value;
+    }
+    else if (modal == "amount")
+    {
+      var input = document.querySelector("#amountModalInput")
+      input.value = ""
+      amount = input.value
+    }
+  }
+
+  function clearOne(modal) {
+    if (modal == "password")
+    {
+      var input = document.querySelector("#passwdModalInput")
+      if (input.value != "")
+        input.value = input.value.slice(0, -1);
+      password = input.value
+    }
+    else if (modal == "amount")
+    {
+      var input = document.querySelector("#amountModalInput")
+      if (input.value != "")
+      input.value = input.value.split(',').join("")
+      input.value = input.value.slice(0, -1);
+      input.value = input.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      amount = input.value
+    }
+  }
+
+  // 약관동의 모달 함수
+
+  const termsModalCheckbox = document.querySelector('#termsCheckbox')
+  const termsModalOK = document.querySelector('#termsModalOK')
+
+  function handleCheckbox() {
+    termsModalCheckbox.checked === false ? termsModalOK.disabled = true : termsModalOK.disabled = false
+  }
+
+  termsModalCheckbox.addEventListener("click", handleCheckbox)
+
+  // 카드발급 모달 함수
+
+  card = [
+    { "tag" : "<div class='cardUnit'><img class='cardImg' src='/static/img/04285_img.png' alt='cheongchun'><div><h3><input type='checkbox' name='card' onclick='checkOnlyOne(this)' id='card_1'>청춘대로 톡톡카드</h3><div>Simple하게 즐기자!</div><div>혜택 톡톡! 스타벅스 50% 청구할인 버거/패스트푸드 20% 청구할인 간편결제 Pay 10% 청구할인</div></div></div>",
+      "content" : ""},
+      { "tag" : "<div class='cardUnit'><img class='cardImg' src='/static/img/02065_img.png' alt='cheongchun'><div><h3><input type='checkbox' name='card' onclick='checkOnlyOne(this)' id='card_2'>청춘대로 톡톡카드</h3><div>Simple하게 즐기자!</div><div>혜택 톡톡! 스타벅스 50% 청구할인 버거/패스트푸드 20% 청구할인 간편결제 Pay 10% 청구할인</div></div></div>",
+      "content" : ""},
+      { "tag" : "<div class='cardUnit'><img class='cardImg' src='/static/img/09157_img.png' alt='cheongchun'><div><h3><input type='checkbox' name='card' onclick='checkOnlyOne(this)' id='card_3'>청춘대로 톡톡카드</h3><div>Simple하게 즐기자!</div><div>혜택 톡톡! 스타벅스 50% 청구할인 버거/패스트푸드 20% 청구할인 간편결제 Pay 10% 청구할인</div></div></div>",
+      "content" : ""},
+      { "tag" : "<div class='cardUnit'><img class='cardImg' src='/static/img/09174_img.png' alt='cheongchun'><div><h3><input type='checkbox' name='card' onclick='checkOnlyOne(this)' id='card_4'>청춘대로 톡톡카드</h3><div>Simple하게 즐기자!</div><div>혜택 톡톡! 스타벅스 50% 청구할인 버거/패스트푸드 20% 청구할인 간편결제 Pay 10% 청구할인</div></div></div>",
+      "content" : ""},
+      { "tag" : "<div class='cardUnit'><img class='cardImg' src='/static/img/09251_img.png' alt='cheongchun'><div><h3><input type='checkbox' name='card' onclick='checkOnlyOne(this)' id='card_5'>청춘대로 톡톡카드</h3><div>Simple하게 즐기자!</div><div>혜택 톡톡! 스타벅스 50% 청구할인 버거/패스트푸드 20% 청구할인 간편결제 Pay 10% 청구할인</div></div></div>",
+      "content" : ""},
+      { "tag" : "<div class='cardUnit'><img class='cardImg' src='/static/img/09644_img.png' alt='cheongchun'><div><h3><input type='checkbox' name='card' onclick='checkOnlyOne(this)' id='card_6'>청춘대로 톡톡카드</h3><div>Simple하게 즐기자!</div><div>혜택 톡톡! 스타벅스 50% 청구할인 버거/패스트푸드 20% 청구할인 간편결제 Pay 10% 청구할인</div></div></div>",
+      "content" : ""},
+  ]
+  const cardContent = document.querySelector('#cardContent')
+  cardContent.innerHTML += card[0].tag
+  cardContent.innerHTML += card[1].tag
+  cardContent.innerHTML += card[2].tag
+  cardContent.innerHTML += card[3].tag
+  cardContent.innerHTML += card[4].tag
+  cardContent.innerHTML += card[5].tag
+
+  function checkOnlyOne(element) {
+  
+  const checkboxes = document.getElementsByName("card");
+  const cardModalOK = document.querySelector("#cardModalOK")
+
+  if (element.checked === false)
+  {
+    element.checked = false;
+    cardModalOK.disabled = true;
+    return;
+  }
+  
+  checkboxes.forEach((cb) => {
+    cb.checked = false;
+  })
+  
+  element.checked = true;
+  cardModalOK.disabled = false;
+}
+
+// 배송지입력 모달 함수
+
+const addressInput = document.querySelector("#addressInput")
+const addressModalOK = document.querySelector("#addressModalOK")
+
+function onInput() {
+  if (addressInput.value !== "")
+    addressModalOK.disabled = false
+  else
+    addressModalOK.disabled = true
+}
+
+addressInput.addEventListener("input", onInput)
+
 
   document.body.style.overflow = "hidden"
 
@@ -370,16 +657,209 @@
           })
 
       async function logItems(target) {
-        var target_num = await target;
-
-        make_body(target_num, texts)
+        var answer_list = await target;
+        console.log(answer_list)
+        var num = answer_list.slice(0, 1)
+        answer_list = answer_list.slice(1,)
+        make_body(answer_list, texts, num)
       }    
       logItems(target)
   };
  
 
 </script>
+<style>
+  .main-frame {
+    height: 56rem;
+  }
+  
+  .ai-screen-title {
+    background-color: #f8a70c;
+    height: 10%;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .ai-screen-main {
+    background-color: black;
+    height: 90%;
+  }
+  
+  .chatbot-screen {
+  max-height : 100%;
+  background-color : #F0F0F0;
+  }
+  
+  .body {
+  height : 95%;
+  overflow : auto;
+  }
+  
+  .input_bar {
+  height : 5%;
+  width : 100%;
+  background-color : #FFFFFF;
+  }
+  
+  .form_input {
+  width : 85%;
+  height : 5%;
+  font-size : 20px;
+  border : transparent;
+  }
+  
+  .btn {
+  padding : 0px;
+  width : 10%;
+  }
+  
+  .container {
+  padding : 0px;
+  width: 70%;
+  height : 100%;
+  background-color: #9bbbd4;
+  }
+  
+  .send {
+  border-radius : 1em;
+  background-color : #FFFFFF;
+  margin-top : 10px;
+  margin-right : 10px;
+  padding-right: 15px;
+  padding-left : 15px;
+  width : 40%;
+  margin-left: auto;
+  white-space: normal;
+  word-wrap: break-word;
+  }
+  
+  .receive {
+  border-radius : 1em;
+  background-color : #FFFFFF;
+  margin-top : 10px;
+  margin-right : 10px;
+  margin-left : 10px;
+  padding-right: 15px;
+  padding-left : 15px;
+  width : 40%;
+  height : auto;
+  margin-right: auto;
+  white-space: normal;
+  word-wrap: break-word;
+  }
+  
+  .quick-container {
+  border : 2px solid #F0F0F0;
+  border-radius : 0.5em;
+  text-align : center;
+  padding-bottom : 10px;
+  margin : 10px;
+  }
+  
+  .quick_btn {
+  width : 97%;
+  border-radius : 0.5em;
+  border : transparent;
+  margin-top : 5px;
+  }
+  
+  .word {
+  padding-top : 15px;
+  margin-bottom : 15px;
+  }
+  
+  .padding {
+  padding : 5px;
+  }
+  
+  .btnGroup {
+  text-align: center;
+  }
+  
+  .btn.btn-primary.passwdBtn {
+  width : 30%;
+  height : 5em;
+  margin-top : 0.3em;
+  background-color: #f8a70c;
+  border : 0px;
+  }
+  
+  .btn.btn-primary.passwdBtn2 {
+  width : 30%;
+  height : 5em;
+  margin-top : 0.3em;
+  background-color: #6e6053;
+  border : 0px;
+  }
+  
+  .btn.btn-primary.footerBtn {
+  background-color: #f8a70c;
+  border : 0px;
+  width : 4em;
+  }
+  
+  .btn.btn-secondary.footerBtn {
+  border : 0px;
+  width : 4em;
+  }
+  
+  .form-control.passwdInput {
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left : 2.5%;
+  width : 95%;
+  }
+  
+  .balanceTable {
+  margin : auto;
+  }
+  
+  .head {
+  width : 10em;
+  }
+  
+  .terms {
+  /* max-height : 50em; */
+  overflow : auto;
+  }
+  
+  .termsContent {
+  margin-left : 10%;
+  width : 80%;
+  }
+  
+  .termsCheckbox {
+  margin-right : 3%;
+  }
+  
+  .cardContent {
+  display: flex;
+  flex-wrap: wrap;
+  /* flex-direction: column; */
+  /* max-height: 95%; */
+  max-width: 100%;
+  height : 40em;
+  overflow: auto;
+  }
+  
+  .cardUnit {
+  text-align: center;
+  max-width : 50%;
+  height : 25em;
+  }
+  
+  .cardImg {
+  width : 50%;
+  }
+  
+  .addressInput {
+  width : 100%;
+  }
 
+</style>
 
 </body>
 </html>
