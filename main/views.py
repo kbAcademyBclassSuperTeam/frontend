@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 import joblib
+import platform
 
 def main(request):
 
@@ -8,8 +9,12 @@ def main(request):
 
 
 def model_predict(texts):
-    transformer = joblib.load('main\model_folder\corpus_transformer.pkl')
-    model = joblib.load('main\model_folder\corpus.pkl')
+    if platform.system()=='Darwin':
+        transformer = joblib.load('main/model_folder/corpus_transformer.pkl')
+        model = joblib.load('main/model_folder/corpus.pkl')
+    else:
+        transformer = joblib.load('main\model_folder\corpus_transformer.pkl')
+        model = joblib.load('main\model_folder\corpus.pkl')
     ex = transformer.transform({texts})
     y_pred = model.predict(ex)
     target_num = y_pred[0]
