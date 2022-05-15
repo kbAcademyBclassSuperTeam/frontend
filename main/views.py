@@ -14,6 +14,8 @@ def model_predict(texts):
     y_pred = model.predict(ex)
     target_num = y_pred[0]
     answer_list = []
+    
+    
     if target_num == 2:
         # 입금
         answer_list = ["입금을 도와드리겠습니다. 카드 또는 통장을 넣어주세요.",
@@ -54,6 +56,8 @@ def model_predict(texts):
         #  발급
         if texts == '안녕하세요':
             answer_list = ["안녕하세요"]
+        else:
+            answer_list = ["다시 말씀해주세요"]
 
     return answer_list
     

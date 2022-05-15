@@ -17,7 +17,6 @@
 
 
 
-    {% comment %} window.utterances = []; {% endcomment %}
     // tts 시작
     var voices = [];
 
@@ -130,6 +129,8 @@
       }
 
       function make_body(target_num, texts){
+
+        
         
         const objBody = document.querySelector(".body"); 
         
@@ -177,6 +178,8 @@
         // TTS end
         
       }
+
+
   </script>
 
 </head>
@@ -347,8 +350,14 @@
     recognition.onend = function() {
       recognition.stop();
     };
+
+    {% comment %} recognition.onspeechend = function() {
+      console.log('Speech has stopped being detected');
+      recognition.stop();
+    } {% endcomment %}
     
     recognition.onresult = function(e) {
+      console.log(e)
       let texts = Array.from(e.results)
       .map(results => results[0].transcript).join("");
       
@@ -362,11 +371,13 @@
 
       async function logItems(target) {
         var target_num = await target;
+
         make_body(target_num, texts)
       }    
       logItems(target)
   };
  
+
 </script>
 
 
