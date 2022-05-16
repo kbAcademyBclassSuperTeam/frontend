@@ -126,15 +126,28 @@
                   }
               }, 400)
           })
-      }
-
-
-      
-      {% comment %} https://elvanov.com/2597 {% endcomment %}
-      function make_body(answer, texts, target_num){
-
+        }
         
-        const objBody = document.querySelector(".body"); 
+        
+        
+        {% comment %} https://elvanov.com/2597 {% endcomment %}
+        function make_body(answer, texts, target_num){
+          
+          
+          const objBody = document.querySelector(".body"); 
+          const withdrawModal1OK = document.querySelector('#amountModalOK');
+          const withdrawModal2OK = document.querySelector('#passwordModalOK');
+
+        function addChat(sentence, check=false) {
+          chatBody.innerHTML += '<div class="receive">' + sentence + '</div>'
+          objBody.scrollTop = objBody.scrollHeight;
+          speech(sentence, check);
+        }
+        
+        function addChatNoTts(sentence) {
+          chatBody.innerHTML += '<div class="receive">' + sentence + '</div>'
+          objBody.scrollTop = objBody.scrollHeight;
+        }
 
         function handleWithdrawalOK() {
           $('#amountModal').modal('hide');
@@ -161,6 +174,7 @@
         }
   
         function handleWithdrawalOK2() {
+
           $('#passwdModal').modal('hide');
           const localPassword = localStorage.getItem("password")
           if (password !== localPassword)
@@ -173,12 +187,15 @@
           }
 
           setTimeout(() => {
-              chatBody.innerHTML += '<div class="send">' + amount + ' 원을 출금합니다.' +'</div>'
+              // chatBody.innerHTML += '<div class="send">' + amount + ' 원을 출금합니다.' +'</div>'
+              addChat([amount + ' 원을 출금합니다.'])
+              
               addChat(["이용해 주셔서 감사합니다!"])
-              addChat(["5초 후 자동으로 메인 화면으로 복귀합니다."])
+              addChat(["5초 후 자동으로 초기 화면으로 복귀합니다. 안녕히 가십시오."])
+              
               setTimeout(() => {
                 window.location.href = '/';
-              },10000);
+              },7000);
             }, 1000);
         }
   
@@ -192,19 +209,7 @@
           
         }
         
-        function addChat(sentence, check=false) {
-          chatBody.innerHTML += '<div class="receive">' + sentence + '</div>'
-          objBody.scrollTop = objBody.scrollHeight;
-          speech(sentence, check);
-        }
-        
-        function addChatNoTts(sentence) {
-          chatBody.innerHTML += '<div class="receive">' + sentence + '</div>'
-          objBody.scrollTop = objBody.scrollHeight;
-        }
 
-        const withdrawModal1OK = document.querySelector('#amountModalOK');
-        const withdrawModal2OK = document.querySelector('#passwordModalOK');
 
         function printAndTTS(senlist, check = false) {
           list_modal = ["모달-금액", "모달-비밀번호"]
