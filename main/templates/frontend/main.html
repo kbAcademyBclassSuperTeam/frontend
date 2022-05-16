@@ -135,6 +135,8 @@
 
         
         const objBody = document.querySelector(".body"); 
+        const withdrawModal1OK = document.querySelector('#amountModalOK');
+        const withdrawModal2OK = document.querySelector('#passwordModalOK');
 
         function handleWithdrawalOK() {
           $('#amountModal').modal('hide');
@@ -173,9 +175,10 @@
           }
 
           setTimeout(() => {
-              chatBody.innerHTML += '<div class="send">' + amount + ' 원을 출금합니다.' +'</div>'
+              addChat([amount + ' 원을 출금합니다.'])
+
               addChat(["이용해 주셔서 감사합니다!"])
-              addChat(["5초 후 자동으로 메인 화면으로 복귀합니다."])
+              addChat(["5초 후 자동으로 메인 화면으로 복귀합니다."]) 
               setTimeout(() => {
                 window.location.href = '/main/';
               },10000);
@@ -203,8 +206,7 @@
           objBody.scrollTop = objBody.scrollHeight;
         }
 
-        const withdrawModal1OK = document.querySelector('#amountModalOK');
-        const withdrawModal2OK = document.querySelector('#passwordModalOK');
+
 
         function printAndTTS(senlist, check = false) {
           list_modal = ["모달-금액", "모달-비밀번호"]
@@ -226,12 +228,6 @@
                   if (check_modal){
                     clearTimeout(timer)
                   }
-
-                  {% comment %} sync_modal()
-                  var interval_modal = setInterval(sync_modal, 4000)
-                  withdrawModal1OK.addEventListener("click", clearInterval(interval_modal)); {% endcomment %}
-
-                  {% comment %} console.log(sync_modal()) {% endcomment %}
                   
                 }else if (senlist[j] == "모달-비밀번호"){
                   $('#passwdModal').modal('show');
