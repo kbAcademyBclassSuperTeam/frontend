@@ -66,10 +66,14 @@ def model_predict(texts):
         #  발급
         if texts == '안녕하세요':
             answer_list.append("안녕하세요")
+        elif texts == '반가워요':
+            answer_list.append("저도 반가워요")
+        elif texts == '누구세요' | texts == '누구' | texts == '이름':
+            answer_list.append("저는 AI 행원 루나스 입니다.")
+        elif texts == '사랑합니다':
+            answer_list.append("네 저도 사랑해요")
         else:
-            answer_list.append("다시 말씀해주세요")
-
-    
+            answer_list.append("이용해주셔서 감사합니다")
     return answer_list
     
 
