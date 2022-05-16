@@ -19,6 +19,8 @@
 
     // tts 시작
     var voices = [];
+    var step = 0;
+    var amount = 0;
 
     function setVoiceList() {
         voices = window.speechSynthesis.getVoices();
@@ -137,28 +139,45 @@
           chatBody.innerHTML += '<div class="receive">' + sentence + '</div>'
           objBody.scrollTop = objBody.scrollHeight;
           speech(sentence, check);
+          step += 1;
         }
         
         function addChatNoTts(sentence) {
           chatBody.innerHTML += '<div class="receive">' + sentence + '</div>'
           objBody.scrollTop = objBody.scrollHeight;
+          step += 1;
         }
         function printAndTTS(senlist, check = false) {
-          var delaySec = 3000;
-          for(let j =0; j<senlist.length ; j++) {
-            var anonFunc = function(j) {
-              setTimeout(() => {
-                if(senlist[j]=="...") addChatNoTts(senlist[j]);
-                else if (senlist[j] == "모달-금액"){
-                  $('#amountModal').modal('show');
-                }else if (senlist[j] == "모달-비밀번호"){
-                  $('#passwdModal').modal('show');
-                }
-                else if (senlist[j]!="") addChat(senlist[j], check);
-                else window.location.href = '/main/';   
-              }, j*delaySec)
+          while (true) {
+            console.log(step, senlist);
+
+            if(senlist[step]=="...") {
+              addChatNoTts(senlist[step]);
             }
-            anonFunc(j);
+            else if (senlist[step] == "모달-금액"){
+              $('#amountModal').modal('show');
+              if (step == 5) {
+                continue;
+              }
+            }
+            else if (senlist[step] == "모달-비밀번호"){
+              $('#passwdModal').modal('show');
+              if (step == 6) {
+                continue;
+              }
+            }
+            else if (senlist[step]!="") {
+              addChat(senlist[step], check);
+            }
+            else {
+              window.location.href = '/main/';
+              step = 0;
+            }
+
+            if (step >= senlist.length) { 
+              break;
+              step = 0;
+            }
           }
         }
         if(texts == 'button'){
@@ -179,8 +198,15 @@
           }
           printAndTTS(answer)
         }
-        // TTS end
-        
+        // TTS end 
+      }
+
+      function amountModalCheck() {
+        const value = document.getElementById("amountModalInput").value;
+        document.getElementById("amountModalInput").value = "";
+        if (!value) return;
+        amount = value;
+        step += 1;
       }
 
 
@@ -263,7 +289,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary footerBtn" id="passwordModalOK">확인</button>
-            <button type="button" class="btn btn-secondary footerBtn" id="passwordModalNO">취소</button>
+            <button type="button" class="btn btn-secondary footerBtn" id="passwordModalNO" data-bs-dismiss="modal">취소</button>
           </div>
         </div>
       </div>
@@ -293,7 +319,7 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary footerBtn" id="amountModalOK">확인</button>
+            <button type="button" class="btn btn-primary footerBtn" id="amountModalOK" onclick ="amountModalCheck()">확인</button>
             <button type="button" class="btn btn-secondary footerBtn" id="amountModalNO">취소</button>
           </div>
         </div>
