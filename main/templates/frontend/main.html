@@ -130,10 +130,69 @@
           })
       }
 
+
+      
+      {% comment %} https://elvanov.com/2597 {% endcomment %}
       function make_body(answer, texts, target_num){
 
         
         const objBody = document.querySelector(".body"); 
+
+        function handleWithdrawalOK() {
+          $('#amountModal').modal('hide');
+          if (passwordTries === 2)
+          {
+            addChat(["비밀번호 시도 횟수를 초과하여 메인 화면으로 돌아갑니다."])
+            setTimeout(() => {
+              window.location.href = '/main/';
+           }, 10000);
+           return;
+          }
+          setTimeout(() => {
+            if (passwordTries > 0 && passwordTries < 3)
+              addChat(["비밀번호를 다시 입력해주세요."])
+            else
+              addChat(["비밀번호를 입력해주세요."])
+            $('#passwdModal').modal('show');
+            withdrawModal2OK.addEventListener("click", handleWithdrawalOK2);
+            withdrawModal2NO.addEventListener("click", handleWithdrawalNO2);
+          }, 1000);
+
+          return true;
+          
+        }
+  
+        function handleWithdrawalOK2() {
+          $('#passwdModal').modal('hide');
+          const localPassword = localStorage.getItem("password")
+          if (password !== localPassword)
+          {
+            handleWithdrawalOK();
+            document.querySelector('#passwdModalInput').value = ""
+            password = "";
+            passwordTries++;
+            return;
+          }
+
+          setTimeout(() => {
+              chatBody.innerHTML += '<div class="send">' + amount + ' 원을 출금합니다.' +'</div>'
+              addChat(["이용해 주셔서 감사합니다!"])
+              addChat(["5초 후 자동으로 메인 화면으로 복귀합니다."])
+              setTimeout(() => {
+                window.location.href = '/main/';
+              },10000);
+            }, 1000);
+        }
+  
+        function amountModalOK_modal(){
+          var modal_check = withdrawModal1OK.addEventListener("click", handleWithdrawalOK);
+          return modal_check
+        }
+        function passwordModalOK_modal(){
+          var modal_check = withdrawModal2OK.addEventListener("click", handleWithdrawalOK2);
+          return modal_check
+          
+        }
         
         function addChat(sentence, check=false) {
           chatBody.innerHTML += '<div class="receive">' + sentence + '</div>'
@@ -147,44 +206,66 @@
           objBody.scrollTop = objBody.scrollHeight;
           step += 1;
         }
+
+        const withdrawModal1OK = document.querySelector('#amountModalOK');
+        const withdrawModal2OK = document.querySelector('#passwordModalOK');
+
         function printAndTTS(senlist, check = false) {
-          while (true) {
-            console.log(step, senlist);
+          list_modal = ["모달-금액", "모달-비밀번호"]
+          var delaySec = 3000;
 
-            if(senlist[step]=="...") {
-              addChatNoTts(senlist[step]);
-            }
-            else if (senlist[step] == "모달-금액"){
-              $('#amountModal').modal('show');
-              if (step == 5) {
-                continue;
-              }
-            }
-            else if (senlist[step] == "모달-비밀번호"){
-              $('#passwdModal').modal('show');
-              if (step == 6) {
-                continue;
-              }
-            }
-            else if (senlist[step]!="") {
-              addChat(senlist[step], check);
-            }
-            else {
-              window.location.href = '/main/';
-              step = 0;
+          for(let j =0; j<senlist.length ; j++) {
+
+            
+            var anonFunc = function(j) {
+              
+              var timer = setTimeout(() => {
+                
+                if(senlist[j]=="...") addChatNoTts(senlist[j]);
+                else if (senlist[j] == "모달-금액"){
+                  $('#amountModal').modal('show');
+
+                  var check_modal = amountModalOK_modal()
+
+                  if (check_modal){
+                    clearTimeout(timer)
+                  }
+
+                  {% comment %} sync_modal()
+                  var interval_modal = setInterval(sync_modal, 4000)
+                  withdrawModal1OK.addEventListener("click", clearInterval(interval_modal)); {% endcomment %}
+
+                  {% comment %} console.log(sync_modal()) {% endcomment %}
+                  
+                }else if (senlist[j] == "모달-비밀번호"){
+                  $('#passwdModal').modal('show');
+
+                  var check_modal = passwordModalOK_modal()
+
+                  if (check_modal){
+                    clearTimeout(timer)
+                  }
+
+                }
+                else if (senlist[j]!="") addChat(senlist[j], check);
+                else window.location.href = '/main/';   
+              }, j*delaySec)
             }
 
-            if (step >= senlist.length) { 
-              break;
-              step = 0;
-            }
+            
+            anonFunc(j);
+            if (list_modal.indexOf(senlist[j]) != -1 ){
+              delaySec = delaySec + 10000;
+            } 
+            
           }
         }
         if(texts == 'button'){
           recognition.stop()  
+          
           printAndTTS(search(answer), false)
-
           return
+
         }
 
         // 타겟 넘버 별 TTS 시작 부분  
@@ -194,20 +275,14 @@
           if (answer == "다시 말씀해주세요"){
             printAndTTS(answer, true)
             return
-
           }
           printAndTTS(answer)
+          
         }
-        // TTS end 
       }
-
-      function amountModalCheck() {
-        const value = document.getElementById("amountModalInput").value;
-        document.getElementById("amountModalInput").value = "";
-        if (!value) return;
-        amount = value;
-        step += 1;
-      }
+        // TTS end
+        
+      
 
 
   </script>
@@ -684,7 +759,6 @@ addressInput.addEventListener("input", onInput)
 
       async function logItems(target) {
         var answer_list = await target;
-        console.log(answer_list)
         var num = answer_list.slice(0, 1)
         answer_list = answer_list.slice(1,)
         make_body(answer_list, texts, num)
