@@ -159,8 +159,8 @@
             addChat(["비밀번호 시도 횟수를 초과하여 메인 화면으로 돌아갑니다."])
             setTimeout(() => {
               window.location.href = '/main/';
-           }, 10000);
-           return;
+          }, 10000);
+          return;
           }
           setTimeout(() => {
             if (passwordTries > 0 && passwordTries < 3)
@@ -312,6 +312,8 @@
             <p class="m-0">AI 일반 행원 김범수</p>
         </div>
         <div class="ai-screen-main">
+          <!--ai 행원-->
+          <video id = "ai_lunas" src = {% static "/video/ai_convert.mp4" type="video/mp4" %} autoplay: true>
         </div>
     </div>
     <div class="chatbot-screen col-8 d-flex justify-content-center align-items-center">
@@ -528,7 +530,7 @@
       </div>
     </div>
 </div>
-
+</body>
 <script>
 
   // 비밀번호 모달 함수
@@ -795,7 +797,7 @@ addressInput.addEventListener("input", onInput)
   })
 
 </script>
-</body>
+
 </html>
 
 {% endblock %}
