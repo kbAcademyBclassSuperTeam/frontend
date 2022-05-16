@@ -279,16 +279,14 @@
         }
 
         // 타겟 넘버 별 TTS 시작 부분  
-        if (texts == "안녕하세요"){
-          addChat(answer, true)
-        }else{
+        
           if (answer == "다시 말씀해주세요"){
             printAndTTS(answer, true)
             return
           }
           printAndTTS(answer)
           
-        }
+        
       }
         // TTS end
         
