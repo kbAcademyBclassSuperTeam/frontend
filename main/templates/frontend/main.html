@@ -19,6 +19,8 @@
 
     // tts 시작
     var voices = [];
+    var step = 0;
+    var amount = 0;
 
     function setVoiceList() {
         voices = window.speechSynthesis.getVoices();
@@ -30,6 +32,9 @@
     }
 
     function speech(txt, check=false) {
+      for (var btn of (document.getElementsByClassName("quick_btn"))) {
+        btn.disabled = true;
+      }
       
         if(!window.speechSynthesis) {
             alert("음성 재생을 지원하지 않는 브라우저입니다. 크롬, 파이어폭스 등의 최신 브라우저를 이용하세요");
@@ -71,8 +76,6 @@
         recognition.start();
       }
     }
-
-
     }
 
     window.addEventListener("load", function(e) {
@@ -86,8 +89,8 @@
         ];
 
       for(var j=0;j<1;j++) {
-          console.log(speacklist[j]);
-          speech(speacklist[j], true);
+        console.log(speacklist[j]);
+        speech(speacklist[j], true);
       }
       return;
     }, 1000);
@@ -209,6 +212,18 @@
           
         }
         
+        function addChat(sentence, check=false) {
+          chatBody.innerHTML += '<div class="receive">' + sentence + '</div>'
+          objBody.scrollTop = objBody.scrollHeight;
+          speech(sentence, check);
+          step += 1;
+        }
+        
+        function addChatNoTts(sentence) {
+          chatBody.innerHTML += '<div class="receive">' + sentence + '</div>'
+          objBody.scrollTop = objBody.scrollHeight;
+          step += 1;
+        }
 
 
         function printAndTTS(senlist, check = false) {
@@ -366,7 +381,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary footerBtn" id="passwordModalOK">확인</button>
-            <button type="button" class="btn btn-secondary footerBtn" id="passwordModalNO">취소</button>
+            <button type="button" class="btn btn-secondary footerBtn" id="passwordModalNO" data-bs-dismiss="modal">취소</button>
           </div>
         </div>
       </div>
@@ -396,7 +411,7 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary footerBtn" id="amountModalOK">확인</button>
+            <button type="button" class="btn btn-primary footerBtn" id="amountModalOK" onclick ="amountModalCheck()">확인</button>
             <button type="button" class="btn btn-secondary footerBtn" id="amountModalNO">취소</button>
           </div>
         </div>
@@ -739,6 +754,9 @@ addressInput.addEventListener("input", onInput)
     };
     recognition.onend = function() {
       recognition.stop();
+      for (var btn of (document.getElementsByClassName("quick_btn"))) {
+        btn.disabled = false;
+      }
     };
 
     {% comment %} recognition.onspeechend = function() {
@@ -767,202 +785,16 @@ addressInput.addEventListener("input", onInput)
       }    
       logItems(target)
   };
- 
+  $("#restart").click(function () {
+    recognition.start();
+  })
+  
+  $('#stoptts').click(function () {
+    window.speechSynthesis.cancel();
+    console.log(window.speechSynthesis);
+  })
 
 </script>
-<style>
-  .main-frame {
-    height: 56rem;
-  }
-  
-  .ai-screen-title {
-    background-color: #f8a70c;
-    height: 10%;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    font-weight: bold;
-  }
-  
-  .ai-screen-main {
-    background-color: black;
-    height: 90%;
-  }
-  
-  .chatbot-screen {
-  max-height : 100%;
-  background-color : #F0F0F0;
-  }
-  
-  .body {
-  height : 95%;
-  overflow : auto;
-  }
-  
-  .input_bar {
-  height : 5%;
-  width : 100%;
-  background-color : #FFFFFF;
-  }
-  
-  .form_input {
-  width : 85%;
-  height : 5%;
-  font-size : 20px;
-  border : transparent;
-  }
-  
-  .btn {
-  padding : 0px;
-  width : 10%;
-  }
-  
-  .container {
-  padding : 0px;
-  width: 70%;
-  height : 100%;
-  background-color: #9bbbd4;
-  }
-  
-  .send {
-  border-radius : 1em;
-  background-color : #FFFFFF;
-  margin-top : 10px;
-  margin-right : 10px;
-  padding-right: 15px;
-  padding-left : 15px;
-  width : 40%;
-  margin-left: auto;
-  white-space: normal;
-  word-wrap: break-word;
-  }
-  
-  .receive {
-  border-radius : 1em;
-  background-color : #FFFFFF;
-  margin-top : 10px;
-  margin-right : 10px;
-  margin-left : 10px;
-  padding-right: 15px;
-  padding-left : 15px;
-  width : 40%;
-  height : auto;
-  margin-right: auto;
-  white-space: normal;
-  word-wrap: break-word;
-  }
-  
-  .quick-container {
-  border : 2px solid #F0F0F0;
-  border-radius : 0.5em;
-  text-align : center;
-  padding-bottom : 10px;
-  margin : 10px;
-  }
-  
-  .quick_btn {
-  width : 97%;
-  border-radius : 0.5em;
-  border : transparent;
-  margin-top : 5px;
-  }
-  
-  .word {
-  padding-top : 15px;
-  margin-bottom : 15px;
-  }
-  
-  .padding {
-  padding : 5px;
-  }
-  
-  .btnGroup {
-  text-align: center;
-  }
-  
-  .btn.btn-primary.passwdBtn {
-  width : 30%;
-  height : 5em;
-  margin-top : 0.3em;
-  background-color: #f8a70c;
-  border : 0px;
-  }
-  
-  .btn.btn-primary.passwdBtn2 {
-  width : 30%;
-  height : 5em;
-  margin-top : 0.3em;
-  background-color: #6e6053;
-  border : 0px;
-  }
-  
-  .btn.btn-primary.footerBtn {
-  background-color: #f8a70c;
-  border : 0px;
-  width : 4em;
-  }
-  
-  .btn.btn-secondary.footerBtn {
-  border : 0px;
-  width : 4em;
-  }
-  
-  .form-control.passwdInput {
-  text-align: center;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  margin-left : 2.5%;
-  width : 95%;
-  }
-  
-  .balanceTable {
-  margin : auto;
-  }
-  
-  .head {
-  width : 10em;
-  }
-  
-  .terms {
-  /* max-height : 50em; */
-  overflow : auto;
-  }
-  
-  .termsContent {
-  margin-left : 10%;
-  width : 80%;
-  }
-  
-  .termsCheckbox {
-  margin-right : 3%;
-  }
-  
-  .cardContent {
-  display: flex;
-  flex-wrap: wrap;
-  /* flex-direction: column; */
-  /* max-height: 95%; */
-  max-width: 100%;
-  height : 40em;
-  overflow: auto;
-  }
-  
-  .cardUnit {
-  text-align: center;
-  max-width : 50%;
-  height : 25em;
-  }
-  
-  .cardImg {
-  width : 50%;
-  }
-  
-  .addressInput {
-  width : 100%;
-  }
-
-</style>
-
 </body>
 </html>
 
