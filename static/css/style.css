@@ -1,5 +1,5 @@
 .main-frame {
-  height: 56rem;
+  height: 90vh;
 }
 
 .ai-screen-title {
@@ -17,12 +17,12 @@
 }
 
 .chatbot-screen {
-max-height : 100%;
-background-color : #F0F0F0;
+  height : 100%;
+  background-color : #F0F0F0;
 }
 
 .body {
-height : 90%;
+height : 95%;
 overflow : auto;
 }
 
@@ -30,13 +30,15 @@ overflow : auto;
 height : 5%;
 width : 100%;
 background-color : #FFFFFF;
+bottom: 0;
 }
 
 .form_input {
 width : 85%;
 height : 5%;
-font-size : 20px;
+font-size : 1rem;
 border : transparent;
+align-items: center;
 }
 
 .btn {
@@ -186,4 +188,8 @@ width : 50%;
 
 .addressInput {
 width : 100%;
+}
+
+.dotest {
+  width: 100%;
 }

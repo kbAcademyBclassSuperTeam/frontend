@@ -3,17 +3,8 @@
 {% block content %}
 
 
-<!DOCTYPE html>
 {% load static %}
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
-  <title>Home!</title>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-  <script>
+<script>
 
 
 
@@ -302,10 +293,7 @@
       
 
 
-  </script>
-
-</head>
-<body>
+</script>
 <div class="main-frame row">
     <div class="ai-screen col-4">
         <div class="ai-screen-title d-flex">
@@ -316,7 +304,7 @@
     </div>
     <div class="chatbot-screen col-8 d-flex justify-content-center align-items-center">
       <div class="container">
-        <div class="body">
+        <div class="body mb-0">
           <div class="receive">
             <div class="word">
             "좋은 하루입니다! AI 행원 루나스입니다.” <br><br>
@@ -347,9 +335,9 @@
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loadTerms">모달</button>
           </div> {% endcomment %}
         </div>
-        <div class="input_bar">
+        <div class="input_bar mb-0 mt-0">
           <form class="form">
-            <input type="text" class="form_input">
+            <input type="text" class="form_input m-0">
             <button class="btn">전송</button>
           </form>
         </div>
@@ -795,7 +783,5 @@ addressInput.addEventListener("input", onInput)
   })
 
 </script>
-</body>
-</html>
 
 {% endblock %}
