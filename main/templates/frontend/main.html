@@ -43,12 +43,16 @@
     };
 
     var voiceFound = false;
+    var ai_lunas = document.getElementsByClassName('ai_lunas')[0]; //음성에 ai 말하기
+    ai_lunas.play();
+    console.log(ai_lunas);
     for(var i = 0; i < voices.length ; i++) { // 20
-        if(voices[i].lang.indexOf(lang) >= 0 || voices[i].lang.indexOf(lang.replace('-', '_')) >= 0) {
-            utterThis.voice = voices[i];
-            voiceFound = true;
-        }
+      if(voices[i].lang.indexOf(lang) >= 0 || voices[i].lang.indexOf(lang.replace('-', '_')) >= 0) {
+        utterThis.voice = voices[i];
+        voiceFound = true;
+      }
     }
+    ai_lunas.stop()
 
     if(!voiceFound) {
         alert('voice not found');
@@ -292,7 +296,7 @@
         </div>
         <div class="ai-screen-main">
           <!--ai 행원-->
-          <video id = "ai_lunas" src = {% static "/video/ai_convert.mp4" type="video/mp4" %} autoplay: true>
+          <video class="ai_lunas" src={% static "/video/ai_convert.mp4" type="video/mp4" %}>
         </div>
     </div>
     <div class="chatbot-screen col-8 d-flex justify-content-center align-items-center">
