@@ -177,7 +177,7 @@
               addChat(["이용해 주셔서 감사합니다!"])
               addChat(["5초 후 자동으로 메인 화면으로 복귀합니다."])
               setTimeout(() => {
-                window.location.href = '/main/';
+                window.location.href = '/';
               },10000);
             }, 1000);
         }
@@ -244,7 +244,7 @@
 
                 }
                 else if (senlist[j]!="") addChat(senlist[j], check);
-                else window.location.href = '/main/';   
+                else window.location.href = '/';   
               }, j*delaySec)
             }
 
@@ -258,8 +258,9 @@
         }
         if(texts == 'button'){
           recognition.stop()  
-          
-          printAndTTS(search(answer), false)
+          var searchlist = search(answer)
+          searchlist = searchlist.slice(1,)
+          printAndTTS(searchlist, false)
           return
 
         }
