@@ -152,12 +152,16 @@
           const passwordModalOK = document.querySelector('#passwordModalOK');
           const accountModalOK = document.querySelector('#accountModalOK');
           const balanceModalOK = document.querySelector('#balanceModalOK');
+          const termsModalOK = document.querySelector('#termsModalOK');
+          const cardModalOK = document.querySelector('#cardModalOK');
 
           const amountModalNO = document.querySelector('#amountModalNO');
           const passwordModalNO = document.querySelector('#passwordModalNO');
           const accountModalNO = document.querySelector('#accountModalNO');
           const balanceModalNO = document.querySelector('#balanceModalNO');
-
+          const termsModalNO = document.querySelector('#termsModalNO');
+          const cardModalNO = document.querySelector('#cardModalNO');
+          
         function addChat(sentence, check=false) {
           chatBody.innerHTML += '<div class="receive">' + sentence + '</div>'
           objBody.scrollTop = objBody.scrollHeight;
@@ -173,9 +177,9 @@
           $('#amountModal').modal('hide');
           $('#passwdModal').modal('hide');
           $('#accountModal').modal('hide');
-          $('#amountModal').modal('hide');
-          $('#amountModal').modal('hide');
-          $('#amountModal').modal('hide');
+          $('#balanceModal').modal('hide');
+          $('#termsModal').modal('hide');
+          $('#cardModal').modal('hide');
           $('#amountModal').modal('hide');
           addChat(["홈 화면으로 복귀합니다."])
           setTimeout(() => {
@@ -251,6 +255,26 @@
           return true;
         }
 
+        function closeTermsModal() {
+          $('#termsModal').modal('hide');
+          setTimeout(() => {
+            addChat(["이용해 주셔서 감사합니다!"])
+            addChat(["5초 후 자동으로 초기 화면으로 복귀합니다. 안녕히 가십시오."])
+            
+            setTimeout(() => {
+              window.location.href = '/';
+            },7000);
+          }, 1000);
+          return true;
+        }
+
+        function closeCardModal() {
+          $('#cardModal').modal('hide');
+          setTimeout(() => {
+            $('#termsModal').modal('show');
+          }, 1000);
+        }
+
         function closeAll() {
           $('#balanceModal').modal('hide');
           setTimeout(() => {
@@ -285,12 +309,14 @@
         balanceModalOK.addEventListener("click", closeAll);
         balanceModalSEND.addEventListener("click", openAccountModal);
         balanceModalWithdraw.addEventListener("click", openAmountModal);
+        termsModalOK.addEventListener("click", closeTermsModal);
+        cardModalOK.addEventListener("click", closeCardModal);
         
         amountModalNO.addEventListener("click", redirectToHome);
         passwordModalNO.addEventListener("click", redirectToHome);
         accountModalNO.addEventListener("click", redirectToHome);
-
-
+        termsModalNO.addEventListener("click", redirectToHome);
+        cardModalNO.addEventListener("click", redirectToHome);
 
         function addChat(sentence, check=false) {
           chatBody.innerHTML += '<div class="receive">' + sentence + '</div>'
@@ -307,7 +333,7 @@
 
 
         function printAndTTS(senlist, check = false) {
-          list_modal = ["모달-금액", "모달-비밀번호", "모달-계좌번호", "모달-약관"]
+          list_modal = ["모달-금액", "모달-비밀번호", "모달-계좌번호", "모달-약관", "모달-카드"]
           var delaySec = 3000;
 
           for(let j =0; j<senlist.length ; j++) {
@@ -327,6 +353,8 @@
                   $('#accountModal').modal('show');
                 }  else if (senlist[j] == "모달-약관"){
                   $('#termsModal').modal('show');
+                } else if (senlist[j] == "모달-카드"){
+                  $('#cardModal').modal('show');
                 }
                 else if (senlist[j]!="") addChat(senlist[j], check);
                 else window.location.href = '/';   
@@ -525,7 +553,7 @@
           </div>
           <div class="terms" id="terms">
             <div class="termsContent">
-              <embed src="{% static 'text/terms.txt' %}">
+              <embed src="{% static 'text/terms.txt' %}" height="550" width="400">
             </div>
           </div>
           <div class="modal-footer">
