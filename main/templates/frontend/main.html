@@ -43,16 +43,20 @@
     };
 
     var voiceFound = false;
-    var ai_lunas = document.getElementsByClassName('ai_lunas')[0]; //음성에 ai 말하기
-    ai_lunas.play();
-    console.log(ai_lunas);
+    var ai_lunasMotion = document.getElementsByClassName('ai_lunas')[0]; //음성에 ai 말하기
+    ai_lunasMotion.play();
+    console.log(ai_lunasMotion);
     for(var i = 0; i < voices.length ; i++) { // 20
       if(voices[i].lang.indexOf(lang) >= 0 || voices[i].lang.indexOf(lang.replace('-', '_')) >= 0) {
         utterThis.voice = voices[i];
         voiceFound = true;
       }
     }
-    //ai_lunas.stop()
+    setTimeout(() => { // 비동기라 settime으로 여유 시간 확보
+      ai_lunasMotion.pause(); // 정지
+      ai_lunasMotion.currentTime = 0; // 초기화
+    }, 4500);
+    
 
     if(!voiceFound) {
         alert('voice not found');
@@ -234,28 +238,22 @@
                 if(senlist[j]=="...") addChatNoTts(senlist[j]);
                 else if (senlist[j] == "모달-금액"){
                   $('#amountModal').modal('show');
-
                   var check_modal = amountModalOK_modal()
-
                   if (check_modal){
                     clearTimeout(timer)
                   }
                   
                 }else if (senlist[j] == "모달-비밀번호"){
                   $('#passwdModal').modal('show');
-
                   var check_modal = passwordModalOK_modal()
-
                   if (check_modal){
                     clearTimeout(timer)
                   }
-
                 }
                 else if (senlist[j]!="") addChat(senlist[j], check);
                 else window.location.href = '/';   
               }, j*delaySec)
             }
-
             
             anonFunc(j);
             if (list_modal.indexOf(senlist[j]) != -1 ){
@@ -290,14 +288,11 @@
 
 </script>
 <div class="main-frame row">
-    <div class="ai-screen col-4">
+    <div class="ai-screen col-4 p-0">
         <div class="ai-screen-title d-flex">
-            <p class="m-0">AI 일반 행원 김범수</p>
+            <p class="m-0">AI 일반 행원 루나스</p>
         </div>
-        <div class="ai-screen-main">
-          <!--ai 행원-->
-          <video class="ai_lunas" src={% static "/video/ai_convert.mp4" type="video/mp4" %}>
-        </div>
+        <video class="ai_lunas" src={% static "/video/ai_convert.mp4" type="video/mp4" %}>
     </div>
     <div class="chatbot-screen col-8 d-flex justify-content-center align-items-center">
       <div class="container">
