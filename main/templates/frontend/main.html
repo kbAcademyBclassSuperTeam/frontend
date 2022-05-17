@@ -23,7 +23,7 @@
     }
 
     function speech(txt, check=false) {
-      for (var btn of (document.getElementsByClassName("quick_btn"))) {
+      for (var btn of (document.getElementsByClassName("quick_btn"))) { //
         btn.disabled = true;
       }
       
@@ -43,16 +43,20 @@
     };
 
     var voiceFound = false;
-    var ai_lunas = document.getElementsByClassName('ai_lunas')[0]; //음성에 ai 말하기
-    ai_lunas.play();
-    console.log(ai_lunas);
+    var ai_lunasMotion = document.getElementsByClassName('ai_lunas')[0]; //음성에 ai 말하기
+    ai_lunasMotion.play();
+    console.log(ai_lunasMotion);
     for(var i = 0; i < voices.length ; i++) { // 20
       if(voices[i].lang.indexOf(lang) >= 0 || voices[i].lang.indexOf(lang.replace('-', '_')) >= 0) {
         utterThis.voice = voices[i];
         voiceFound = true;
       }
     }
-    //ai_lunas.stop()
+    setTimeout(() => { // 비동기라 settime으로 여유 시간 확보
+      ai_lunasMotion.pause(); // 정지
+      ai_lunasMotion.currentTime = 0; // 초기화
+    }, 4500);
+    
 
     if(!voiceFound) {
         alert('voice not found');
@@ -169,14 +173,14 @@
           
         // tts 포함하여 receive 채팅 추가
         function addChat(sentence, check=false) {
-          chatBody.innerHTML += '<div class="receive">' + sentence + '</div>'
+          chatBody.innerHTML += '<div class="from-them"><p style="margin-bottom: 0px;">' + sentence + '</p></div><div class="clear"></div>'
           objBody.scrollTop = objBody.scrollHeight;
           speech(sentence, check);
         }
         
         // tts 없이 receive 채팅 추가
         function addChatNoTts(sentence) {
-          chatBody.innerHTML += '<div class="receive">' + sentence + '</div>'
+          chatBody.innerHTML += '<div class="from-them"><p style="margin-bottom: 0px;">' + sentence + '</p></div><div class="clear"></div>'
           objBody.scrollTop = objBody.scrollHeight;
         }
 
@@ -338,14 +342,14 @@
 
 
         function addChat(sentence, check=false) {
-          chatBody.innerHTML += '<div class="receive">' + sentence + '</div>'
+          chatBody.innerHTML += '<div class="from-them"><p style="margin-bottom: 0px;">' + sentence + '</p></div><div class="clear"></div>'
           objBody.scrollTop = objBody.scrollHeight;
           speech(sentence, check);
           step += 1;
         }
         
         function addChatNoTts(sentence) {
-          chatBody.innerHTML += '<div class="receive">' + sentence + '</div>'
+          chatBody.innerHTML += '<div class="from-them"><p style="margin-bottom: 0px;">' + sentence + '</p></div><div class="clear"></div>'
           objBody.scrollTop = objBody.scrollHeight;
           step += 1;
         }
@@ -406,23 +410,21 @@
 
 </script>
 <div class="main-frame row">
-    <div class="ai-screen col-4">
+    <div class="ai-screen col-4 p-0">
         <div class="ai-screen-title d-flex">
-            <p class="m-0">AI 일반 행원 김범수</p>
+            <p class="m-0">AI 일반 행원 루나스</p>
         </div>
-        <div class="ai-screen-main">
-          <!--ai 행원-->
-          <video class="ai_lunas" src={% static "/video/ai_convert.mp4" type="video/mp4" %}>
-        </div>
+        <video class="ai_lunas" src={% static "/video/ai_convert.mp4" type="video/mp4" %}>
     </div>
     <div class="chatbot-screen col-8 d-flex justify-content-center align-items-center">
       <div class="container">
-        <div class="body mb-0">
-          <div class="receive">
-            <div class="word">
+        <div class="body">
+          <section>
+          <div class="from-them">
+            <p>
             "좋은 하루입니다! AI 행원 루나스입니다.” <br><br>
             “무엇을 도와드릴까요?”
-            </div>
+            </p>
             <div class="quick-container">
               <div><빠른 업무></div>
               <button class="quick_btn" id="btn_2" value="2">1. 입금</button>
@@ -447,12 +449,11 @@
           {% comment %} <div class="receive">
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loadTerms">모달</button>
           </div> {% endcomment %}
+        </section>
         </div>
-        <div class="input_bar mb-0 mt-0">
-          <form class="form">
-            <input type="text" class="form_input m-0">
-            <button class="btn">전송</button>
-          </form>
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control submitForm" id="chat-input">
+          <label for="chat-input">Input Your Text.</label>
         </div>
       </div>
     </div>
@@ -836,9 +837,9 @@ addressInput.addEventListener("input", onInput)
 
   document.body.style.overflow = "hidden"
 
-  const chatForm = document.querySelector(".form");
+  const chatForm = document.querySelector(".submitForm");
   const chatInput = document.querySelector(".form_input");
-  const chatBody = document.querySelector(".body");
+  const chatBody = document.querySelector("section");
   const btn1 = document.querySelector("#btn_1");
   const btn2 = document.querySelector("#btn_2");
   const btn3 = document.querySelector("#btn_3");
@@ -847,7 +848,13 @@ addressInput.addEventListener("input", onInput)
   const btn6 = document.querySelector("#btn_6");
   const btn7 = document.querySelector("#btn_7");
 
-  chatForm.addEventListener("submit", handleChatSubmit);
+  chatForm.addEventListener("keyup", function (e) {
+    if (e.key == 'Enter') {
+      var submitContent = document.querySelector('#chat-input');
+      handleChatSubmit(submitContent.value);
+      submitContent.value = "";
+    }
+  });
   btn1.addEventListener("click", handleQuickBtn);
   btn2.addEventListener("click", handleQuickBtn);
   btn3.addEventListener("click", handleQuickBtn);
@@ -898,16 +905,15 @@ addressInput.addEventListener("input", onInput)
     make_body(answer_list[target][0], 'button', target);
   }
 
-  function handleChatSubmit(event) {
+  function handleChatSubmit(chatContent) {
 
-    const objBody = document.querySelector(".body");
-    event.preventDefault();
-    if (chatInput.value == "")
+    const objBody = document.querySelector("section");
+
+    if (chatContent == "")
       return;
-    const inputValue = chatInput.value;
+    const inputValue = chatContent
 
-    chatBody.innerHTML += "<div class='send'>" + inputValue + "</div>"
-    chatInput.value = "";
+    chatBody.innerHTML += '<div class="from-me"><p style="margin-bottom: 0px;">' + inputValue + '</p></div><div class="clear"></div>'
 
     objBody.scrollTop = objBody.scrollHeight;
     let target = promise_search(inputValue)
@@ -961,7 +967,7 @@ addressInput.addEventListener("input", onInput)
       let texts = Array.from(e.results)
       .map(results => results[0].transcript).join("");
       
-      chatBody.innerHTML += "<div class='send'>" + texts + "</div>"
+      chatBody.innerHTML += '<div class="from-me"><p style="margin-bottom: 0px;">' + texts + '</p></div><div class="clear"></div>'
 
       let target = promise_search(texts)
           .then()

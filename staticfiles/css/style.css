@@ -11,11 +11,6 @@
   font-weight: bold;
 }
 
-.ai-screen-main {
-  background-color: black;
-  height: 90%;
-}
-
 .chatbot-screen {
   height : 100%;
   background-color : #F0F0F0;
@@ -194,8 +189,8 @@ width : 100%;
   width: 100%;
 }
 
-.al_lunas {
+.ai_lunas {
   width: 100%;
-  height: auto;
-  max-width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
