@@ -64,10 +64,8 @@
     utterThis.rate = 1; //속도
 
     window.speechSynthesis.speak(utterThis);
-
     utterThis.onend = function(event){
       if (check){
-
         recognition.start();
       }
     }
@@ -125,7 +123,24 @@
               }, 400)
           })
         }
+
+        function promise_modal(func_name){
+          let target
+          if (func_name == "accountModalOK_modal"){
+            target = accountModalOK_modal()
+          }
+          return new Promise((resolve, reject) => {
+              setTimeout(() => {
+                  if (target != undefined){
+                      resolve(target)
+                  } else {
+                      reject('서버에 문제가 발생하여 인식하지 못했습니다.\n 다시 시도해주세요.')
+                  }
+              }, 500)
+          })
+        }
         
+     
         
         
         {% comment %} https://elvanov.com/2597 {% endcomment %}
@@ -133,8 +148,15 @@
           
           
           const objBody = document.querySelector(".body"); 
-          const withdrawModal1OK = document.querySelector('#amountModalOK');
-          const withdrawModal2OK = document.querySelector('#passwordModalOK');
+          const amountModalOK = document.querySelector('#amountModalOK');
+          const passwordModalOK = document.querySelector('#passwordModalOK');
+          const accountModalOK = document.querySelector('#accountModalOK');
+          const balanceModalOK = document.querySelector('#balanceModalOK');
+
+          const amountModalNO = document.querySelector('#amountModalNO');
+          const passwordModalNO = document.querySelector('#passwordModalNO');
+          const accountModalNO = document.querySelector('#accountModalNO');
+          const balanceModalNO = document.querySelector('#balanceModalNO');
 
         function addChat(sentence, check=false) {
           chatBody.innerHTML += '<div class="receive">' + sentence + '</div>'
@@ -147,14 +169,30 @@
           objBody.scrollTop = objBody.scrollHeight;
         }
 
-        function handleWithdrawalOK() {
+        function redirectToHome() {
           $('#amountModal').modal('hide');
+          $('#passwdModal').modal('hide');
+          $('#accountModal').modal('hide');
+          $('#amountModal').modal('hide');
+          $('#amountModal').modal('hide');
+          $('#amountModal').modal('hide');
+          $('#amountModal').modal('hide');
+          addChat(["홈 화면으로 복귀합니다."])
+          setTimeout(() => {
+                window.location.href = '/';
+              },2000);
+        }
+
+        function closeAmountModal() {
+          $('#amountModal').modal('hide');
+          password = 0;
+          reset("password");
           if (passwordTries === 2)
           {
-            addChat(["비밀번호 시도 횟수를 초과하여 메인 화면으로 돌아갑니다."])
+            addChat(["비밀번호 시도 횟수를 초과하여 홈 화면으로 돌아갑니다."])
             setTimeout(() => {
-              window.location.href = '/main/';
-          }, 10000);
+              window.location.href = '/';
+          }, 5000);
           return;
           }
           setTimeout(() => {
@@ -163,49 +201,97 @@
             else
               addChat(["비밀번호를 입력해주세요."])
             $('#passwdModal').modal('show');
-            withdrawModal2OK.addEventListener("click", handleWithdrawalOK2);
-            withdrawModal2NO.addEventListener("click", handleWithdrawalNO2);
           }, 1000);
 
           return true;
           
         }
   
-        function handleWithdrawalOK2() {
-
+        function closePasswordModal() {
           $('#passwdModal').modal('hide');
           const localPassword = localStorage.getItem("password")
           if (password !== localPassword)
           {
-            handleWithdrawalOK();
+            closeAmountModal();
             document.querySelector('#passwdModalInput').value = ""
             password = "";
             passwordTries++;
-            return;
+            return true;
           }
-
-          setTimeout(() => {
-              addChat([amount + ' 원을 출금합니다.'])
-              
-              addChat(["이용해 주셔서 감사합니다!"])
-              addChat(["5초 후 자동으로 초기 화면으로 복귀합니다. 안녕히 가십시오."])
-              
-              setTimeout(() => {
-                window.location.href = '/';
-              },7000);
+          if (accountFlag == 1)
+          {
+            $('#passwdModal').modal('hide');
+            accountFlag = 0;
+            setTimeout(() => {
+              $('#balanceModal').modal('show');
             }, 1000);
+            return true;
+          }
+          setTimeout(() => {
+            if (sendFlag == 1)
+              addChat([amount + ' 원을 출금합니다.'])
+            else if (sendFlag == 2)
+              addChat([amount + ' 원을 송금합니다.'])
+              
+            addChat(["이용해 주셔서 감사합니다!"])
+            addChat(["5초 후 자동으로 초기 화면으로 복귀합니다. 안녕히 가십시오."])
+            password = "";
+            setTimeout(() => {
+              window.location.href = '/';
+            },7000);
+          }, 1000);
+          return true
         }
-  
-        function amountModalOK_modal(){
-          var modal_check = withdrawModal1OK.addEventListener("click", handleWithdrawalOK);
-          return modal_check
+
+        function closeAccountModal() {
+          $('#accountModal').modal('hide');
+          setTimeout(() => {
+            $('#amountModal').modal('show');
+          }, 1000);
+          return true;
         }
-        function passwordModalOK_modal(){
-          var modal_check = withdrawModal2OK.addEventListener("click", handleWithdrawalOK2);
-          return modal_check
-          
+
+        function closeAll() {
+          $('#balanceModal').modal('hide');
+          setTimeout(() => {
+            addChat(["이용해 주셔서 감사합니다!"])
+            addChat(["5초 후 자동으로 초기 화면으로 복귀합니다. 안녕히 가십시오."])
+            
+            setTimeout(() => {
+              window.location.href = '/';
+            },7000);
+          }, 1000);
+          return true
         }
+
+        function openAccountModal() {
+          setTimeout(() => {
+            $('#balanceModal').modal('hide');
+            $('#accountModal').modal('show');
+          }, 500);
+        }
+
+        function openAmountModal() {
+          sendFlag = 1;
+          setTimeout(() => {
+            $('#balanceModal').modal('hide');
+            $('#amountModal').modal('show');
+          }, 500);
+        }
+     
+        amountModalOK.addEventListener("click", closeAmountModal);
+        passwordModalOK.addEventListener("click", closePasswordModal);
+        accountModalOK.addEventListener("click", closeAccountModal);
+        balanceModalOK.addEventListener("click", closeAll);
+        balanceModalSEND.addEventListener("click", openAccountModal);
+        balanceModalWithdraw.addEventListener("click", openAmountModal);
         
+        amountModalNO.addEventListener("click", redirectToHome);
+        passwordModalNO.addEventListener("click", redirectToHome);
+        accountModalNO.addEventListener("click", redirectToHome);
+
+
+
         function addChat(sentence, check=false) {
           chatBody.innerHTML += '<div class="receive">' + sentence + '</div>'
           objBody.scrollTop = objBody.scrollHeight;
@@ -221,35 +307,26 @@
 
 
         function printAndTTS(senlist, check = false) {
-          list_modal = ["모달-금액", "모달-비밀번호"]
+          list_modal = ["모달-금액", "모달-비밀번호", "모달-계좌번호", "모달-약관"]
           var delaySec = 3000;
 
           for(let j =0; j<senlist.length ; j++) {
 
-            
             var anonFunc = function(j) {
               
               var timer = setTimeout(() => {
                 
                 if(senlist[j]=="...") addChatNoTts(senlist[j]);
                 else if (senlist[j] == "모달-금액"){
+                  sendFlag = 1;
                   $('#amountModal').modal('show');
-
-                  var check_modal = amountModalOK_modal()
-
-                  if (check_modal){
-                    clearTimeout(timer)
-                  }
-                  
                 }else if (senlist[j] == "모달-비밀번호"){
+                  accountFlag = 1;
                   $('#passwdModal').modal('show');
-
-                  var check_modal = passwordModalOK_modal()
-
-                  if (check_modal){
-                    clearTimeout(timer)
-                  }
-
+                } else if (senlist[j] == "모달-계좌번호"){
+                  $('#accountModal').modal('show');
+                }  else if (senlist[j] == "모달-약관"){
+                  $('#termsModal').modal('show');
                 }
                 else if (senlist[j]!="") addChat(senlist[j], check);
                 else window.location.href = '/';   
@@ -259,7 +336,7 @@
             
             anonFunc(j);
             if (list_modal.indexOf(senlist[j]) != -1 ){
-              delaySec = delaySec + 10000;
+              delaySec = delaySec + 100000;
             } 
             
           }
@@ -319,7 +396,7 @@
             </div>
             <div class="padding"></div>
           </div>
-          <div class="receive">
+          {% comment %} <div class="receive">
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#passwdModal">모달</button>
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#amountModal">모달</button>
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#balanceModal">모달</button>
@@ -327,7 +404,7 @@
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cardModal">모달</button>
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#issueModal">모달</button>
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addressModal">모달</button>
-          </div>
+          </div> {% endcomment %}
           {% comment %} <div class="receive">
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loadTerms">모달</button>
           </div> {% endcomment %}
@@ -376,7 +453,7 @@
       <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" >출금하실 금액을 입력해주세요.</h5>
+            <h5 class="modal-title" >출금 또는 송금하실 금액을 입력해주세요.</h5>
           </div>
           <div class="form-group formCss">
             <input class="form-control passwdInput" id="amountModalInput" value="" readonly/>
@@ -512,13 +589,49 @@
         </div>
       </div>
     </div>
+     <!--계좌번호 모달-->
+     <div class="modal fade" id="accountModal" tabindex="-1" aria-labelledby="accountModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+      <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">송금하실 계좌번호를 입력해주세요.</h5>
+          </div>
+          <div class="form-group formCss">
+            <input class="form-control passwdInput" id="accountModalInput" value="" readonly/>
+            <div class="btnGroup">
+              <button class="btn btn-primary passwdBtn" id="accountBtn_1" value="1" onclick="put_num(1, 'account')">1</button>
+              <button class="btn btn-primary passwdBtn" id="accountBtn_2" value="2" onclick="put_num(2, 'account')">2</button>
+              <button class="btn btn-primary passwdBtn" id="accountBtn_3" value="3" onclick="put_num(3, 'account')">3</button>
+              <button class="btn btn-primary passwdBtn" id="accountBtn_4" value="4" onclick="put_num(4, 'account')">4</button>
+              <button class="btn btn-primary passwdBtn" id="accountBtn_5" value="5" onclick="put_num(5, 'account')">5</button>
+              <button class="btn btn-primary passwdBtn" id="accountBtn_6" value="6" onclick="put_num(6, 'account')">6</button>
+              <button class="btn btn-primary passwdBtn" id="accountBtn_7" value="7" onclick="put_num(7, 'account')">7</button>
+              <button class="btn btn-primary passwdBtn" id="accountBtn_8" value="8" onclick="put_num(8, 'account')">8</button>
+              <button class="btn btn-primary passwdBtn" id="accountBtn_9" value="9" onclick="put_num(9, 'account')">9</button>
+              <button class="btn btn-primary passwdBtn2" id="accountBtn_reset" value="r" onclick="reset('account')">초기화</button>
+              <button class="btn btn-primary passwdBtn" id="accountBtn_0" value="0" onclick="put_num(0, 'account')">0</button>
+              <button class="btn btn-primary passwdBtn2" id="accountBtn_clear" value="c" onclick="clearOne('account')">지움</button>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary footerBtn" id="accountModalOK">확인</button>
+            <button type="button" class="btn btn-secondary footerBtn" id="accountModalNO">취소</button>
+          </div>
+        </div>
+      </div>
+    </div>
 </div>
 </body>
 <script>
 
+  // 계좌조회 모달 함수
+  accountFlag = 0;
+  sendFlag = 2; // 1 : 출금,  2 : 송금
+
   // 비밀번호 모달 함수
   amount = ""
   password = ""
+  account = ""
   passwordTries = 0;
   localStorage.setItem("password", "1234");
 
@@ -526,6 +639,8 @@
     if (modal == "password")
     {
       var input = document.querySelector("#passwdModalInput")
+      if (input.value === "" && value === 0)
+        return ;
       input.value += value;
       password = input.value;
     }
@@ -537,6 +652,14 @@
       input.value = input.value.split(',').join("") + value;
       input.value = input.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       amount = input.value
+    }
+    else if (modal == "account")
+    {
+      var input = document.querySelector("#accountModalInput")
+      if (input.value === "" && value === 0)
+        return ;
+      input.value += value;
+      account = input.value;
     }
   }
 
@@ -552,6 +675,12 @@
       var input = document.querySelector("#amountModalInput")
       input.value = ""
       amount = input.value
+    }
+    else if (modal == "account")
+    {
+      var input = document.querySelector("#accountModalInput")
+      input.value = ""
+      account = input.value;
     }
   }
 
@@ -571,6 +700,13 @@
       input.value = input.value.slice(0, -1);
       input.value = input.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       amount = input.value
+    }
+    else if (modal == "account")
+    {
+      var input = document.querySelector("#accountModalInput")
+      if (input.value != "")
+        input.value = input.value.slice(0, -1);
+      account = input.value
     }
   }
 
@@ -667,7 +803,8 @@ addressInput.addEventListener("input", onInput)
   btn7.addEventListener("click", handleQuickBtn);
 
   function handleQuickBtn(event) {
-    list = {
+
+    send_list = {
       "1" : "송금을 선택하셨습니다.",
       "2" : "입금을 선택하셨습니다.",
       "3" : "계좌조회을 선택하셨습니다.",
@@ -677,13 +814,34 @@ addressInput.addEventListener("input", onInput)
       "7" : "상품소개을 선택하셨습니다.",
     }
 
+    answer_list = {
+      "1" : ["송금을 도와드리겠습니다.",
+      "카드 또는 통장을 넣어주세요.","...","받는 사람의 계좌번호를 입력해 주세요.", "모달-계좌번호", 
+      "출금하실 금액을 입력해주세요.", "모달-금액", "비밀번호를 입력해주세요.",
+      "모달-비밀번호","이용해 주셔서 감사합니다!","5초 후 자동으로 초기 화면으로 복귀합니다. 안녕히 가십시오.",""],
+      "2" : [ "입금을 도와드리겠습니다. 카드 또는 통장을 넣어주세요.",
+      "...",
+      "보내실 금액을 투입구에 넣어주세요.",
+      "...",
+      "이용해 주셔서 감사합니다!",
+      "5초 후 자동으로 메인 화면으로 복귀합니다.",""],
+      "3" : ["계좌조회를 도와드리겠습니다. 카드 또는 통장을 넣어주세요.", "..." , "비밀번호를 입력해주세요.","모달-비밀번호",
+      "이용해 주셔서 감사합니다!","5초 후 자동으로 초기 화면으로 복귀합니다. 안녕히 가십시오.",""],
+      "4" : ["계좌개설을 도와드리겠습니다. 약관을 읽고 동의 버튼을 눌러주세요",
+      "모달-약관","신분증을 촬영해 주세요.","이용해 주셔서 감사합니다!","5초 후 자동으로 초기 화면으로 복귀합니다. 안녕히 가십시오.",""],
+      "5" : ["카드발급을 도와드리겠습니다. 약관을 읽고 동의 버튼을 눌러주세요",
+      "모달-약관","신분증을 촬영해 주세요.","이용해 주셔서 감사합니다!","5초 후 자동으로 초기 화면으로 복귀합니다. 안녕히 가십시오.",""],
+      "6" : ["출금을 도와드리겠습니다. 카드 또는 통장을 넣어주세요.","...",
+      "출금하실 금액을 입력해주세요.","모달-금액", "비밀번호를 입력해주세요.", "모달-비밀번호" ,
+      "이용해 주셔서 감사합니다!","5초 후 자동으로 초기 화면으로 복귀합니다. 안녕히 가십시오.",""],
+    }
+
     const objBody = document.querySelector(".body");
     const target = event.target.value
-    const list_num = list[target]
 
-    chatBody.innerHTML += "<div class='send'>" + list_num + "</div>"
+    chatBody.innerHTML += "<div class='send'>" + send_list[target] + "</div>"
     objBody.scrollTop = objBody.scrollHeight;
-    make_body(list_num, 'button');
+    make_body(answer_list[target][0], 'button', target);
   }
 
   function handleChatSubmit(event) {
@@ -710,11 +868,6 @@ addressInput.addEventListener("input", onInput)
       }    
       logItems(target)
   }
-
-
-
-
-
 
   window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   
