@@ -4,8 +4,20 @@
 
 
 {% load static %}
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
 
+  // 도메인 변수, 필요 시 수정.
+  const domain = 'http://127.0.0.1:8000'
+
+  // Camera open function
+  function openCamera() {
+    var url = domain;
+    axios({
+      method: 'get',
+      url: `${url}/camera` 
+    });
+  }
 
 
     // tts 시작
@@ -410,6 +422,7 @@
 
 </script>
 <div class="main-frame row">
+  <button onclick="openCamera()">openCamera</button>
     <div class="ai-screen col-4 p-0">
         <div class="ai-screen-title d-flex">
             <p class="m-0">AI 일반 행원 루나스</p>

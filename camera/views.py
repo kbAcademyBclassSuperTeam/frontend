@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.conf import settings
 from . import getid
 import datetime
+from django.http import HttpResponse
 
 def getIdImage(request):
 
@@ -10,4 +11,4 @@ def getIdImage(request):
     dst = getid.detection(frame)
     getid.saveImage(dst)
 
-    return redirect('/')
+    return HttpResponse('')
