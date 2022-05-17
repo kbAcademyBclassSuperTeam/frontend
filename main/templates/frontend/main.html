@@ -145,34 +145,42 @@
         
         {% comment %} https://elvanov.com/2597 {% endcomment %}
         function make_body(answer, texts, target_num){
-          
-          
-          const objBody = document.querySelector(".body"); 
-          const amountModalOK = document.querySelector('#amountModalOK');
-          const passwordModalOK = document.querySelector('#passwordModalOK');
-          const accountModalOK = document.querySelector('#accountModalOK');
-          const balanceModalOK = document.querySelector('#balanceModalOK');
-          const termsModalOK = document.querySelector('#termsModalOK');
-          const cardModalOK = document.querySelector('#cardModalOK');
+        
+        // 각 target_num 별로 시작하는 모듈이 다르다는 점
+        // 계좌번호 입력 -> 금액 입력 -> 비밀번호 입력 등 비슷한 흐름이 반복된다는 점을 이용해
+        // 기본적인 흐름을 정해놓고, 나머지 경우를 예외처리하는 방식
+        
+        // 각 모달의 확인 버튼 태그
+        const objBody = document.querySelector(".body");
+        const amountModalOK = document.querySelector('#amountModalOK');
+        const passwordModalOK = document.querySelector('#passwordModalOK');
+        const accountModalOK = document.querySelector('#accountModalOK');
+        const balanceModalOK = document.querySelector('#balanceModalOK');
+        const termsModalOK = document.querySelector('#termsModalOK');
+        const cardModalOK = document.querySelector('#cardModalOK');
 
-          const amountModalNO = document.querySelector('#amountModalNO');
-          const passwordModalNO = document.querySelector('#passwordModalNO');
-          const accountModalNO = document.querySelector('#accountModalNO');
-          const balanceModalNO = document.querySelector('#balanceModalNO');
-          const termsModalNO = document.querySelector('#termsModalNO');
-          const cardModalNO = document.querySelector('#cardModalNO');
+        // 각 모달의 취소 버튼 태그
+        const amountModalNO = document.querySelector('#amountModalNO');
+        const passwordModalNO = document.querySelector('#passwordModalNO');
+        const accountModalNO = document.querySelector('#accountModalNO');
+        const balanceModalNO = document.querySelector('#balanceModalNO');
+        const termsModalNO = document.querySelector('#termsModalNO');
+        const cardModalNO = document.querySelector('#cardModalNO');
           
+        // tts 포함하여 receive 채팅 추가
         function addChat(sentence, check=false) {
           chatBody.innerHTML += '<div class="receive">' + sentence + '</div>'
           objBody.scrollTop = objBody.scrollHeight;
           speech(sentence, check);
         }
         
+        // tts 없이 receive 채팅 추가
         function addChatNoTts(sentence) {
           chatBody.innerHTML += '<div class="receive">' + sentence + '</div>'
           objBody.scrollTop = objBody.scrollHeight;
         }
 
+        // 모달 : 모든 취소 버튼을 누를 경우 '/'으로 redirect
         function redirectToHome() {
           $('#amountModal').modal('hide');
           $('#passwdModal').modal('hide');
@@ -180,13 +188,13 @@
           $('#balanceModal').modal('hide');
           $('#termsModal').modal('hide');
           $('#cardModal').modal('hide');
-          $('#amountModal').modal('hide');
           addChat(["홈 화면으로 복귀합니다."])
           setTimeout(() => {
                 window.location.href = '/';
               },2000);
         }
 
+        // 비밀번호 모달 띄우기(금액 모달 -> 비밀번호 모달)
         function closeAmountModal() {
           $('#amountModal').modal('hide');
           password = 0;
@@ -211,6 +219,7 @@
           
         }
   
+        // 비밀번호 재입력 모달 띄우기
         function closePasswordModal() {
           $('#passwdModal').modal('hide');
           const localPassword = localStorage.getItem("password")
@@ -247,6 +256,7 @@
           return true
         }
 
+        // 금액 모달 띄우기(계좌 모달 -> 금액 모달)
         function closeAccountModal() {
           $('#accountModal').modal('hide');
           setTimeout(() => {
@@ -255,19 +265,23 @@
           return true;
         }
 
+        function openFakeModal() {
+          $('#fakeModal').modal('show');
+          addChat(['신분증을 카메라 앞에 위치시키고 Enter 키를 눌러 촬영해주세요.']);
+          addChat(["촬영이 끝났으면, 확인 버튼을 눌러주세요."]);
+        }
+
+        // 카메라 모듈 띄우기(약관 모달 -> 카메라 모듈)
         function closeTermsModal() {
           $('#termsModal').modal('hide');
           setTimeout(() => {
-            addChat(["이용해 주셔서 감사합니다!"])
-            addChat(["5초 후 자동으로 초기 화면으로 복귀합니다. 안녕히 가십시오."])
-            
-            setTimeout(() => {
-              window.location.href = '/';
-            },7000);
+            window.location.href = '/camera';
+            openFakeModal();
           }, 1000);
           return true;
         }
 
+        // 약관 모듈 띄우기(카드 모달 -> 약관 모달)
         function closeCardModal() {
           $('#cardModal').modal('hide');
           setTimeout(() => {
@@ -275,12 +289,13 @@
           }, 1000);
         }
 
+        // 계좌조회 마지막 화면에서, 출금 또는 송금으로 이동
+        // 1. 확인 버튼(종료)
         function closeAll() {
           $('#balanceModal').modal('hide');
           setTimeout(() => {
             addChat(["이용해 주셔서 감사합니다!"])
             addChat(["5초 후 자동으로 초기 화면으로 복귀합니다. 안녕히 가십시오."])
-            
             setTimeout(() => {
               window.location.href = '/';
             },7000);
@@ -288,6 +303,7 @@
           return true
         }
 
+        // 2. 송금 모달로 이동
         function openAccountModal() {
           setTimeout(() => {
             $('#balanceModal').modal('hide');
@@ -295,6 +311,7 @@
           }, 500);
         }
 
+        // 3. 출금 모달로 이동
         function openAmountModal() {
           sendFlag = 1;
           setTimeout(() => {
@@ -303,6 +320,7 @@
           }, 500);
         }
      
+        // 버튼 이벤트리스너 
         amountModalOK.addEventListener("click", closeAmountModal);
         passwordModalOK.addEventListener("click", closePasswordModal);
         accountModalOK.addEventListener("click", closeAccountModal);
@@ -317,6 +335,7 @@
         accountModalNO.addEventListener("click", redirectToHome);
         termsModalNO.addEventListener("click", redirectToHome);
         cardModalNO.addEventListener("click", redirectToHome);
+
 
         function addChat(sentence, check=false) {
           chatBody.innerHTML += '<div class="receive">' + sentence + '</div>'
@@ -360,13 +379,10 @@
                 else window.location.href = '/';   
               }, j*delaySec)
             }
-
-            
             anonFunc(j);
             if (list_modal.indexOf(senlist[j]) != -1 ){
-              delaySec = delaySec + 100000;
+              delaySec = delaySec + 1000000;
             } 
-            
           }
         }
         if(texts == 'button'){
@@ -385,13 +401,8 @@
             return
           }
           printAndTTS(answer)
-          
-        
       }
         // TTS end
-        
-      
-
 
 </script>
 <div class="main-frame row">
@@ -648,6 +659,23 @@
         </div>
       </div>
     </div>
+    <!--가짜 모달-->
+    <div class="modal fade" id="fakeModal" tabindex="-1" aria-labelledby="accountModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">신분증을 촬영해주세요.</h5>
+          </div>
+          <div>
+            <div>신분증을 카메라 앞에 위치시키고 Enter 키를 눌러 촬영해주세요.</div>
+            <div>촬영이 끝났으면, 확인 버튼을 눌러주세요.</div>
+            <div></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary footerBtn" id="fakeModalOK">확인</button>
+          </div>
+      </div>
+    </div>
 </div>
 </body>
 <script>
@@ -667,8 +695,6 @@
     if (modal == "password")
     {
       var input = document.querySelector("#passwdModalInput")
-      if (input.value === "" && value === 0)
-        return ;
       input.value += value;
       password = input.value;
     }
