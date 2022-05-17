@@ -1,5 +1,5 @@
 .main-frame {
-  height: 56rem;
+  height: 90vh;
 }
 
 .ai-screen-title {
@@ -13,16 +13,16 @@
 
 .ai-screen-main {
   background-color: black;
-  height: 75%;
+  height: 90%;
 }
 
 .chatbot-screen {
-max-height : 75%;
-background-color : #F0F0F0;
+  height : 100%;
+  background-color : #F0F0F0;
 }
 
 .body {
-height : 80%;
+height : 95%;
 overflow : auto;
 }
 
@@ -30,6 +30,7 @@ overflow : auto;
 height : 5%;
 width : 100%;
 background-color : #FFFFFF;
+bottom: 0;
 }
 
 .form_input {
@@ -37,6 +38,7 @@ width : 85%;
 height : 5%;
 font-size : 1rem;
 border : transparent;
+align-items: center;
 }
 
 .btn {
@@ -190,4 +192,10 @@ width : 100%;
 
 .dotest {
   width: 100%;
+}
+
+.al_lunas {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
 }
