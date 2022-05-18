@@ -21,6 +21,7 @@
   overflow : auto;
   overflow-y: hidden;
   overflow-x: hidden;
+  background-color: #f8a70c;
 }
 
 .btn {
@@ -174,7 +175,7 @@ width : 100%;
 
 .ai_lunas {
   width: 100%;
-  height: 100%;
+  height: 70%;
   object-fit: cover;
 }
 
