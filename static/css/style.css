@@ -169,6 +169,10 @@ height : 25em;
 width : 50%;
 }
 
+.cardText {
+  margin-top: 1em;
+}
+
 .addressInput {
 width : 100%;
 }
