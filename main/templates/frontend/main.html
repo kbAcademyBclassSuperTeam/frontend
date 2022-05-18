@@ -156,7 +156,16 @@
         }
         
      
-        
+        flag_1 = 0
+        flag_2 = 0
+        flag_3 = 0
+        flag_4 = 0
+        flag_5 = 0
+        flag_6 = 0
+        flag_7 = 0
+        flag_8 = 0
+        flag_9 = 0
+        flag_10 = 0
         
         {% comment %} https://elvanov.com/2597 {% endcomment %}
         function make_body(answer, texts, target_num){
@@ -207,7 +216,9 @@
           $('#makePasswdModal').modal('hide');
           $('#addressModal').modal('hide');
           $('#issueModal').modal('hide');
-          addChat(["홈 화면으로 복귀합니다."])  
+          {% comment %} if (flag_1 == 0) {% endcomment %}
+            addChat(["홈 화면으로 복귀합니다."])
+          {% comment %} flag_1 = 1; {% endcomment %}
           setTimeout(() => {
                 window.location.href = '/';
               },2000);
@@ -215,6 +226,7 @@
 
         // 비밀번호 모달 띄우기(금액 모달 -> 비밀번호 모달)
         function closeAmountModal() {
+          console.log(1111111111111)
           $('#amountModal').modal('hide');
           password = 0;
           reset("password");
@@ -227,10 +239,7 @@
           return;
           }
           setTimeout(() => {
-            if (passwordTries > 0 && passwordTries < 3)
-              addChat(["비밀번호를 다시 입력해주세요."])
-            else
-              addChat(["비밀번호를 입력해주세요."])
+
             $('#passwdModal').modal('show');
           }, 1000);
 
@@ -248,6 +257,7 @@
             document.querySelector('#passwdModalInput').value = ""
             password = "";
             passwordTries++;
+            console.log(passwordTries)
             return true;
           }
           if (accountFlag == 1)
@@ -330,11 +340,9 @@
             }
             if (newPasswordTries > 0 && newPasswordTries < 4)
             {
-              addChat(["비밀번호를 다시 입력해주세요."])
               makeFlag = 1
             }
-            else
-              addChat(["생성하실 비밀번호를 입력해주세요."])
+
             $('#makePasswdModal').modal('show');
           }, 1000);
           return true;
@@ -415,7 +423,7 @@
           }, 500);
         }
      
-        // 버튼 이벤트리스너 
+        // 버튼 이벤트리스너
         amountModalOK.addEventListener("click", closeAmountModal);
         passwordModalOK.addEventListener("click", closePasswordModal);
         accountModalOK.addEventListener("click", closeAccountModal);
@@ -438,6 +446,30 @@
         issueModalNO.addEventListener("click", redirectToHome);
         addressModalNO.addEventListener("click", redirectToHome);
 
+        /*
+        // 제이쿼리
+        $('amountModalOK').one("click", closeAmountModal);
+        $('passwordModalOK').one("click", closePasswordModal);
+        $('accountModalOK').one("click", closeAccountModal);
+        $('balanceModalOK').one("click", closeAll);
+        $('balanceModalSEND').one("click", openAccountModal);
+        $('balanceModalWithdraw').one("click", openAmountModal);
+        $('termsModalOK').one("click", closeTermsModal);
+        $('cardModalOK').one("click", closeCardModal);
+        $('fakeModalOK').one("click", closeFakeModal);
+        $('makePasswdModalOK').one("click", closeMakePasswdModal);
+        $('issueModalOK').one("click", closeissueModal);
+        $('addressModalOK').one("click", closeAddressModal);
+    
+        $('amountModalNO').one("click", redirectToHome);
+        $('passwordModalNO').one("click", redirectToHome);
+        $('accountModalNO').one("click", redirectToHome);
+        $('termsModalNO').one("click", redirectToHome);
+        $('cardModalNO').one("click", redirectToHome);
+        $('makePasswdModalNO').one("click", redirectToHome);
+        $('issueModalNO').one("click", redirectToHome);
+        $('addressModalNO').one("click", redirectToHome);
+        */
 
         function addChat(sentence, check=false) {
           chatBody.innerHTML += '<div class="from-them"><p style="margin-bottom: 0px;">' + sentence + '</p></div><div class="clear"></div>'
@@ -485,7 +517,7 @@
             anonFunc(j);
             if (list_modal.indexOf(senlist[j]) != -1 ){
               delaySec = delaySec + 1000000;
-            } 
+            }
           }
         }
         if(texts == 'button'){
@@ -809,7 +841,6 @@
       </div>
     </div>
 </div>
-</body>
 <script>
 
   // 계좌조회 모달 함수
@@ -1004,6 +1035,7 @@ addressInput.addEventListener("input", onInput)
   chatForm.addEventListener("keyup", function (e) {
     if (e.key == 'Enter') {
       var submitContent = document.querySelector('#chat-input');
+      console.log("enter 입력");
       handleChatSubmit(submitContent.value);
       submitContent.value = "";
     }
@@ -1078,11 +1110,13 @@ addressInput.addEventListener("input", onInput)
 
       async function logItems(target) {
         var target_num = await target;
-        make_body(target_num, inputValue, 0)
+        var speech_list = target_num.slice(1,)
+       make_body(speech_list, inputValue, 0)
       }    
       logItems(target)
   }
 
+  // 마이크
   window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   
   let recognition = new SpeechRecognition();
@@ -1096,11 +1130,6 @@ addressInput.addEventListener("input", onInput)
   
   let p = null;
   
-
-
-
-  
-  {% comment %} recognition.stop(); {% endcomment %}
   recognition.onstart = function() {
       makeNewTextContent(); // 음성 인식 시작시마다 새로운 문단을 추가한다.
     };
@@ -1110,11 +1139,6 @@ addressInput.addEventListener("input", onInput)
         btn.disabled = false;
       }
     };
-
-    {% comment %} recognition.onspeechend = function() {
-      console.log('Speech has stopped being detected');
-      recognition.stop();
-    } {% endcomment %}
     
     recognition.onresult = function(e) {
       console.log(e)
