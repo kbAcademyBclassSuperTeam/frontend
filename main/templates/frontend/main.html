@@ -191,7 +191,7 @@
         // 각 모달의 취소 버튼 태그
         const amountModalNO = document.querySelector('#amountModalNO');
         const passwordModalNO = document.querySelector('#passwordModalNO');
-        const checkPasswdModalNO = document.querySelector('#checkPasswdModalOK');
+        const checkPasswdModalNO = document.querySelector('#checkPasswdModalNO');
         const accountModalNO = document.querySelector('#accountModalNO');
         const balanceModalNO = document.querySelector('#balanceModalNO');
         const termsModalNO = document.querySelector('#termsModalNO');
@@ -309,29 +309,14 @@
           return true;
         }
 
-        /*
-                  if (makeFlag == 0)
-          {
-
-            closeFakeModal();
-
-            return true;
-          }
-          const localNewPassword = localStorage.getItem("newPassword")
-          if (newPassword !== localNewPassword)
-          {
-            closeFakeModal();
-            return true;
-          }
-          */
-
         function checkNewPassword() {
-          
-          if (flag_9 == 1)
+          $('#checkPasswdModal').modal('hide');
+          if (flag_10 == 1)
             return;
-          flag_9 = 1
+          flag_10 = 1
           const localNewPassword = localStorage.getItem("newPassword")
-          if (newPassword !== localNewPassword)
+          console.log("check : ", checkPassword, "local : ", localNewPassword)
+          if (checkPassword !== localNewPassword)
           {
             addChat(["비밀번호가 일치하지 않습니다. 처음부터 다시 시도해주세요."])
             setTimeout(() => {
@@ -341,18 +326,20 @@
           }
           if (cardFlag === 1)
             {
+              addChat(["발급을 원하시는 카드를 선택해주세요."])
               $('#cardModal').modal('show');
               return ;
             }
+            addChat(["카드를 배송받을 주소를 입력해주세요."])
             $('#addressModal').modal('show');
         }
 
          function closeMakePasswdModal() {
           $('#makePasswdModal').modal('hide');
-          localStorage.setItem("newPassword", newPassword);
           if (flag_8 == 1)
             return;
           flag_8 = 1
+          localStorage.setItem("newPassword", newPassword);
           setTimeout(() => {
             addChat(["생성하실 비밀번호를 다시 입력해주세요."])
             $('#checkPasswdModal').modal('show');
@@ -376,8 +363,12 @@
 
         function closeissueModal() {
           $('#issueModal').modal('hide');
+          if (flag_12 == 1)
+            return;
+          flag_12 = 1
           //cardFlag = 1;
           setTimeout(() => {
+            addChat(["카드를 배송받을 주소를 입력해주세요."])
             $('#addressModal').modal('show');
           }, 1000);
         }
@@ -385,7 +376,11 @@
         // 카메라 모듈 띄우기(약관 모달 -> 카메라 모듈)
         function closeTermsModal() {
           $('#termsModal').modal('hide');
+          if (flag_11 == 1)
+            return;
+          flag_11 = 1
           setTimeout(() => {
+            addChat(["신분증을 촬영해주세요."])
             $('#fakeModal').modal('show');
           }, 1000);
           return true;
@@ -394,20 +389,28 @@
         // 약관 모듈 띄우기(카드 모달 -> 약관 모달)
         function closeCardModal() {
           $('#cardModal').modal('hide');
+          if (flag_13 == 1)
+            return ;
+          flag_13 = 1
           if (cardFlag === 1)
           {
             setTimeout(() => {
+              addChat(["카드를 배송받을 주소를 입력해주세요."])
               $('#addressModal').modal('show');
             }, 1000);
             return true;
           }
           setTimeout(() => {
+            addChat(["약관을 읽고 동의 버튼을 눌러주세요"]);
             $('#termsModal').modal('show');
           }, 1000);
         }
 
         function closeAddressModal() {
           $('#addressModal').modal('hide');
+          if (flag_14 == 1)
+            return;
+          flag_14 = 1
           setTimeout( () => {
             addChat(["이용해 주셔서 감사합니다!"])
             addChat(["5초 후 자동으로 초기 화면으로 복귀합니다. 안녕히 가십시오."])
