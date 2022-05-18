@@ -741,9 +741,12 @@ addressInput.addEventListener("input", onInput)
   
   {% comment %} recognition.stop(); {% endcomment %}
   recognition.onstart = function() {
+
+      
       makeNewTextContent(); // 음성 인식 시작시마다 새로운 문단을 추가한다.
     };
     recognition.onend = function() {
+
       recognition.stop();
       for (var btn of (document.getElementsByClassName("quick_btn"))) {
         btn.disabled = false;
