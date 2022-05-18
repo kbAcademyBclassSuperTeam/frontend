@@ -482,10 +482,12 @@
                 else if (senlist[j]!="") addChat(senlist[j], check);
                 else window.location.href = '/';   
               }, j*delaySec)
+          console.log(3333333333)
             }
             anonFunc(j);
             if (list_modal.indexOf(senlist[j]) != -1 ){
               delaySec = delaySec + 1000000;
+          console.log(444444444)
             } 
           }
         }
@@ -495,16 +497,17 @@
           searchlist = searchlist.slice(1,)
           printAndTTS(searchlist, false)
           return
-
         }
 
         // 타겟 넘버 별 TTS 시작 부분  
         
           if (answer == "다시 말씀해주세요"){
             printAndTTS(answer, true)
+            console.log(22222222)
             return
           }
           printAndTTS(answer)
+          console.log(111111111)
       }
         // TTS end
 
@@ -512,7 +515,7 @@
 <div class="main-frame row">
     <div class="ai-screen col-4 p-0">
         <div class="ai-screen-title d-flex">
-            <p class="m-0">AI 일반 행원 루나스</p>
+            <p class="lunas title">AI 일반 행원 루나스</p>
         </div>
         <video class="ai_lunas" src={% static "/video/ai.mp4" type="video/mp4" %}>
     </div>
@@ -552,7 +555,7 @@
         </div>
         <div class="form-floating mb-3">
           <input type="text" class="form-control submitForm" id="chat-input">
-          <label for="chat-input">Input Your Text.</label>
+          <label for="chat-input">무엇을 도와드릴까요?</label>
         </div>
       </div>
     </div>
