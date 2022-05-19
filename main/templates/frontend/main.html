@@ -91,7 +91,7 @@
       var t = e.target;
       var input = t.previousElementSibling;
       var speacklist=[
-      "좋은 하루입니다! AI 행원 `입니다.",
+      "좋은 하루입니다! AI 행원 루나스입니다.",
         "무엇을 도와드릴까요?",
         "입금, 출금, 송금, 계좌조회, 계좌개설, 카드발급이 가능합니다.",
         ];
@@ -334,7 +334,7 @@
             $('#addressModal').modal('show');
         }
 
-         function closeMakePasswdModal() {
+        function closeMakePasswdModal() {
           $('#makePasswdModal').modal('hide');
           if (flag_8 == 1)
             return;
@@ -464,7 +464,6 @@
             addChat(["출금하실 금액을 입력해주세요."])
           }, 500);
         }
-     
         // 버튼 이벤트리스너
         amountModalOK.addEventListener("click", closeAmountModal);
         passwordModalOK.addEventListener("click", closePasswordModal);
@@ -575,7 +574,7 @@
           <section>
           <div class="from-them">
             <p>
-            "좋은 하루입니다! AI 행원 루나스입니다.” <br><br>
+            "좋은 하루입니다! AI 행원입니다.” <br><br>
             “무엇을 도와드릴까요?”
             </p>
             <div class="quick-container">
@@ -601,7 +600,6 @@
           {% comment %} <div class="receive">
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loadTerms">모달</button>
           </div> {% endcomment %}
-          <div class="clear"></div>
         </section>
         </div>
         <div class="form-floating">
@@ -1477,15 +1475,13 @@ addressInput.addEventListener("input", onInput)
             
 
             
-            $('#scaModal_1').modal('show');
-            {% comment %} if (scam_dict['scam'] > 0.1 && scam_dict['scam'] < 0.5){
+            if (scam_dict['scam'] > 0.1 && scam_dict['scam'] < 0.5){
               $('#scaModal_1').modal('show');
             }else if(scam_dict['scam'] >= 0.5 && scam_dict['scam'] < 0.9){
               $('#scaModal_2').modal('show');
               
             }else if(scam_dict['scam'] >= 0.9){
               $('#scaModal_3').modal('show');
-            } {% endcomment %}
 
 
 
