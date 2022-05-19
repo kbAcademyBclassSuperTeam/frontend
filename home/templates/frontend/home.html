@@ -1,5 +1,29 @@
 {% extends "base.html" %}
 
+
+{% load static %}
+
 {% block content %}
-  <button class="btn btn-primary start" onclick="location.href={% url 'main' %}">Start</button>
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+<div class="font-container">
+  <div class="home_title">
+    <div class="home_header1">
+      <center>국민의 평생 금융비서</center>
+    </div>
+    <div class="home_header2">
+      <center>AI 행원 루나스</center>
+    </div>
+  </div>
+  <div>
+    <img src="{% static 'img/luna_kiki_1.png' %}" class="kbfriends luna_kiki_1" alt="Logo">
+    <img src="{% static 'img/rolo_lamu_1.png' %}" class="kbfriends rolo_lamu_1" alt="Logo">
+    <img src="{% static 'img/melang_colli_5.png' %}" class="kbfriends melang_colli_5" alt="Logo">
+    <img src="{% static 'img/simkung_bibi_1.png' %}" class="kbfriends simkung_bibi_1" alt="Logo">
+    <img src="{% static 'img/force_arger_1.png' %}" class="kbfriends force_arger_1" alt="Logo">
+  </div>
+  <div class="home_buttonarea">
+    <center><button class="home_startbutton" onclick="location.href={% url 'main' %}">시작하기</button></center>
+  </div>
+</div>
+
 {% endblock %}
