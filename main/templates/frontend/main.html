@@ -945,13 +945,11 @@
 
         // 타겟 넘버 별 TTS 시작 부분  
         
-          if (answer == "다시 말씀해주세요"){
+          if (answer == "다시 말씀해주세요" || target_num == 7){
             printAndTTS(answer, true)
-            console.log(22222222)
             return
           }
           printAndTTS(answer)
-          console.log(111111111)
   }
   // TTS end
 </script>
@@ -1361,9 +1359,12 @@ addressInput.addEventListener("input", onInput)
           })
 
       async function logItems(target) {
-        var target_num = await target;
-        var speech_list = target_num.slice(1,)
-      make_body(speech_list, inputValue, 0)
+        var answer_list = await target;
+        var num = answer_list.slice(0, 1)
+        answer_list = answer_list.slice(1,)
+        console.log("answer: ", answer_list, "texts : ", inputValue, "num : ", num);
+        make_body(answer_list, inputValue, num)
+
       }
       logItems(target)
       return;
@@ -1495,16 +1496,7 @@ addressInput.addEventListener("input", onInput)
               $('#scaModal_3').modal('show');
             }
         
-            /*
-            if (scam_dict['scam'] > 0.2  && scam_dict['scam'] < 0.5){
-              $('#scaModal_1').modal('show');
-            }else if(scam_dict['scam'] >= 0.5 && scam_dict['scam'] < 0.9){
-              $('#scaModal_2').modal('show');
-              
-            }else if(scam_dict['scam'] >= 0.9){
-              $('#scaModal_3').modal('show');
-            } 
-            */
+     
 
             // $('#passwdModal').modal('hide');
         })
