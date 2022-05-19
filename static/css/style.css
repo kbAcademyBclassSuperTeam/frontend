@@ -265,3 +265,8 @@ section div {
   border-bottom-right-radius: 10px;
   -webkit-transform: translate(-30px, -2px);
 }
+
+.form-floating {
+  background: #6e6053;
+
+}
