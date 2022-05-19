@@ -19,7 +19,6 @@
     });
   }
 
-
     // tts 시작
     var voices = [];
     var step = 0;
@@ -156,8 +155,21 @@
           })
         }
         
-     
-        
+
+        flag_1 = 0
+        flag_2 = 0
+        flag_3 = 0
+        flag_4 = 0
+        flag_5 = 0
+        flag_6 = 0
+        flag_7 = 0
+        flag_8 = 0
+        flag_9 = 0
+        flag_10 = 0
+        flag_11 = 0
+        flag_12 = 0
+        flag_13 = 0
+        flag_14 = 0
         
         {% comment %} https://elvanov.com/2597 {% endcomment %}
         function make_body(answer, texts, target_num){
@@ -170,6 +182,7 @@
         const objBody = document.querySelector(".body");
         const amountModalOK = document.querySelector('#amountModalOK');
         const passwordModalOK = document.querySelector('#passwordModalOK');
+        const checkPasswdModalOK = document.querySelector('#checkPasswdModalOK');
         const accountModalOK = document.querySelector('#accountModalOK');
         const balanceModalOK = document.querySelector('#balanceModalOK');
         const termsModalOK = document.querySelector('#termsModalOK');
@@ -178,6 +191,7 @@
         // 각 모달의 취소 버튼 태그
         const amountModalNO = document.querySelector('#amountModalNO');
         const passwordModalNO = document.querySelector('#passwordModalNO');
+        const checkPasswdModalNO = document.querySelector('#checkPasswdModalNO');
         const accountModalNO = document.querySelector('#accountModalNO');
         const balanceModalNO = document.querySelector('#balanceModalNO');
         const termsModalNO = document.querySelector('#termsModalNO');
@@ -204,48 +218,49 @@
           $('#balanceModal').modal('hide');
           $('#termsModal').modal('hide');
           $('#cardModal').modal('hide');
-          addChat(["홈 화면으로 복귀합니다."])
+          $('#fakeModal').modal('hide');
+          $('#makePasswdModal').modal('hide');
+          $('#addressModal').modal('hide');
+          $('#issueModal').modal('hide');
+          if (flag_1 == 0)
+            addChat(["취소 버튼을 눌렀습니다. 홈 화면으로 복귀합니다."])
+          flag_1 = 1;
           setTimeout(() => {
                 window.location.href = '/';
-              },2000);
+              },5000);
         }
 
         // 비밀번호 모달 띄우기(금액 모달 -> 비밀번호 모달)
         function closeAmountModal() {
           $('#amountModal').modal('hide');
+          if (flag_2 == 1)
+            return;
+          flag_2 = 1
           password = 0;
           reset("password");
-          if (passwordTries === 2)
-          {
-            addChat(["비밀번호 시도 횟수를 초과하여 홈 화면으로 돌아갑니다."])
-            setTimeout(() => {
-              window.location.href = '/';
-          }, 5000);
-          return;
-          }
           setTimeout(() => {
-            if (passwordTries > 0 && passwordTries < 3)
-              addChat(["비밀번호를 다시 입력해주세요."])
-            else
-              addChat(["비밀번호를 입력해주세요."])
+            addChat(["비밀번호를 입력해주세요."])
             $('#passwdModal').modal('show');
           }, 1000);
 
           return true;
           
         }
-  
-        // 비밀번호 재입력 모달 띄우기
+
+        // 비밀번호 일치하지 않는 경우
         function closePasswordModal() {
           $('#passwdModal').modal('hide');
+          if (flag_3 == 1)
+            return ;
+          flag_3 = 1
           const localPassword = localStorage.getItem("password")
           if (password !== localPassword)
           {
-            closeAmountModal();
-            document.querySelector('#passwdModalInput').value = ""
-            password = "";
-            passwordTries++;
-            return true;
+            addChat(["비밀번호가 일치하지 않습니다. 처음부터 다시 시도해주세요."])
+            setTimeout(() => {
+              window.location.href = '/';
+          }, 5000);
+          return;
           }
           if (accountFlag == 1)
           {
@@ -274,25 +289,99 @@
 
         // 금액 모달 띄우기(계좌 모달 -> 금액 모달)
         function closeAccountModal() {
+          if (flag_4 == 1)
+            return;
+          flag_4 = 1
           $('#accountModal').modal('hide');
           setTimeout(() => {
+            if (sendFlag == 1)
+            {
+              document.querySelector('#amountModalTitle').innerHTML = '<h5 class="modal-title" id="makePasswdTitle">출금하실 금액을 입력해주세요.</h5>'
+              addChat(["출금하실 금액을 입력해주세요."])
+            }
+            else if (sendFlag == 2)
+            {
+              document.querySelector('#amountModalTitle').innerHTML = '<h5 class="modal-title" id="makePasswdTitle">송금하실 금액을 입력해주세요.</h5>'
+              addChat("송금하실 금액을 입력해주세요.")
+            }
             $('#amountModal').modal('show');
           }, 1000);
           return true;
         }
 
-        function openFakeModal() {
-          $('#fakeModal').modal('show');
-          addChat(['신분증을 카메라 앞에 위치시키고 Enter 키를 눌러 촬영해주세요.']);
-          addChat(["촬영이 끝났으면, 확인 버튼을 눌러주세요."]);
+        function checkNewPassword() {
+          $('#checkPasswdModal').modal('hide');
+          if (flag_10 == 1)
+            return;
+          flag_10 = 1
+          const localNewPassword = localStorage.getItem("newPassword")
+          console.log("check : ", checkPassword, "local : ", localNewPassword)
+          if (checkPassword !== localNewPassword)
+          {
+            addChat(["비밀번호가 일치하지 않습니다. 처음부터 다시 시도해주세요."])
+            setTimeout(() => {
+              window.location.href = '/';
+            }, 5000);
+            return;
+          }
+          if (cardFlag === 1)
+            {
+              addChat(["발급을 원하시는 카드를 선택해주세요."])
+              $('#cardModal').modal('show');
+              return ;
+            }
+            addChat(["카드를 배송받을 주소를 입력해주세요."])
+            $('#addressModal').modal('show');
+        }
+
+         function closeMakePasswdModal() {
+          $('#makePasswdModal').modal('hide');
+          if (flag_8 == 1)
+            return;
+          flag_8 = 1
+          localStorage.setItem("newPassword", newPassword);
+          setTimeout(() => {
+            addChat(["생성하실 비밀번호를 다시 입력해주세요."])
+            $('#checkPasswdModal').modal('show');
+          return true
+          }, 1000)
+        }
+
+        function closeFakeModal() {
+          $('#fakeModal').modal('hide');
+          if (flag_9 == 1)
+            return;
+          flag_9 = 1
+          newPassword = 0;
+          reset("make");
+          setTimeout(() => {
+            addChat(["생성하실 비밀번호를 입력해주세요."])
+            $('#makePasswdModal').modal('show');
+          }, 1000);
+          return true;
+        }
+
+        function closeissueModal() {
+          $('#issueModal').modal('hide');
+          if (flag_12 == 1)
+            return;
+          flag_12 = 1
+          //cardFlag = 1;
+          setTimeout(() => {
+            addChat(["카드를 배송받을 주소를 입력해주세요."])
+            $('#addressModal').modal('show');
+          }, 1000);
         }
 
         // 카메라 모듈 띄우기(약관 모달 -> 카메라 모듈)
         function closeTermsModal() {
           $('#termsModal').modal('hide');
+          if (flag_11 == 1)
+            return;
+          flag_11 = 1
           setTimeout(() => {
-            window.location.href = '/camera';
-            openFakeModal();
+            addChat(["신분증을 촬영해주세요."])
+            $('#fakeModal').modal('show');
           }, 1000);
           return true;
         }
@@ -300,8 +389,35 @@
         // 약관 모듈 띄우기(카드 모달 -> 약관 모달)
         function closeCardModal() {
           $('#cardModal').modal('hide');
+          if (flag_13 == 1)
+            return ;
+          flag_13 = 1
+          if (cardFlag === 1)
+          {
+            setTimeout(() => {
+              addChat(["카드를 배송받을 주소를 입력해주세요."])
+              $('#addressModal').modal('show');
+            }, 1000);
+            return true;
+          }
           setTimeout(() => {
+            addChat(["약관을 읽고 동의 버튼을 눌러주세요"]);
             $('#termsModal').modal('show');
+          }, 1000);
+        }
+
+        function closeAddressModal() {
+          $('#addressModal').modal('hide');
+          if (flag_14 == 1)
+            return;
+          flag_14 = 1
+          setTimeout( () => {
+            addChat(["이용해 주셔서 감사합니다!"])
+            addChat(["5초 후 자동으로 초기 화면으로 복귀합니다. 안녕히 가십시오."])
+            newPassword = "";
+            setTimeout(() => {
+              window.location.href = '/';
+            },7000);
           }, 1000);
         }
 
@@ -309,6 +425,9 @@
         // 1. 확인 버튼(종료)
         function closeAll() {
           $('#balanceModal').modal('hide');
+          if (flag_5 == 1)
+            return ;
+          flag_5 = 1
           setTimeout(() => {
             addChat(["이용해 주셔서 감사합니다!"])
             addChat(["5초 후 자동으로 초기 화면으로 복귀합니다. 안녕히 가십시오."])
@@ -321,22 +440,32 @@
 
         // 2. 송금 모달로 이동
         function openAccountModal() {
+          $('#balanceModal').modal('hide');
+          if (flag_6 == 1)
+            return;
+          flag_6 = 1
+          flag_3 = 0
           setTimeout(() => {
-            $('#balanceModal').modal('hide');
             $('#accountModal').modal('show');
+            addChat(["송금하실 계좌번호를 입력해 주세요."])
           }, 500);
         }
 
         // 3. 출금 모달로 이동
         function openAmountModal() {
+          $('#balanceModal').modal('hide');
           sendFlag = 1;
+          if (flag_7 == 1)
+            return;
+          flag_7 = 1
+          flag_3 = 0
           setTimeout(() => {
-            $('#balanceModal').modal('hide');
             $('#amountModal').modal('show');
+            addChat(["출금하실 금액을 입력해주세요."])
           }, 500);
         }
      
-        // 버튼 이벤트리스너 
+        // 버튼 이벤트리스너
         amountModalOK.addEventListener("click", closeAmountModal);
         passwordModalOK.addEventListener("click", closePasswordModal);
         accountModalOK.addEventListener("click", closeAccountModal);
@@ -345,13 +474,21 @@
         balanceModalWithdraw.addEventListener("click", openAmountModal);
         termsModalOK.addEventListener("click", closeTermsModal);
         cardModalOK.addEventListener("click", closeCardModal);
-        
+        fakeModalOK.addEventListener("click", closeFakeModal);
+        makePasswdModalOK.addEventListener("click", closeMakePasswdModal);
+        checkPasswdModalOK.addEventListener("click", checkNewPassword);
+        issueModalOK.addEventListener("click", closeissueModal);
+        addressModalOK.addEventListener("click", closeAddressModal);
+    
         amountModalNO.addEventListener("click", redirectToHome);
         passwordModalNO.addEventListener("click", redirectToHome);
         accountModalNO.addEventListener("click", redirectToHome);
         termsModalNO.addEventListener("click", redirectToHome);
         cardModalNO.addEventListener("click", redirectToHome);
-
+        makePasswdModalNO.addEventListener("click", redirectToHome);
+        checkPasswdModalNO.addEventListener("click", redirectToHome);
+        issueModalNO.addEventListener("click", redirectToHome);
+        addressModalNO.addEventListener("click", redirectToHome);
 
         function addChat(sentence, check=false) {
           chatBody.innerHTML += '<div class="from-them"><p style="margin-bottom: 0px;">' + sentence + '</p></div><div class="clear"></div>'
@@ -367,6 +504,7 @@
         }
 
 
+        //반복해서 읽어주는거??
         function printAndTTS(senlist, check = false) {
           list_modal = ["모달-금액", "모달-비밀번호", "모달-계좌번호", "모달-약관", "모달-카드"]
           var delaySec = 3000;
@@ -388,17 +526,19 @@
                   $('#accountModal').modal('show');
                 }  else if (senlist[j] == "모달-약관"){
                   $('#termsModal').modal('show');
+                  cardFlag = 1
                 } else if (senlist[j] == "모달-카드"){
                   $('#cardModal').modal('show');
                 }
                 else if (senlist[j]!="") addChat(senlist[j], check);
                 else window.location.href = '/';   
               }, j*delaySec)
+          console.log(3333333333)
             }
             anonFunc(j);
             if (list_modal.indexOf(senlist[j]) != -1 ){
               delaySec = delaySec + 1000000;
-            } 
+            }
           }
         }
         if(texts == 'button'){
@@ -407,27 +547,27 @@
           searchlist = searchlist.slice(1,)
           printAndTTS(searchlist, false)
           return
-
         }
 
         // 타겟 넘버 별 TTS 시작 부분  
         
           if (answer == "다시 말씀해주세요"){
             printAndTTS(answer, true)
+            console.log(22222222)
             return
           }
           printAndTTS(answer)
+          console.log(111111111)
       }
         // TTS end
 
 </script>
 <div class="main-frame row">
-  <button onclick="openCamera()">openCamera</button>
     <div class="ai-screen col-4 p-0">
         <div class="ai-screen-title d-flex">
-            <p class="m-0">AI 일반 행원 루나스</p>
+            <p class="lunas title">AI 일반 행원 루나스</p>
         </div>
-        <video class="ai_lunas" src={% static "/video/ai_convert.mp4" type="video/mp4" %}>
+        <video class="ai_lunas" src={% static "/video/ai.mp4" type="video/mp4" %}>
     </div>
     <div class="chatbot-screen col-8 d-flex justify-content-center align-items-center">
       <div class="container">
@@ -446,7 +586,6 @@
               <button class="quick_btn" id="btn_3" value="3">4. 계좌조회</button>
               <button class="quick_btn" id="btn_4" value="4">5. 계좌개설</button>
               <button class="quick_btn" id="btn_5" value="5">6. 카드발급</button>
-              <button class="quick_btn" id="btn_7" value="7">7. 상품소개</button>
             </div>
             <div class="padding"></div>
           </div>
@@ -465,9 +604,9 @@
           <div class="clear"></div>
         </section>
         </div>
-        <div class="form-floating mb-3">
+        <div class="form-floating">
           <input type="text" class="form-control submitForm" id="chat-input">
-          <label for="chat-input">Input Your Text.</label>
+          <label for="chat-input">무엇을 도와드릴까요?</label>
         </div>
       </div>
     </div>
@@ -507,7 +646,7 @@
       <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" >출금 또는 송금하실 금액을 입력해주세요.</h5>
+            <h5 class="modal-title" id="amountModalTitle">출금하실 금액을 입력해주세요.</h5>
           </div>
           <div class="form-group formCss">
             <input class="form-control passwdInput" id="amountModalInput" value="" readonly/>
@@ -603,7 +742,7 @@
             <div class="cardContent" id="cardContent">
             </div>
           </div>
-          <div class="modal-footer">
+          <div class="modal-footer">  
             <button type="button" class="btn btn-primary footerBtn" id="cardModalOK" disabled="true">확인</button>
             <button type="button" class="btn btn-secondary footerBtn" id="cardModalNO">취소</button>
           </div>
@@ -643,8 +782,8 @@
         </div>
       </div>
     </div>
-     <!--계좌번호 모달-->
-     <div class="modal fade" id="accountModal" tabindex="-1" aria-labelledby="accountModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <!--계좌번호 모달-->
+    <div class="modal fade" id="accountModal" tabindex="-1" aria-labelledby="accountModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
       <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content">
           <div class="modal-header">
@@ -674,6 +813,68 @@
         </div>
       </div>
     </div>
+    <!--비밀번호 생성 모달-->
+    <div class="modal fade" id="makePasswdModal" tabindex="-1" aria-labelledby="makePasswdModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+      <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="makePasswdTitle">생성하실 비밀번호를 입력해주세요.</h5>
+          </div>
+          <div class="form-group formCss">
+            <input class="form-control passwdInput" id="makePasswdModalInput" type="password" value="" readonly/>
+            <div class="btnGroup">
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_1" value="1" onclick="put_num(1, 'make')">1</button>
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_2" value="2" onclick="put_num(2, 'make')">2</button>
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_3" value="3" onclick="put_num(3, 'make')">3</button>
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_4" value="4" onclick="put_num(4, 'make')">4</button>
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_5" value="5" onclick="put_num(5, 'make')">5</button>
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_6" value="6" onclick="put_num(6, 'make')">6</button>
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_7" value="7" onclick="put_num(7, 'make')">7</button>
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_8" value="8" onclick="put_num(8, 'make')">8</button>
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_9" value="9" onclick="put_num(9, 'make')">9</button>
+              <button class="btn btn-primary passwdBtn2" id="passwdBtn_reset" value="r" onclick="reset('make')">초기화</button>
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_0" value="0" onclick="put_num(0, 'make')">0</button>
+              <button class="btn btn-primary passwdBtn2" id="passwdBtn_clear" value="c" onclick="clearOne('make')">지움</button>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary footerBtn" id="makePasswdModalOK">확인</button>
+            <button type="button" class="btn btn-secondary footerBtn" id="makePasswdModalNO">취소</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--비밀번호 확인 모달-->
+    <div class="modal fade" id="checkPasswdModal" tabindex="-1" aria-labelledby="checkPasswdModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+      <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="checkPasswdTitle">생성하실 비밀번호를 다시 입력해주세요.</h5>
+          </div>
+          <div class="form-group formCss">
+            <input class="form-control passwdInput" id="checkPasswdModalInput" type="password" value="" readonly/>
+            <div class="btnGroup">
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_1" value="1" onclick="put_num(1, 'check')">1</button>
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_2" value="2" onclick="put_num(2, 'check')">2</button>
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_3" value="3" onclick="put_num(3, 'check')">3</button>
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_4" value="4" onclick="put_num(4, 'check')">4</button>
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_5" value="5" onclick="put_num(5, 'check')">5</button>
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_6" value="6" onclick="put_num(6, 'check')">6</button>
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_7" value="7" onclick="put_num(7, 'check')">7</button>
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_8" value="8" onclick="put_num(8, 'check')">8</button>
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_9" value="9" onclick="put_num(9, 'check')">9</button>
+              <button class="btn btn-primary passwdBtn2" id="passwdBtn_reset" value="r" onclick="reset('check')">초기화</button>
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_0" value="0" onclick="put_num(0, 'check')">0</button>
+              <button class="btn btn-primary passwdBtn2" id="passwdBtn_clear" value="c" onclick="clearOne('check')">지움</button>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary footerBtn" id="checkPasswdModalOK">확인</button>
+            <button type="button" class="btn btn-secondary footerBtn" id="checkPasswdModalNO">취소</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <!--가짜 모달-->
     <div class="modal fade" id="fakeModal" tabindex="-1" aria-labelledby="accountModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -682,29 +883,96 @@
             <h5 class="modal-title">신분증을 촬영해주세요.</h5>
           </div>
           <div>
-            <div>신분증을 카메라 앞에 위치시키고 Enter 키를 눌러 촬영해주세요.</div>
-            <div>촬영이 끝났으면, 확인 버튼을 눌러주세요.</div>
+            <div>1. <촬영> 버튼을 눌러주세요.</div> <br>
+            <div>2. 신분증을 카메라 앞에 위치시키고 Enter 키를 눌러 촬영해주세요.</div><br>
+            <div>3. 촬영이 끝났으면, <확인> 버튼을 눌러주세요.</div>
             <div></div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary footerBtn" id="fakeModalOK">확인</button>
+            <button class="btn btn-primary footerBtn" onclick="openCamera()" id="fakeModal ">촬영</button>
+            <button type="button" class="btn btn-secondary footerBtn" id="fakeModalOK">확인</button>
           </div>
+        </div>
       </div>
     </div>
+
+    <div class="modal fade" id="scaModal_1" tabindex="-1" aria-labelledby="scam_ModlaLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">보이스피싱 1 단계</h5>
+          </div>
+          <div>
+            <div> 고객님께선 현재 보이스피싱 위험 1 단계입니다. </div> <br>
+            <div>검찰, 경찰, 금융감독원이나 모르는 사람이 전화로 출금 및 이체를 요청하였습니까?</div><br>
+            <div>또는, 대출받기 위해서는 먼저 수수료, 기존 대출금 상환 등이 필요하다며 <출금 이체>를 요청하였습니까? </div>
+            <div></div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-primary footerBtn" onclick="window.location.href = '/'" id="scaModal_1">예</button>
+            <button type="button" class="btn btn-secondary footerBtn" id="scamModal_cancel" data-bs-dismiss="modal">아니요</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+      <div class="modal fade" id="scaModal_2" tabindex="-1" aria-labelledby="보이스피싱" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">보이스피싱 2 단계</h5>
+            </div>
+            <div>
+              <div> 고객님께선 현재 보이스피싱 위험 2 단계입니다. </div> <br>
+              <div> 고객님께서는 혹시 기관(국세청, 검찰 금융감독원, 국민연금 관리공단, 금융기관 등)이나 낯선 사람의 전화를 받고 이 거래를 하고 계십니까? </div>
+              <div></div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-primary footerBtn" onclick="window.location.href = '/'" id="scamModal_check">예</button>
+              <button type="button" class="btn btn-secondary footerBtn" id="scamModal_cancel" data-bs-dismiss="modal">아니요</button>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <div class="modal fade" id="scaModal_3" tabindex="-1" aria-labelledby="보이스피싱" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">보이스피싱 3 단계</h5>
+            </div>
+            <div>
+              <div> 고객님께선 현재 보이스피싱 위험 최고 단계수준입니다. </div> <br>
+              <div> 보이스피싱 피해가 크게 의심되오니, 경찰에 조용히 신고해드릴까요? </div> <br>
+              <div> (만약, 이미 현 상황에서 피해입은 금액이 있다면, 피해금 환급 신청을 하시기 바랍니다) </div>
+              <div></div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-primary footerBtn" onclick="window.location.href='https://www.fss.or.kr/fss/main/contents.do?menuNo=200366'" id="scamModal_check">예</button>
+              <button type="button" class="btn btn-secondary footerBtn" id="scamModal_cancel" data-bs-dismiss="modal">아니요</button>
+            </div>
+        </div>
+      </div>
+    </div>
+      <audio aria-hidden="true"></audio>
+
 </div>
-</body>
 <script>
 
-  // 계좌조회 모달 함수
+
   accountFlag = 0;
   sendFlag = 2; // 1 : 출금,  2 : 송금
+  makeFlag = 0; // 0 : 처음, 1 : 확인
+  cardFlag = 0;
 
   // 비밀번호 모달 함수
   amount = ""
-  password = ""
+  password = ""    
+  newPassword = ""
+  checkPassword = ""
   account = ""
-  passwordTries = 0;
   localStorage.setItem("password", "1234");
+  localStorage.setItem("newPassword", "");
 
   function put_num(value, modal) {
     if (modal == "password")
@@ -730,6 +998,18 @@
       input.value += value;
       account = input.value;
     }
+    else if (modal == "make")
+    {
+      var input = document.querySelector("#makePasswdModalInput")
+      input.value += value;
+      newPassword = input.value;
+    }
+    else if (modal == "check")
+    {
+      var input = document.querySelector("#checkPasswdModalInput")
+      input.value += value;
+      checkPassword = input.value;
+    }
   }
 
   function reset(modal) {
@@ -750,6 +1030,18 @@
       var input = document.querySelector("#accountModalInput")
       input.value = ""
       account = input.value;
+    }
+    else if (modal == "make")
+    {
+      var input = document.querySelector("#makePasswdModalInput")
+      input.value = ""
+      newPassword = input.value;
+    }
+    else if (modal == "check")
+    {
+      var input = document.querySelector("#checkPasswdModalInput")  
+      input.value = ""
+      checkPassword = input.value;
     }
   }
 
@@ -777,6 +1069,20 @@
         input.value = input.value.slice(0, -1);
       account = input.value
     }
+    else if (modal == "make")
+    {
+      var input = document.querySelector("#makePasswdModalInput")
+      if (input.value != "")
+        input.value = input.value.slice(0, -1);
+      newPassword = input.value
+    }
+    else if (modal == "check")
+    {
+      var input = document.querySelector("#checkPasswdModalInput")
+      if (input.value != "")
+        input.value = input.value.slice(0, -1);
+      checkPassword = input.value
+    }
   }
 
   // 약관동의 모달 함수
@@ -793,18 +1099,138 @@
   // 카드발급 모달 함수
 
   card = [
-    { "tag" : "<div class='cardUnit'><img class='cardImg' src='/static/img/04285_img.png' alt='cheongchun'><div><h3><input type='checkbox' name='card' onclick='checkOnlyOne(this)' id='card_1'>청춘대로 톡톡카드</h3><div>Simple하게 즐기자!</div><div>혜택 톡톡! 스타벅스 50% 청구할인 버거/패스트푸드 20% 청구할인 간편결제 Pay 10% 청구할인</div></div></div>",
-      "content" : ""},
-      { "tag" : "<div class='cardUnit'><img class='cardImg' src='/static/img/02065_img.png' alt='cheongchun'><div><h3><input type='checkbox' name='card' onclick='checkOnlyOne(this)' id='card_2'>청춘대로 톡톡카드</h3><div>Simple하게 즐기자!</div><div>혜택 톡톡! 스타벅스 50% 청구할인 버거/패스트푸드 20% 청구할인 간편결제 Pay 10% 청구할인</div></div></div>",
-      "content" : ""},
-      { "tag" : "<div class='cardUnit'><img class='cardImg' src='/static/img/09157_img.png' alt='cheongchun'><div><h3><input type='checkbox' name='card' onclick='checkOnlyOne(this)' id='card_3'>청춘대로 톡톡카드</h3><div>Simple하게 즐기자!</div><div>혜택 톡톡! 스타벅스 50% 청구할인 버거/패스트푸드 20% 청구할인 간편결제 Pay 10% 청구할인</div></div></div>",
-      "content" : ""},
-      { "tag" : "<div class='cardUnit'><img class='cardImg' src='/static/img/09174_img.png' alt='cheongchun'><div><h3><input type='checkbox' name='card' onclick='checkOnlyOne(this)' id='card_4'>청춘대로 톡톡카드</h3><div>Simple하게 즐기자!</div><div>혜택 톡톡! 스타벅스 50% 청구할인 버거/패스트푸드 20% 청구할인 간편결제 Pay 10% 청구할인</div></div></div>",
-      "content" : ""},
-      { "tag" : "<div class='cardUnit'><img class='cardImg' src='/static/img/09251_img.png' alt='cheongchun'><div><h3><input type='checkbox' name='card' onclick='checkOnlyOne(this)' id='card_5'>청춘대로 톡톡카드</h3><div>Simple하게 즐기자!</div><div>혜택 톡톡! 스타벅스 50% 청구할인 버거/패스트푸드 20% 청구할인 간편결제 Pay 10% 청구할인</div></div></div>",
-      "content" : ""},
-      { "tag" : "<div class='cardUnit'><img class='cardImg' src='/static/img/09644_img.png' alt='cheongchun'><div><h3><input type='checkbox' name='card' onclick='checkOnlyOne(this)' id='card_6'>청춘대로 톡톡카드</h3><div>Simple하게 즐기자!</div><div>혜택 톡톡! 스타벅스 50% 청구할인 버거/패스트푸드 20% 청구할인 간편결제 Pay 10% 청구할인</div></div></div>",
-      "content" : ""},
+    { "tag" : "<div class='cardUnit'><img class='cardImg' src='/static/img/04285_img.png' alt='cheongchun'>\
+      <div class='cardText'>\
+        <h3>\
+          <input type='checkbox' name='card' onclick='checkOnlyOne(this)' id='card_1'>\
+          스카이패스 티타늄 카드\
+        </h3>\
+        <div>\
+          <b>대한항공 마일리지 기본적립에</b>\
+        </div>\
+        <div>\
+          <b>해외/면세점 추가적립 혜택까지!</b>\
+        </div><br>\
+        <div>\
+          국내가맹점 적립 1마일 1,000원 당\
+        </div>\
+        <div>\
+          해외이용 적립 2마일 1,000원 당\
+        </div>\
+        <div>\
+          면세점 적립 2마일 1,000원 당\
+        </div>\
+      </div>\
+    </div>", "content" : ""},
+    { "tag" : "<div class='cardUnit'><img class='cardImg' src='/static/img/02065_img.png' alt='cheongchun'>\
+      <div class='cardText'>\
+        <h3>\
+          <input type='checkbox' name='card' onclick='checkOnlyOne(this)' id='card_2'>\
+          국민행복카드\
+        </h3>\
+        <div>\
+          <b>보육료 및 임신·출산 진료비 지원 등</b>\
+        </div>\
+        <div>\
+          <b> 국가바우처 지원 가능</b>\
+        </div><br>\
+        <div>\
+          쇼핑/교육/자동납부 5% 청구할인\
+        </div>\
+        <div>\
+          단체보험가입 대중교통 상해 1억 보장\
+        </div>\
+        <div>\
+          단체보험가입 진단비 10만원\
+        </div>\
+      </div>\
+    </div>","content" : ""},
+    { "tag" : "<div class='cardUnit'><img class='cardImg' src='/static/img/09157_img.png' alt='cheongchun'>\
+      <div class='cardText'>\
+        <h3>\
+          <input type='checkbox' name='card' onclick='checkOnlyOne(this)' id='card_2'>\
+          가온올림카드(실속형)\
+        </h3>\
+        <div>\
+          <b>실적조건 없이 국내가맹점 적립</b>\
+        </div>\
+        <div>\
+          <b>해외가맹점 캐시백! 국가바우처 지원 가능</b>\
+        </div><br>\
+        <div>\
+          국내가맹점 0.7% 기본적립\
+        </div>\
+        <div>\
+          주말/공휴일 0.5% 추가적립\
+        </div>\
+        <div>\
+          음식·교통 0.5% 추가적립\
+        </div>\
+      </div>\
+    </div>","content" : ""},
+    { "tag" : "<div class='cardUnit'><img class='cardImg' src='/static/img/09174_img.png' alt='cheongchun'>\
+      <div class='cardText'>\
+        <h3>\
+          <input type='checkbox' name='card' onclick='checkOnlyOne(this)' id='card_2'>\
+          청춘대로 톡톡카드\
+        </h3>\
+        <div>\
+          <b>Simple하게 즐기자! 혜택 톡톡!</b>\
+        </div>\<br>\
+        <div>\
+          스타벅스 50% 청구할인\
+        </div>\
+        <div>\
+          버거/패스트푸드 20% 청구할인\
+        </div>\
+        <div>\
+          간편결제 Pay 10% 청구할인\
+        </div>\
+      </div>\
+    </div>","content" : ""},
+    { "tag" : "<div class='cardUnit'><img class='cardImg' src='/static/img/09251_img.png' alt='cheongchun'>\
+      <div class='cardText'>\
+        <h3>\
+          <input type='checkbox' name='card' onclick='checkOnlyOne(this)' id='card_2'>\
+          Easy pick 티타늄카드\
+        </h3>\
+        <div>\
+          <b>주요 생활 영역부터 내가 Pick한</b>\
+        </div>\
+        <div>\
+          <b>영역까지 모두 적립 Easy!</b>\
+        </div><br>\
+        <div>\
+          주요 생활 영역 5% 적립\
+        </div>\
+        <div>\
+          선호 영역(택1) 5% 적립\
+        </div>\
+        <div>\
+          일상 생활 영역 5% 적립\
+        </div>\
+      </div>\
+    </div>","content" : ""},
+    { "tag" : "<div class='cardUnit'><img class='cardImg' src='/static/img/09644_img.png' alt='cheongchun'>\
+      <div class='cardText'>\
+        <h3>\
+          <input type='checkbox' name='card' onclick='checkOnlyOne(this)' id='card_2'>\
+          우리동네 체크카드\
+        </h3>\
+        <div>\
+          <b>다 같이 돌자 동네 한 바퀴</b>\
+        </div><br>\
+        <div>\
+          세탁소, 정육점 10% 환급할인\
+        </div>\
+        <div>\
+          빵집, 슈퍼마켓 5% 환급할인\
+        </div>\
+        <div>\
+          취향거래 (번개장터) 5% 환급할인\
+        </div>\
+      </div>\
+    </div>","content" : ""},
   ]
   const cardContent = document.querySelector('#cardContent')
   cardContent.innerHTML += card[0].tag
@@ -860,11 +1286,11 @@ addressInput.addEventListener("input", onInput)
   const btn4 = document.querySelector("#btn_4");
   const btn5 = document.querySelector("#btn_5");
   const btn6 = document.querySelector("#btn_6");
-  const btn7 = document.querySelector("#btn_7");
 
   chatForm.addEventListener("keyup", function (e) {
     if (e.key == 'Enter') {
       var submitContent = document.querySelector('#chat-input');
+      console.log("enter 입력");
       handleChatSubmit(submitContent.value);
       submitContent.value = "";
     }
@@ -875,41 +1301,41 @@ addressInput.addEventListener("input", onInput)
   btn4.addEventListener("click", handleQuickBtn);
   btn5.addEventListener("click", handleQuickBtn);
   btn6.addEventListener("click", handleQuickBtn);
-  btn7.addEventListener("click", handleQuickBtn);
 
-  function handleQuickBtn(event) {
+  send_list = {
+    "1" : "송금을 선택하셨습니다.",
+    "2" : "입금을 선택하셨습니다.",
+    "3" : "계좌조회을 선택하셨습니다.",
+    "4" : "계좌개설을 선택하셨습니다.",
+    "5" : "카드발급을 선택하셨습니다.",
+    "6" : "출금을 선택하셨습니다.",
+    "7" : "상품소개을 선택하셨습니다.",
+  }
 
-    send_list = {
-      "1" : "송금을 선택하셨습니다.",
-      "2" : "입금을 선택하셨습니다.",
-      "3" : "계좌조회을 선택하셨습니다.",
-      "4" : "계좌개설을 선택하셨습니다.",
-      "5" : "카드발급을 선택하셨습니다.",
-      "6" : "출금을 선택하셨습니다.",
-      "7" : "상품소개을 선택하셨습니다.",
-    }
-
-    answer_list = {
-      "1" : ["송금을 도와드리겠습니다.",
-      "카드 또는 통장을 넣어주세요.","...","받는 사람의 계좌번호를 입력해 주세요.", "모달-계좌번호", 
-      "출금하실 금액을 입력해주세요.", "모달-금액", "비밀번호를 입력해주세요.",
-      "모달-비밀번호","이용해 주셔서 감사합니다!","5초 후 자동으로 초기 화면으로 복귀합니다. 안녕히 가십시오.",""],
-      "2" : [ "입금을 도와드리겠습니다. 카드 또는 통장을 넣어주세요.",
+  answer_list = {
+    "1" : ["송금을 도와드리겠습니다.",
+    "카드 또는 통장을 넣어주세요.","...","송금하실 계좌번호를 입력해 주세요.", "모달-계좌번호", 
+    "출금 또는 송금하실 금액을 입력해주세요.", "모달-금액", "비밀번호를 입력해주세요.",
+    "모달-비밀번호","이용해 주셔서 감사합니다!","5초 후 자동으로 초기 화면으로 복귀합니다. 안녕히 가십시오.",""],
+    "2" : [ "입금을 도와드리겠습니다. 카드 또는 통장을 넣어주세요.",
       "...",
       "보내실 금액을 투입구에 넣어주세요.",
       "...",
       "이용해 주셔서 감사합니다!",
       "5초 후 자동으로 메인 화면으로 복귀합니다.",""],
-      "3" : ["계좌조회를 도와드리겠습니다. 카드 또는 통장을 넣어주세요.", "..." , "비밀번호를 입력해주세요.","모달-비밀번호",
-      "이용해 주셔서 감사합니다!","5초 후 자동으로 초기 화면으로 복귀합니다. 안녕히 가십시오.",""],
-      "4" : ["계좌개설을 도와드리겠습니다. 약관을 읽고 동의 버튼을 눌러주세요",
-      "모달-약관","신분증을 촬영해 주세요.","이용해 주셔서 감사합니다!","5초 후 자동으로 초기 화면으로 복귀합니다. 안녕히 가십시오.",""],
-      "5" : ["카드발급을 도와드리겠습니다. 약관을 읽고 동의 버튼을 눌러주세요",
-      "모달-약관","신분증을 촬영해 주세요.","이용해 주셔서 감사합니다!","5초 후 자동으로 초기 화면으로 복귀합니다. 안녕히 가십시오.",""],
-      "6" : ["출금을 도와드리겠습니다. 카드 또는 통장을 넣어주세요.","...",
-      "출금하실 금액을 입력해주세요.","모달-금액", "비밀번호를 입력해주세요.", "모달-비밀번호" ,
-      "이용해 주셔서 감사합니다!","5초 후 자동으로 초기 화면으로 복귀합니다. 안녕히 가십시오.",""],
-    }
+    "3" : ["계좌조회를 도와드리겠습니다.", "카드 또는 통장을 넣어주세요.", "..." , "비밀번호를 입력해주세요.","모달-비밀번호",
+    "이용해 주셔서 감사합니다!","5초 후 자동으로 초기 화면으로 복귀합니다. 안녕히 가십시오.",""],
+    "4" : ["계좌개설을 도와드리겠습니다.", "약관을 읽고 동의 버튼을 눌러주세요",
+    "모달-약관","신분증을 촬영해 주세요.","이용해 주셔서 감사합니다!","5초 후 자동으로 초기 화면으로 복귀합니다. 안녕히 가십시오.",""],
+    "5" : ["카드발급을 도와드리겠습니다. 발급을 원하시는 카드를 선택해주세요",
+    "모달-카드", "약관을 읽고 동의 버튼을 눌러주세요", "모달-약관","신분증을 촬영해 주세요.","이용해 주셔서 감사합니다!","5초 후 자동으로 초기 화면으로 복귀합니다. 안녕히 가십시오.",""],
+    "6" : ["출금을 도와드리겠습니다.", "카드 또는 통장을 넣어주세요.","...",
+    "출금 또는 송금하실 금액을 입력해주세요.","모달-금액", "비밀번호를 입력해주세요.", "모달-비밀번호" ,
+    "이용해 주셔서 감사합니다!","5초 후 자동으로 초기 화면으로 복귀합니다. 안녕히 가십시오.",""],
+  }
+
+  // 버튼 클릭
+  function handleQuickBtn(event) {
 
     const objBody = document.querySelector(".body");
     const target = event.target.value
@@ -919,6 +1345,7 @@ addressInput.addEventListener("input", onInput)
     make_body(answer_list[target][0], 'button', target);
   }
 
+  // 채팅 입력
   function handleChatSubmit(chatContent) {
 
     const objBody = document.querySelector("section");
@@ -938,43 +1365,58 @@ addressInput.addEventListener("input", onInput)
 
       async function logItems(target) {
         var target_num = await target;
-        make_body(target_num, inputValue)
-      }    
+        var speech_list = target_num.slice(1,)
+      make_body(speech_list, inputValue, 0)
+      }
       logItems(target)
+      return;
   }
 
+  axios.defaults.xsrfCookieName = 'csrftoken'
+  axios.defaults.xsrfHeaderName = 'X-CSRFToken'
   window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   
   let recognition = new SpeechRecognition();
   recognition.interimResults = false;
   recognition.lang = 'ko-KR';
   
-  let makeNewTextContent = function() {
-    p = document.createElement('p');
-    document.querySelector('.body').appendChild(p);
-  };
+
   
   let p = null;
+  var recorder;
   
+  var audio = document.querySelector('audio'); 
 
 
 
   
   {% comment %} recognition.stop(); {% endcomment %}
   recognition.onstart = function() {
-      makeNewTextContent(); // 음성 인식 시작시마다 새로운 문단을 추가한다.
+    this.disabled = true; 
+    captureMicrophone(function (microphone) { 
+        var binaryData = [];
+        binaryData.push(microphone);
+        window.URL.createObjectURL(new Blob(binaryData, {type: "audio.wav"}))
+        recorder = RecordRTC(microphone, { 
+            type: 'audio', 
+            recorderType: StereoAudioRecorder, 
+            numberOfAudioChannels: 1, // or leftChannel:true 
+            desiredSampRate: 16000 
+        }); 
+        recorder.startRecording(); 
+        // release microphone on stopRecording
+        recorder.microphone = microphone; 
+        // document.getElementById('btn-stop-recording').disabled = false; 
+        }); 
     };
     recognition.onend = function() {
-      recognition.stop();
-      for (var btn of (document.getElementsByClassName("quick_btn"))) {
-        btn.disabled = false;
-      }
-    };
 
-    {% comment %} recognition.onspeechend = function() {
-      console.log('Speech has stopped being detected');
+      this.disabled = true; 
+      recorder.stopRecording(stopRecordingCallback); 
+      // document.getElementById('btn-start-recording').disabled = false; 
       recognition.stop();
-    } {% endcomment %}
+  
+    };
     
     recognition.onresult = function(e) {
       console.log(e)
@@ -989,14 +1431,79 @@ addressInput.addEventListener("input", onInput)
               console.log(error)
           })
 
+
+      
+
       async function logItems(target) {
         var answer_list = await target;
         var num = answer_list.slice(0, 1)
         answer_list = answer_list.slice(1,)
+        console.log("answer: ", answer_list, "texts : ", texts, "num : ", num);
         make_body(answer_list, texts, num)
       }    
       logItems(target)
   };
+
+
+  function captureMicrophone(callback) { 
+      navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || navigator.webkitGetUserMedia; 
+      navigator.getUserMedia({audio: true}, callback, function (error) { 
+          alert('Unable to access your microphone.'); 
+          console.error(error); 
+      }); 
+  } 
+ 
+
+  function stopRecordingCallback() { 
+    var blob = recorder.getBlob(); 
+    audio.src = URL.createObjectURL(blob); 
+    recorder.microphone.stop();
+
+    blobToDataURL(blob, function (dataurl) {
+        const data = {
+            'url': dataurl
+        }
+        axios({
+            method: 'post',
+            url: 'http://127.0.0.1:8000/createSound',
+            data: data,
+            headers: {
+                "Content-Type": 'application/json',
+            },
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+        }).then(function(response){
+            console.log(response.data)
+            scam_dict = response.data
+            
+
+            
+            $('#scaModal_2').modal('show');
+            {% comment %} if (scam_dict['scam'] > 0.1 && scam_dict['scam'] < 0.5){
+              $('#scaModal_1').modal('show');
+            }else if(scam_dict['scam'] >= 0.5 && scam_dict['scam'] < 0.9){
+              $('#scaModal_2').modal('show');
+              
+            }else if(scam_dict['scam'] >= 0.9){
+              $('#scaModal_3').modal('show');
+            } {% endcomment %}
+
+
+
+
+            // $('#passwdModal').modal('hide');
+        })
+    })
+}
+
+
+function blobToDataURL(blob, callback) {
+    var a = new FileReader();
+    a.onload = function(e) {callback(e.target.result);}
+    a.readAsDataURL(blob);
+}
+
+
+
   $("#restart").click(function () {
     recognition.start();
   })
