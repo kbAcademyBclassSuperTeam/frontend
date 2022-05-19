@@ -13,6 +13,7 @@
 
 .chatbot-screen {
   height : 100%;
+  padding: 0;
   background-color : #F0F0F0;
 }
 
@@ -33,7 +34,6 @@ width : 10%;
 padding : 0px;
 width: 70%;
 height : 100%;
-background-color: #9bbbd4;
 }
 
 .send {
@@ -65,7 +65,7 @@ word-wrap: break-word;
 }
 
 .quick-container {
-border : 2px solid #F0F0F0;
+border : 2px solid #6e6053;
 border-radius : 0.5em;
 text-align : center;
 padding-bottom : 10px;
@@ -169,6 +169,10 @@ height : 25em;
 width : 50%;
 }
 
+.cardText {
+  margin-top: 1em;
+}
+
 .addressInput {
 width : 100%;
 }
@@ -199,7 +203,7 @@ section div {
   position: relative;
   padding: 10px 20px;
   color: white;
-  background: #0B93F6;
+  background: #6e6053;
   border-radius: 25px;
   float: right;
 }
@@ -210,7 +214,7 @@ section div {
   bottom: -2px;
   right: -7px;
   height: 20px;
-  border-right: 20px solid #0B93F6;
+  border-right: 20px solid #6e6053;
   border-bottom-left-radius: 16px 14px;
   -webkit-transform: translate(0, -2px);
 }
@@ -223,7 +227,7 @@ section div {
   right: -56px;
   width: 26px;
   height: 20px;
-  background: #9bbbd4;
+  background: #f8a70c;
   border-bottom-left-radius: 10px;
   -webkit-transform: translate(-30px, -2px);
 }
@@ -233,7 +237,7 @@ section div {
   padding: 10px 20px;
   background: #E5E5EA;
   border-radius: 25px;
-  color: black;
+  color: #6e6053;
   float: left;
 }
 
@@ -257,7 +261,12 @@ section div {
   left: 4px;
   width: 26px;
   height: 20px;
-  background: #9bbbd4;
+  background: #f8a70c;
   border-bottom-right-radius: 10px;
   -webkit-transform: translate(-30px, -2px);
+}
+
+.form-floating {
+  background: #6e6053;
+
 }
