@@ -1491,8 +1491,8 @@ addressInput.addEventListener("input", onInput)
     recorder.microphone.stop();
 
     blobToDataURL(blob, function (dataurl) {
-      var y = 1
-      var emotion_score = {0 : 10 , 1: 2, 2: 5, 3:1 , 4:1, 5:3, 6:4, 7:0}
+      
+      var emotion_score_dict= {0 : 0.2 , 1: 0.2, 2: 0.6, 3: 0.1 , 4: 0.1, 5: 0.3, 6: 0.4, 7: 0}
         const data = {
             'url': dataurl
         }
@@ -1508,22 +1508,27 @@ addressInput.addEventListener("input", onInput)
             console.log(response.data)
             scam_dict = response.data
 
-            $('#emotion_Modal').modal('show');
+            // $('#emotion_Modal').modal('show');
 
-            y = scam_dict['scam'] * 10 * emotion_score[scam_dict['vgg']]
-            console.log(y)
-            if(7<=y &&y<20) {
+            var y = scam_dict['scam'] * 50 + emotion_score_dict[scam_dict['vgg']] * 20
+            console.log("y값은:"+y)
+  
+            
+            // 감정 분석 모델 사용 (고객의 감정 수준에 따라 실제 행원 연결)
+            if ( y<23 && (scam_dict['vgg'] == 0 || scam_dict['vgg'] == 6)) {
+              $('#emotion_Modal').modal('show');
+              
+            }
+            else if(23<=y &&y<37) { // 0.3*50 + 0.4*20 = 23  // 0.5*50 + 0.6*20 = 37
               $('#scaModal_1').modal('show');
             }
-            else if (20<=y && y<36) {
+            else if (37<=y && y<53) { // 0.5*50 + 0.6*20 = 37 // 0.9*50 + 0.4*20 = 53
               $('#scaModal_2').modal('show');
             }
-            else if (y>=36) {
+            else if (y>=53) { // 0.9*50 + 0.4*20 = 53
               $('#scaModal_3').modal('show');
             }
-
-            
-
+        
             /*
             if (scam_dict['scam'] > 0.2  && scam_dict['scam'] < 0.5){
               $('#scaModal_1').modal('show');
@@ -1534,10 +1539,6 @@ addressInput.addEventListener("input", onInput)
               $('#scaModal_3').modal('show');
             } 
             */
-            // 감정 분석 모델 사용 (위급상황 시 실제 행원 연결)
-            {% comment %} if (scam_dict['vgg'] == 6 && scam_dict['scam']<=0.2) {
-              $('#emotion_Modal').modal('show');
-            } {% endcomment %}
 
             // $('#passwdModal').modal('hide');
         })
