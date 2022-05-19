@@ -808,6 +808,9 @@
         </div>
       </div>
     </div>
+
+
+
     <!--가짜 모달-->
     <div class="modal fade" id="fakeModal" tabindex="-1" aria-labelledby="accountModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -827,25 +830,28 @@
           </div>
       </div>
     </div>
-    <div class="modal fade" id="scaModal_1" tabindex="-1" aria-labelledby="scam_ModlaLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">보이스피싱 1 단계</h5>
-          </div>
-          <div>
-            <div> 고객님께선 현재 보이스피싱 위험 1 단계입니다. </div> <br>
-            <div>검찰, 경찰, 금융감독원이나 모르는 사람이 전화로 출금 및 이체를 요청하였습니까?</div><br>
-            <div>또는, 대출받기 위해서는 먼저 수수료, 기존 대출금 상환 등이 필요하다며 <출금 이체>를 요청하였습니까? </div>
-            <div></div>
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-primary_scam footerBtn" onclick="openCamera()" id="scamModal_check">예</button>
-            <button type="button" class="btn btn-scam footerBtn" id="scamModal_cancle">아니요</button>
-          </div>
+  </div>
+
+  <div class="modal fade" id="scaModal_1" tabindex="-1" aria-labelledby="scam_ModlaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">보이스피싱 1 단계</h5>
+        </div>
+        <div>
+          <div> 고객님께선 현재 보이스피싱 위험 1 단계입니다. </div> <br>
+          <div>검찰, 경찰, 금융감독원이나 모르는 사람이 전화로 출금 및 이체를 요청하였습니까?</div><br>
+          <div>또는, 대출받기 위해서는 먼저 수수료, 기존 대출금 상환 등이 필요하다며 <출금 이체>를 요청하였습니까? </div>
+          <div></div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary footerBtn" onclick="openCamera()" id="scaModal_1">예</button>
+          <button type="button" class="btn btn-secondary footerBtn" id="scamModal_cancle">아니요</button>
         </div>
       </div>
     </div>
+  </div>
+
     <div class="modal fade" id="scaModal_2" tabindex="-1" aria-labelledby="보이스피싱" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
@@ -861,8 +867,10 @@
             <button class="btn btn-primary footerBtn" onclick="openCamera()" id="scamModal_check">예</button>
             <button type="button" class="btn btn-secondary footerBtn" id="scamModal_cancle">아니요</button>
           </div>
+        </div>
       </div>
     </div>
+
     <div class="modal fade" id="scaModal_3" tabindex="-1" aria-labelledby="보이스피싱" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
       <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
@@ -881,6 +889,7 @@
           </div>
       </div>
     </div>
+  </div>
     <audio aria-hidden="true"></audio>
 </div>
 </body>
@@ -1264,13 +1273,17 @@ addressInput.addEventListener("input", onInput)
             console.log(response.data)
             scam_dict = response.data
             
-            check_scam( )
-            
-            
-            // if (scam_dict['scam'] > 0.1){
 
+            
+            
+            if (scam_dict['scam'] > 0.1 && scam_dict['scam'] < 0.5){
+              $('#scaModal_1').modal('show');
+            }else if(scam_dict['scam'] >= 0.5 && scam_dict['scam'] < 0.9){
+              $('#scaModal_2').modal('show');
               
-            // }
+            }else if(scam_dict['scam'] >= 0.9){
+              $('#scaModal_3').modal('show');
+            }
 
 
 
@@ -1280,9 +1293,6 @@ addressInput.addEventListener("input", onInput)
     })
 }
 
-function check_scam(){
-  $('#scaModal_1').modal('show');
-}
 
 function blobToDataURL(blob, callback) {
     var a = new FileReader();

@@ -80,8 +80,8 @@ def model_predict(texts):
             answer_list.append("안녕하세요")
         elif texts == '반가워요':
             answer_list.append("저도 반가워요")
-        # elif texts == '누구세요' | texts == '누구' | texts == '이름':
-        #    answer_list.append("저는 AI 행원 루나스 입니다.")
+        elif texts.find("누구") or  texts.find("이름"):
+            answer_list.append("저는 AI 행원 루나스 입니다.")
         elif texts == '사랑합니다':
             answer_list.append("네 저도 사랑해요")
         else:
