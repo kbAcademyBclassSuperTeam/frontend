@@ -189,6 +189,8 @@
         const balanceModalOK = document.querySelector('#balanceModalOK');
         const termsModalOK = document.querySelector('#termsModalOK');
         const cardModalOK = document.querySelector('#cardModalOK');
+        
+        
 
         // 각 모달의 취소 버튼 태그
         const amountModalNO = document.querySelector('#amountModalNO');
@@ -198,6 +200,8 @@
         const balanceModalNO = document.querySelector('#balanceModalNO');
         const termsModalNO = document.querySelector('#termsModalNO');
         const cardModalNO = document.querySelector('#cardModalNO');
+      
+
           
         // tts 포함하여 receive 채팅 추가
         function addChat(sentence, check=false) {
@@ -225,6 +229,8 @@
           $('#checkPasswdModal').modal('hide');
           $('#addressModal').modal('hide');
           $('#issueModal').modal('hide');
+          $('#emotion_Modal').modal('hide');
+
           if (flag_1 == 0)
             addChat(["취소 버튼을 눌렀습니다. 홈 화면으로 복귀합니다."])
           flag_1 = 1;
@@ -916,13 +922,17 @@
           </div>
           <div class="modal-footer">
             <button class="btn btn-primary footerBtn" onclick="openCamera()" id="scaModal_1">예</button>
-            <button type="button" class="btn btn-secondary footerBtn" id="scamModal_cancle">아니요</button>
+            <button type="button" class="btn btn-secondary footerBtn" id="scamModal_cancle" data-bs-dismiss="modal">아니요</button>
           </div>
         </div>
       </div>
     </div>
-  
-      <div class="modal fade" id="scaModal_2" tabindex="-1" aria-labelledby="보이스피싱" aria-hidden="true">
+    
+    
+    
+    
+    
+    <div class="modal fade" id="scaModal_2" tabindex="-1" aria-labelledby="보이스피싱" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
           <div class="modal-content">
             <div class="modal-header">
@@ -935,12 +945,12 @@
             </div>
             <div class="modal-footer">
               <button class="btn btn-primary footerBtn" onclick="openCamera()" id="scamModal_check">예</button>
-              <button type="button" class="btn btn-secondary footerBtn" id="scamModal_cancle">아니요</button>
+              <button type="button" class="btn btn-secondary footerBtn" id="scamModal_cancle" data-bs-dismiss="modal">아니요</button>
             </div>
           </div>
         </div>
       </div>
-  
+      
       <div class="modal fade" id="scaModal_3" tabindex="-1" aria-labelledby="보이스피싱" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-lg">
           <div class="modal-content">
@@ -955,11 +965,32 @@
             </div>
             <div class="modal-footer">
               <button class="btn btn-primary footerBtn" onclick="openCamera()" id="scamModal_check">예</button>
-              <button type="button" class="btn btn-secondary footerBtn" id="scamModal_cancle">아니요</button>
+              <button type="button" class="btn btn-secondary footerBtn" id="scamModal_cancle" data-bs-dismiss="modal">아니요</button>
             </div>
+          </div>
         </div>
       </div>
-    </div>
+
+      <!-- 감정 분류 모달(많이 화나셨으면 일반 행원 연결해드릴까요?)-->
+      <div class="modal fade" id="emotion_Modal" tabindex="-1" aria-labelledby="emotion-classification" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">고객님의 더 편리한 서비스 이용을 위해 노력하겠습니다!</h5>
+            </div>
+            <div>
+              <div> 고객님, 저희 루나스 행원이 잘 작동하지 않아 불편함이 있으신가요? </div> <br>
+              <div>고객님의 원활한 금융 업무 지원을 위해 최선을 다할 것을 약속드립니다.</div><br>
+              <div> 실제 사람 행원과 연결해드릴까요? </div>
+              <div></div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary footerBtn" onclick="openCamera()" id="emotion_Modal_yes">예</button>
+              <button type="button" class="btn btn-secondary footerBtn" id="emotion_Modal_cancle" data-bs-dismiss="modal">아니요</button>
+            </div>
+          </div>
+        </div>
+      </div>
       <audio aria-hidden="true"></audio>
 
 </div>
@@ -1468,6 +1499,8 @@ addressInput.addEventListener("input", onInput)
     recorder.microphone.stop();
 
     blobToDataURL(blob, function (dataurl) {
+      var y = 1
+      var emotion_score = {0 : 10 , 1: 2, 2: 5, 3:1 , 4:1, 5:3, 6:4, 7:0}
         const data = {
             'url': dataurl
         }
@@ -1482,10 +1515,24 @@ addressInput.addEventListener("input", onInput)
         }).then(function(response){
             console.log(response.data)
             scam_dict = response.data
-            
+
+            $('#emotion_Modal').modal('show');
+
+            y = scam_dict['scam'] * 10 * emotion_score[scam_dict['vgg']]
+            console.log(y)
+            if(7<=y &&y<20) {
+              $('#scaModal_1').modal('show');
+            }
+            else if (20<=y && y<36) {
+              $('#scaModal_2').modal('show');
+            }
+            else if (y>=36) {
+              $('#scaModal_3').modal('show');
+            }
 
             
-            
+
+            /*
             if (scam_dict['scam'] > 0.2  && scam_dict['scam'] < 0.5){
               $('#scaModal_1').modal('show');
             }else if(scam_dict['scam'] >= 0.5 && scam_dict['scam'] < 0.9){
@@ -1493,10 +1540,12 @@ addressInput.addEventListener("input", onInput)
               
             }else if(scam_dict['scam'] >= 0.9){
               $('#scaModal_3').modal('show');
-            }
-
-
-
+            } 
+            */
+            // 감정 분석 모델 사용 (위급상황 시 실제 행원 연결)
+            {% comment %} if (scam_dict['vgg'] == 6 && scam_dict['scam']<=0.2) {
+              $('#emotion_Modal').modal('show');
+            } {% endcomment %}
 
             // $('#passwdModal').modal('hide');
         })
