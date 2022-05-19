@@ -1,0 +1,69 @@
+.home_header1 {
+    font-size : 4rem;
+    color : #6e6053;
+}
+
+.home_header2 {
+    font-size : 3rem;
+    color : #6e6053;
+}
+
+.home_title {
+    margin-top : 5%;
+}
+
+.home_buttonarea {
+    margin-top : 5%;
+}
+
+.home_startbutton {
+    border : 1px transparent;
+    border-radius : 0.3em;
+    height : 150px;
+    width : 450px;
+    font-size : 4em;
+    background-color : #f8a70c;
+    color : #6e6053;
+}
+
+.home_body {
+  background-color : #FFF3D3;
+  min-height : 100%;
+}
+
+.kbfriends {
+    position : relative;
+    width : 15%;
+}
+
+.luna_kiki_1 {
+    position : relative;
+    top : 16.5rem;
+    left : 26rem;
+}
+
+.melang_colli_5 {
+    position : relative;
+    width : 10rem;
+    height : 11rem;
+    left : 15%;
+    top : 6rem;
+}
+
+.rolo_lamu_1 {
+    position : relative;
+    top : 15.5rem;
+    left : 15rem;
+}
+
+.simkung_bibi_1 {
+    position : relative;
+    top : 17rem;
+    left : 22rem;
+}
+
+.force_arger_1 {
+    position : relative;
+    top : 17rem;
+    left : 12rem;
+}
