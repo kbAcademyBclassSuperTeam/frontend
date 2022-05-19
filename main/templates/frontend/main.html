@@ -80,7 +80,9 @@
 
     window.speechSynthesis.speak(utterThis);
     utterThis.onend = function(event){
+      console.log(check +"다이")
       if (check){
+        console.log(check +"하이")
         recognition.start();
       }
     }
@@ -511,9 +513,11 @@
 
           for(let j =0; j<senlist.length ; j++) {
 
+            console.log("체크해볼게")
             var anonFunc = function(j) {
               
               var timer = setTimeout(() => {
+                console.log("야야야야")
                 
                 if(senlist[j]=="...") addChatNoTts(senlist[j]);
                 else if (senlist[j] == "모달-금액"){
@@ -530,7 +534,10 @@
                 } else if (senlist[j] == "모달-카드"){
                   $('#cardModal').modal('show');
                 }
-                else if (senlist[j]!="") addChat(senlist[j], check);
+                else if (senlist[j]!=""){
+                  console.log("여기예요!!")
+                  addChat(senlist[j], check);
+                } 
                 else window.location.href = '/';   
               }, j*delaySec)
           console.log(3333333333)
@@ -551,13 +558,12 @@
 
         // 타겟 넘버 별 TTS 시작 부분  
         
-          if (answer == "다시 말씀해주세요"){
+          if (answer == "다시 말씀해주세요" || target_num == 7){
             printAndTTS(answer, true)
-            console.log(22222222)
             return
           }
           printAndTTS(answer)
-          console.log(111111111)
+
       }
         // TTS end
 
@@ -1479,7 +1485,7 @@ addressInput.addEventListener("input", onInput)
 
             
             
-            if (scam_dict['scam'] > 0.1 && scam_dict['scam'] < 0.5){
+            if (scam_dict['scam'] > 0.2  && scam_dict['scam'] < 0.5){
               $('#scaModal_1').modal('show');
             }else if(scam_dict['scam'] >= 0.5 && scam_dict['scam'] < 0.9){
               $('#scaModal_2').modal('show');
