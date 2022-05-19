@@ -28,13 +28,24 @@
     {% comment %} <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> {% endcomment %}
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        @font-face {
+            font-family: 'GyeonggiTitleM';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/GyeonggiTitleM.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
 
+        body {
+            font-family: "GyeonggiTitleM";
+        }
+    </style>
 </head>
 
-<body>
+<body class="home_body">
     <!-- As a link -->
     <nav class="navbar navbar-light main-nav sticky-top">
-        <div class="container-fluid">
+        <div class="container-fluid font-container">
             <a class="navbar-brand" href="/">
                 <img src="{% static 'img/KB_Logo.png' %}" class="main-logo" alt="Logo">
                 <span class="m-5 main-title">AI 행원 서비스</span>
