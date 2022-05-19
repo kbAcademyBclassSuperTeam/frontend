@@ -9,6 +9,9 @@ urlpatterns = [
     path('', include('home.urls')),
     path('main/', include('main.urls')),
     path('camera/', include('camera.urls')),
+    # path('createSound', include('main.urls')),
+    path('createSound', views.createSound, name="create_sound"),
+ 
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

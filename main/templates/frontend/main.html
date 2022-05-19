@@ -894,10 +894,71 @@
         </div>
       </div>
     </div>
+
+    <div class="modal fade" id="scaModal_1" tabindex="-1" aria-labelledby="scam_ModlaLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">보이스피싱 1 단계</h5>
+          </div>
+          <div>
+            <div> 고객님께선 현재 보이스피싱 위험 1 단계입니다. </div> <br>
+            <div>검찰, 경찰, 금융감독원이나 모르는 사람이 전화로 출금 및 이체를 요청하였습니까?</div><br>
+            <div>또는, 대출받기 위해서는 먼저 수수료, 기존 대출금 상환 등이 필요하다며 <출금 이체>를 요청하였습니까? </div>
+            <div></div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-primary footerBtn" onclick="openCamera()" id="scaModal_1">예</button>
+            <button type="button" class="btn btn-secondary footerBtn" id="scamModal_cancle">아니요</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+      <div class="modal fade" id="scaModal_2" tabindex="-1" aria-labelledby="보이스피싱" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">보이스피싱 2 단계</h5>
+            </div>
+            <div>
+              <div> 고객님께선 현재 보이스피싱 위험 2 단계입니다. </div> <br>
+              <div> 고객님께서는 혹시 기관(국세청, 검찰 금융감독원, 국민연금 관리공단, 금융기관 등)이나 낯선 사람의 전화를 받고 이 거래를 하고 계십니까? </div>
+              <div></div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-primary footerBtn" onclick="openCamera()" id="scamModal_check">예</button>
+              <button type="button" class="btn btn-secondary footerBtn" id="scamModal_cancle">아니요</button>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <div class="modal fade" id="scaModal_3" tabindex="-1" aria-labelledby="보이스피싱" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">보이스피싱 3 단계</h5>
+            </div>
+            <div>
+              <div> 고객님께선 현재 보이스피싱 위험 최고 단계수준입니다. </div> <br>
+              <div> 보이스피싱 피해가 크게 의심되오니, 경찰에 조용히 신고해드릴까요? </div> <br>
+              <div> (만약, 이미 현 상황에서 피해입은 금액이 있다면, 피해금 환급 신청을 하시기 바랍니다) </div>
+              <div></div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-primary footerBtn" onclick="openCamera()" id="scamModal_check">예</button>
+              <button type="button" class="btn btn-secondary footerBtn" id="scamModal_cancle">아니요</button>
+            </div>
+        </div>
+      </div>
+    </div>
+      <audio aria-hidden="true"></audio>
+
 </div>
 <script>
 
-  // 계좌조회 모달 함수
+
   accountFlag = 0;
   sendFlag = 2; // 1 : 출금,  2 : 송금
   makeFlag = 0; // 0 : 처음, 1 : 확인
@@ -1310,28 +1371,50 @@ addressInput.addEventListener("input", onInput)
       return;
   }
 
-  // 마이크
+  axios.defaults.xsrfCookieName = 'csrftoken'
+  axios.defaults.xsrfHeaderName = 'X-CSRFToken'
   window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   
   let recognition = new SpeechRecognition();
   recognition.interimResults = false;
   recognition.lang = 'ko-KR';
   
-  let makeNewTextContent = function() {
-    p = document.createElement('p');
-    document.querySelector('.body').appendChild(p);
-  };
+
   
   let p = null;
+  var recorder;
   
+  var audio = document.querySelector('audio'); 
+
+
+
+  
+  {% comment %} recognition.stop(); {% endcomment %}
   recognition.onstart = function() {
-      makeNewTextContent(); // 음성 인식 시작시마다 새로운 문단을 추가한다.
+    this.disabled = true; 
+    captureMicrophone(function (microphone) { 
+        var binaryData = [];
+        binaryData.push(microphone);
+        window.URL.createObjectURL(new Blob(binaryData, {type: "audio.wav"}))
+        recorder = RecordRTC(microphone, { 
+            type: 'audio', 
+            recorderType: StereoAudioRecorder, 
+            numberOfAudioChannels: 1, // or leftChannel:true 
+            desiredSampRate: 16000 
+        }); 
+        recorder.startRecording(); 
+        // release microphone on stopRecording
+        recorder.microphone = microphone; 
+        // document.getElementById('btn-stop-recording').disabled = false; 
+        }); 
     };
     recognition.onend = function() {
+
+      this.disabled = true; 
+      recorder.stopRecording(stopRecordingCallback); 
+      // document.getElementById('btn-start-recording').disabled = false; 
       recognition.stop();
-      for (var btn of (document.getElementsByClassName("quick_btn"))) {
-        btn.disabled = false;
-      }
+  
     };
     
     recognition.onresult = function(e) {
@@ -1347,6 +1430,9 @@ addressInput.addEventListener("input", onInput)
               console.log(error)
           })
 
+
+      
+
       async function logItems(target) {
         var answer_list = await target;
         var num = answer_list.slice(0, 1)
@@ -1356,6 +1442,67 @@ addressInput.addEventListener("input", onInput)
       }    
       logItems(target)
   };
+
+
+  function captureMicrophone(callback) { 
+      navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || navigator.webkitGetUserMedia; 
+      navigator.getUserMedia({audio: true}, callback, function (error) { 
+          alert('Unable to access your microphone.'); 
+          console.error(error); 
+      }); 
+  } 
+ 
+
+  function stopRecordingCallback() { 
+    var blob = recorder.getBlob(); 
+    audio.src = URL.createObjectURL(blob); 
+    recorder.microphone.stop();
+
+    blobToDataURL(blob, function (dataurl) {
+        const data = {
+            'url': dataurl
+        }
+        axios({
+            method: 'post',
+            url: 'http://127.0.0.1:8000/createSound',
+            data: data,
+            headers: {
+                "Content-Type": 'application/json',
+            },
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+        }).then(function(response){
+            console.log(response.data)
+            scam_dict = response.data
+            
+
+            
+            
+            if (scam_dict['scam'] > 0.1 && scam_dict['scam'] < 0.5){
+              $('#scaModal_1').modal('show');
+            }else if(scam_dict['scam'] >= 0.5 && scam_dict['scam'] < 0.9){
+              $('#scaModal_2').modal('show');
+              
+            }else if(scam_dict['scam'] >= 0.9){
+              $('#scaModal_3').modal('show');
+            }
+
+
+
+
+            // $('#passwdModal').modal('hide');
+        })
+    })
+}
+
+
+function blobToDataURL(blob, callback) {
+    var a = new FileReader();
+    a.onload = function(e) {callback(e.target.result);}
+    a.readAsDataURL(blob);
+}
+
+
+
   $("#restart").click(function () {
     recognition.start();
   })
