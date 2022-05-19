@@ -1363,9 +1363,11 @@ addressInput.addEventListener("input", onInput)
           })
 
       async function logItems(target) {
-        var target_num = await target;
-        var speech_list = target_num.slice(1,)
-       make_body(speech_list, inputValue, 0)
+       var answer_list = await target;
+        var num = answer_list.slice(0, 1)
+        answer_list = answer_list.slice(1,)
+        console.log("answer: ", answer_list, "texts : ", inputValue, "num : ", num);
+        make_body(answer_list, inputValue, num)
       }
       logItems(target)
       return;
