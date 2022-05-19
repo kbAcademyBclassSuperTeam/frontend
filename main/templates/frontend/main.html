@@ -155,8 +155,21 @@
           })
         }
         
-
-        
+     
+        flag_1 = 0
+        flag_2 = 0
+        flag_3 = 0
+        flag_4 = 0
+        flag_5 = 0
+        flag_6 = 0
+        flag_7 = 0
+        flag_8 = 0
+        flag_9 = 0
+        flag_10 = 0
+        flag_11 = 0
+        flag_12 = 0
+        flag_13 = 0
+        flag_14 = 0
         
         {% comment %} https://elvanov.com/2597 {% endcomment %}
         function make_body(answer, texts, target_num){
@@ -169,6 +182,7 @@
         const objBody = document.querySelector(".body");
         const amountModalOK = document.querySelector('#amountModalOK');
         const passwordModalOK = document.querySelector('#passwordModalOK');
+        const checkPasswdModalOK = document.querySelector('#checkPasswdModalOK');
         const accountModalOK = document.querySelector('#accountModalOK');
         const balanceModalOK = document.querySelector('#balanceModalOK');
         const termsModalOK = document.querySelector('#termsModalOK');
@@ -177,6 +191,7 @@
         // 각 모달의 취소 버튼 태그
         const amountModalNO = document.querySelector('#amountModalNO');
         const passwordModalNO = document.querySelector('#passwordModalNO');
+        const checkPasswdModalNO = document.querySelector('#checkPasswdModalNO');
         const accountModalNO = document.querySelector('#accountModalNO');
         const balanceModalNO = document.querySelector('#balanceModalNO');
         const termsModalNO = document.querySelector('#termsModalNO');
@@ -207,48 +222,45 @@
           $('#makePasswdModal').modal('hide');
           $('#addressModal').modal('hide');
           $('#issueModal').modal('hide');
-          addChat(["홈 화면으로 복귀합니다."])  
+          if (flag_1 == 0)
+            addChat(["취소 버튼을 눌렀습니다. 홈 화면으로 복귀합니다."])
+          flag_1 = 1;
           setTimeout(() => {
                 window.location.href = '/';
-              },2000);
+              },5000);
         }
 
         // 비밀번호 모달 띄우기(금액 모달 -> 비밀번호 모달)
         function closeAmountModal() {
           $('#amountModal').modal('hide');
+          if (flag_2 == 1)
+            return;
+          flag_2 = 1
           password = 0;
           reset("password");
-          if (passwordTries === 2)
-          {
-            addChat(["비밀번호 시도 횟수를 초과하여 홈 화면으로 돌아갑니다."])
-            setTimeout(() => {
-              window.location.href = '/';
-          }, 5000);
-          return;
-          }
           setTimeout(() => {
-            if (passwordTries > 0 && passwordTries < 3)
-              addChat(["비밀번호를 다시 입력해주세요."])
-            else
-              addChat(["비밀번호를 입력해주세요."])
+            addChat(["비밀번호를 입력해주세요."])
             $('#passwdModal').modal('show');
           }, 1000);
 
           return true;
           
         }
-  
-        // 비밀번호 재입력 모달 띄우기
+
+        // 비밀번호 일치하지 않는 경우
         function closePasswordModal() {
           $('#passwdModal').modal('hide');
+          if (flag_3 == 1)
+            return ;
+          flag_3 = 1
           const localPassword = localStorage.getItem("password")
           if (password !== localPassword)
           {
-            closeAmountModal();
-            document.querySelector('#passwdModalInput').value = ""
-            password = "";
-            passwordTries++;
-            return true;
+            addChat(["비밀번호가 일치하지 않습니다. 처음부터 다시 시도해주세요."])
+            setTimeout(() => {
+              window.location.href = '/';
+          }, 5000);
+          return;
           }
           if (accountFlag == 1)
           {
@@ -277,64 +289,73 @@
 
         // 금액 모달 띄우기(계좌 모달 -> 금액 모달)
         function closeAccountModal() {
+          if (flag_4 == 1)
+            return;
+          flag_4 = 1
           $('#accountModal').modal('hide');
           setTimeout(() => {
+            if (sendFlag == 1)
+            {
+              document.querySelector('#amountModalTitle').innerHTML = '<h5 class="modal-title" id="makePasswdTitle">출금하실 금액을 입력해주세요.</h5>'
+              addChat(["출금하실 금액을 입력해주세요."])
+            }
+            else if (sendFlag == 2)
+            {
+              document.querySelector('#amountModalTitle').innerHTML = '<h5 class="modal-title" id="makePasswdTitle">송금하실 금액을 입력해주세요.</h5>'
+              addChat("송금하실 금액을 입력해주세요.")
+            }
             $('#amountModal').modal('show');
           }, 1000);
           return true;
         }
 
-        function closeMakePasswdModal() {
-          $('#makePasswdModal').modal('hide');
-          if (makeFlag == 0)
-          {
-            localStorage.setItem("newPassword", newPassword);
-            closeFakeModal();
-            newPasswordTries++;
-            document.querySelector('#makePasswdTitle').innerHTML = '<h5 class="modal-title" id="makePasswdTitle">생성하실 비밀번호를 다시 입력해주세요.</h5>'
-            return true;
-          }
+        function checkNewPassword() {
+          $('#checkPasswdModal').modal('hide');
+          if (flag_10 == 1)
+            return;
+          flag_10 = 1
           const localNewPassword = localStorage.getItem("newPassword")
-          console.log(newPassword)
-          if (newPassword !== localNewPassword)
+          console.log("check : ", checkPassword, "local : ", localNewPassword)
+          if (checkPassword !== localNewPassword)
           {
-            closeFakeModal();
-            newPasswordTries++;
-            return true;
+            addChat(["비밀번호가 일치하지 않습니다. 처음부터 다시 시도해주세요."])
+            setTimeout(() => {
+              window.location.href = '/';
+            }, 5000);
+            return;
           }
-          setTimeout(() => {
-            $('#makePasswdModal').modal('hide');
-            if (cardFlag === 1)
+          if (cardFlag === 1)
             {
+              addChat(["발급을 원하시는 카드를 선택해주세요."])
               $('#cardModal').modal('show');
               return ;
             }
+            addChat(["카드를 배송받을 주소를 입력해주세요."])
             $('#addressModal').modal('show');
-          }, 1000);
+        }
+
+         function closeMakePasswdModal() {
+          $('#makePasswdModal').modal('hide');
+          if (flag_8 == 1)
+            return;
+          flag_8 = 1
+          localStorage.setItem("newPassword", newPassword);
+          setTimeout(() => {
+            addChat(["생성하실 비밀번호를 다시 입력해주세요."])
+            $('#checkPasswdModal').modal('show');
           return true
+          }, 1000)
         }
 
         function closeFakeModal() {
           $('#fakeModal').modal('hide');
-          $('#makePasswdModal').modal('hide');
+          if (flag_9 == 1)
+            return;
+          flag_9 = 1
           newPassword = 0;
           reset("make");
           setTimeout(() => {
-            if (newPasswordTries === 4)
-            {
-              addChat(["비밀번호 시도 횟수를 초과하여 홈 화면으로 돌아갑니다."])
-              setTimeout(() => {
-                window.location.href = '/';
-            }, 5000);
-            return;
-            }
-            if (newPasswordTries > 0 && newPasswordTries < 4)
-            {
-              addChat(["비밀번호를 다시 입력해주세요."])
-              makeFlag = 1
-            }
-            else
-              addChat(["생성하실 비밀번호를 입력해주세요."])
+            addChat(["생성하실 비밀번호를 입력해주세요."])
             $('#makePasswdModal').modal('show');
           }, 1000);
           return true;
@@ -342,8 +363,12 @@
 
         function closeissueModal() {
           $('#issueModal').modal('hide');
+          if (flag_12 == 1)
+            return;
+          flag_12 = 1
           //cardFlag = 1;
           setTimeout(() => {
+            addChat(["카드를 배송받을 주소를 입력해주세요."])
             $('#addressModal').modal('show');
           }, 1000);
         }
@@ -351,7 +376,11 @@
         // 카메라 모듈 띄우기(약관 모달 -> 카메라 모듈)
         function closeTermsModal() {
           $('#termsModal').modal('hide');
+          if (flag_11 == 1)
+            return;
+          flag_11 = 1
           setTimeout(() => {
+            addChat(["신분증을 촬영해주세요."])
             $('#fakeModal').modal('show');
           }, 1000);
           return true;
@@ -360,20 +389,28 @@
         // 약관 모듈 띄우기(카드 모달 -> 약관 모달)
         function closeCardModal() {
           $('#cardModal').modal('hide');
+          if (flag_13 == 1)
+            return ;
+          flag_13 = 1
           if (cardFlag === 1)
           {
             setTimeout(() => {
+              addChat(["카드를 배송받을 주소를 입력해주세요."])
               $('#addressModal').modal('show');
             }, 1000);
             return true;
           }
           setTimeout(() => {
+            addChat(["약관을 읽고 동의 버튼을 눌러주세요"]);
             $('#termsModal').modal('show');
           }, 1000);
         }
 
         function closeAddressModal() {
           $('#addressModal').modal('hide');
+          if (flag_14 == 1)
+            return;
+          flag_14 = 1
           setTimeout( () => {
             addChat(["이용해 주셔서 감사합니다!"])
             addChat(["5초 후 자동으로 초기 화면으로 복귀합니다. 안녕히 가십시오."])
@@ -388,6 +425,9 @@
         // 1. 확인 버튼(종료)
         function closeAll() {
           $('#balanceModal').modal('hide');
+          if (flag_5 == 1)
+            return ;
+          flag_5 = 1
           setTimeout(() => {
             addChat(["이용해 주셔서 감사합니다!"])
             addChat(["5초 후 자동으로 초기 화면으로 복귀합니다. 안녕히 가십시오."])
@@ -400,22 +440,32 @@
 
         // 2. 송금 모달로 이동
         function openAccountModal() {
+          $('#balanceModal').modal('hide');
+          if (flag_6 == 1)
+            return;
+          flag_6 = 1
+          flag_3 = 0
           setTimeout(() => {
-            $('#balanceModal').modal('hide');
             $('#accountModal').modal('show');
+            addChat(["송금하실 계좌번호를 입력해 주세요."])
           }, 500);
         }
 
         // 3. 출금 모달로 이동
         function openAmountModal() {
+          $('#balanceModal').modal('hide');
           sendFlag = 1;
+          if (flag_7 == 1)
+            return;
+          flag_7 = 1
+          flag_3 = 0
           setTimeout(() => {
-            $('#balanceModal').modal('hide');
             $('#amountModal').modal('show');
+            addChat(["출금하실 금액을 입력해주세요."])
           }, 500);
         }
-
-        // 버튼 이벤트리스너 
+     
+        // 버튼 이벤트리스너
         amountModalOK.addEventListener("click", closeAmountModal);
         passwordModalOK.addEventListener("click", closePasswordModal);
         accountModalOK.addEventListener("click", closeAccountModal);
@@ -426,6 +476,7 @@
         cardModalOK.addEventListener("click", closeCardModal);
         fakeModalOK.addEventListener("click", closeFakeModal);
         makePasswdModalOK.addEventListener("click", closeMakePasswdModal);
+        checkPasswdModalOK.addEventListener("click", checkNewPassword);
         issueModalOK.addEventListener("click", closeissueModal);
         addressModalOK.addEventListener("click", closeAddressModal);
     
@@ -435,9 +486,9 @@
         termsModalNO.addEventListener("click", redirectToHome);
         cardModalNO.addEventListener("click", redirectToHome);
         makePasswdModalNO.addEventListener("click", redirectToHome);
+        checkPasswdModalNO.addEventListener("click", redirectToHome);
         issueModalNO.addEventListener("click", redirectToHome);
         addressModalNO.addEventListener("click", redirectToHome);
-
 
         function addChat(sentence, check=false) {
           chatBody.innerHTML += '<div class="from-them"><p style="margin-bottom: 0px;">' + sentence + '</p></div><div class="clear"></div>'
@@ -487,8 +538,7 @@
             anonFunc(j);
             if (list_modal.indexOf(senlist[j]) != -1 ){
               delaySec = delaySec + 1000000;
-          console.log(444444444)
-            } 
+            }
           }
         }
         if(texts == 'button'){
@@ -595,7 +645,7 @@
       <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" >출금 또는 송금하실 금액을 입력해주세요.</h5>
+            <h5 class="modal-title" id="amountModalTitle">출금하실 금액을 입력해주세요.</h5>
           </div>
           <div class="form-group formCss">
             <input class="form-control passwdInput" id="amountModalInput" value="" readonly/>
@@ -793,6 +843,37 @@
         </div>
       </div>
     </div>
+    <!--비밀번호 확인 모달-->
+    <div class="modal fade" id="checkPasswdModal" tabindex="-1" aria-labelledby="checkPasswdModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+      <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="checkPasswdTitle">생성하실 비밀번호를 다시 입력해주세요.</h5>
+          </div>
+          <div class="form-group formCss">
+            <input class="form-control passwdInput" id="checkPasswdModalInput" type="password" value="" readonly/>
+            <div class="btnGroup">
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_1" value="1" onclick="put_num(1, 'check')">1</button>
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_2" value="2" onclick="put_num(2, 'check')">2</button>
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_3" value="3" onclick="put_num(3, 'check')">3</button>
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_4" value="4" onclick="put_num(4, 'check')">4</button>
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_5" value="5" onclick="put_num(5, 'check')">5</button>
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_6" value="6" onclick="put_num(6, 'check')">6</button>
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_7" value="7" onclick="put_num(7, 'check')">7</button>
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_8" value="8" onclick="put_num(8, 'check')">8</button>
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_9" value="9" onclick="put_num(9, 'check')">9</button>
+              <button class="btn btn-primary passwdBtn2" id="passwdBtn_reset" value="r" onclick="reset('check')">초기화</button>
+              <button class="btn btn-primary passwdBtn" id="passwdBtn_0" value="0" onclick="put_num(0, 'check')">0</button>
+              <button class="btn btn-primary passwdBtn2" id="passwdBtn_clear" value="c" onclick="clearOne('check')">지움</button>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary footerBtn" id="checkPasswdModalOK">확인</button>
+            <button type="button" class="btn btn-secondary footerBtn" id="checkPasswdModalNO">취소</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <!--가짜 모달-->
     <div class="modal fade" id="fakeModal" tabindex="-1" aria-labelledby="accountModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -810,10 +891,10 @@
             <button class="btn btn-primary footerBtn" onclick="openCamera()" id="fakeModal ">촬영</button>
             <button type="button" class="btn btn-secondary footerBtn" id="fakeModalOK">확인</button>
           </div>
+        </div>
       </div>
     </div>
 </div>
-</body>
 <script>
 
   // 계좌조회 모달 함수
@@ -826,10 +907,10 @@
   amount = ""
   password = ""    
   newPassword = ""
+  checkPassword = ""
   account = ""
-  passwordTries = 0;
-  newPasswordTries = 0;
   localStorage.setItem("password", "1234");
+  localStorage.setItem("newPassword", "");
 
   function put_num(value, modal) {
     if (modal == "password")
@@ -861,6 +942,12 @@
       input.value += value;
       newPassword = input.value;
     }
+    else if (modal == "check")
+    {
+      var input = document.querySelector("#checkPasswdModalInput")
+      input.value += value;
+      checkPassword = input.value;
+    }
   }
 
   function reset(modal) {
@@ -887,6 +974,12 @@
       var input = document.querySelector("#makePasswdModalInput")
       input.value = ""
       newPassword = input.value;
+    }
+    else if (modal == "check")
+    {
+      var input = document.querySelector("#checkPasswdModalInput")  
+      input.value = ""
+      checkPassword = input.value;
     }
   }
 
@@ -920,6 +1013,13 @@
       if (input.value != "")
         input.value = input.value.slice(0, -1);
       newPassword = input.value
+    }
+    else if (modal == "check")
+    {
+      var input = document.querySelector("#checkPasswdModalInput")
+      if (input.value != "")
+        input.value = input.value.slice(0, -1);
+      checkPassword = input.value
     }
   }
 
@@ -1128,6 +1228,7 @@ addressInput.addEventListener("input", onInput)
   chatForm.addEventListener("keyup", function (e) {
     if (e.key == 'Enter') {
       var submitContent = document.querySelector('#chat-input');
+      console.log("enter 입력");
       handleChatSubmit(submitContent.value);
       submitContent.value = "";
     }
@@ -1151,7 +1252,7 @@ addressInput.addEventListener("input", onInput)
 
   answer_list = {
     "1" : ["송금을 도와드리겠습니다.",
-    "카드 또는 통장을 넣어주세요.","...","받는 사람의 계좌번호를 입력해 주세요.", "모달-계좌번호", 
+    "카드 또는 통장을 넣어주세요.","...","송금하실 계좌번호를 입력해 주세요.", "모달-계좌번호", 
     "출금 또는 송금하실 금액을 입력해주세요.", "모달-금액", "비밀번호를 입력해주세요.",
     "모달-비밀번호","이용해 주셔서 감사합니다!","5초 후 자동으로 초기 화면으로 복귀합니다. 안녕히 가십시오.",""],
     "2" : [ "입금을 도와드리겠습니다. 카드 또는 통장을 넣어주세요.",
@@ -1160,13 +1261,13 @@ addressInput.addEventListener("input", onInput)
       "...",
       "이용해 주셔서 감사합니다!",
       "5초 후 자동으로 메인 화면으로 복귀합니다.",""],
-    "3" : ["계좌조회를 도와드리겠습니다. 카드 또는 통장을 넣어주세요.", "..." , "비밀번호를 입력해주세요.","모달-비밀번호",
+    "3" : ["계좌조회를 도와드리겠습니다.", "카드 또는 통장을 넣어주세요.", "..." , "비밀번호를 입력해주세요.","모달-비밀번호",
     "이용해 주셔서 감사합니다!","5초 후 자동으로 초기 화면으로 복귀합니다. 안녕히 가십시오.",""],
-    "4" : ["계좌개설을 도와드리겠습니다. 약관을 읽고 동의 버튼을 눌러주세요",
+    "4" : ["계좌개설을 도와드리겠습니다.", "약관을 읽고 동의 버튼을 눌러주세요",
     "모달-약관","신분증을 촬영해 주세요.","이용해 주셔서 감사합니다!","5초 후 자동으로 초기 화면으로 복귀합니다. 안녕히 가십시오.",""],
     "5" : ["카드발급을 도와드리겠습니다. 발급을 원하시는 카드를 선택해주세요",
     "모달-카드", "약관을 읽고 동의 버튼을 눌러주세요", "모달-약관","신분증을 촬영해 주세요.","이용해 주셔서 감사합니다!","5초 후 자동으로 초기 화면으로 복귀합니다. 안녕히 가십시오.",""],
-    "6" : ["출금을 도와드리겠습니다. 카드 또는 통장을 넣어주세요.","...",
+    "6" : ["출금을 도와드리겠습니다.", "카드 또는 통장을 넣어주세요.","...",
     "출금 또는 송금하실 금액을 입력해주세요.","모달-금액", "비밀번호를 입력해주세요.", "모달-비밀번호" ,
     "이용해 주셔서 감사합니다!","5초 후 자동으로 초기 화면으로 복귀합니다. 안녕히 가십시오.",""],
   }
@@ -1202,11 +1303,14 @@ addressInput.addEventListener("input", onInput)
 
       async function logItems(target) {
         var target_num = await target;
-        make_body(target_num, inputValue, 0)
-      }    
+        var speech_list = target_num.slice(1,)
+       make_body(speech_list, inputValue, 0)
+      }
       logItems(target)
+      return;
   }
 
+  // 마이크
   window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   
   let recognition = new SpeechRecognition();
@@ -1220,11 +1324,6 @@ addressInput.addEventListener("input", onInput)
   
   let p = null;
   
-
-
-
-  
-  {% comment %} recognition.stop(); {% endcomment %}
   recognition.onstart = function() {
       makeNewTextContent(); // 음성 인식 시작시마다 새로운 문단을 추가한다.
     };
@@ -1234,11 +1333,6 @@ addressInput.addEventListener("input", onInput)
         btn.disabled = false;
       }
     };
-
-    {% comment %} recognition.onspeechend = function() {
-      console.log('Speech has stopped being detected');
-      recognition.stop();
-    } {% endcomment %}
     
     recognition.onresult = function(e) {
       console.log(e)
