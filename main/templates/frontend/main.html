@@ -80,9 +80,7 @@
 
     window.speechSynthesis.speak(utterThis);
     utterThis.onend = function(event){
-      console.log(check +"다이")
       if (check){
-        console.log(check +"하이")
         recognition.start();
       }
     }
@@ -93,7 +91,7 @@
       var t = e.target;
       var input = t.previousElementSibling;
       var speacklist=[
-      "좋은 하루입니다! AI 행원 루나스입니다.",
+      "좋은 하루입니다! AI 행원 `입니다.",
         "무엇을 도와드릴까요?",
         "입금, 출금, 송금, 계좌조회, 계좌개설, 카드발급이 가능합니다.",
         ];
@@ -157,7 +155,7 @@
           })
         }
         
-     
+
         flag_1 = 0
         flag_2 = 0
         flag_3 = 0
@@ -226,7 +224,6 @@
           $('#cardModal').modal('hide');
           $('#fakeModal').modal('hide');
           $('#makePasswdModal').modal('hide');
-          $('#checkPasswdModal').modal('hide');
           $('#addressModal').modal('hide');
           $('#issueModal').modal('hide');
           $('#emotion_Modal').modal('hide');
@@ -520,11 +517,9 @@
 
           for(let j =0; j<senlist.length ; j++) {
 
-            console.log("체크해볼게")
             var anonFunc = function(j) {
               
               var timer = setTimeout(() => {
-                console.log("야야야야")
                 
                 if(senlist[j]=="...") addChatNoTts(senlist[j]);
                 else if (senlist[j] == "모달-금액"){
@@ -541,10 +536,7 @@
                 } else if (senlist[j] == "모달-카드"){
                   $('#cardModal').modal('show');
                 }
-                else if (senlist[j]!=""){
-                  console.log("여기예요!!")
-                  addChat(senlist[j], check);
-                } 
+                else if (senlist[j]!="") addChat(senlist[j], check);
                 else window.location.href = '/';   
               }, j*delaySec)
           console.log(3333333333)
@@ -565,12 +557,13 @@
 
         // 타겟 넘버 별 TTS 시작 부분  
         
-          if (answer == "다시 말씀해주세요" || target_num == 7){
+          if (answer == "다시 말씀해주세요"){
             printAndTTS(answer, true)
+            console.log(22222222)
             return
           }
           printAndTTS(answer)
-
+          console.log(111111111)
       }
         // TTS end
 
@@ -614,6 +607,7 @@
           {% comment %} <div class="receive">
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loadTerms">모달</button>
           </div> {% endcomment %}
+          <div class="clear"></div>
         </section>
         </div>
         <div class="form-floating">
@@ -754,7 +748,7 @@
             <div class="cardContent" id="cardContent">
             </div>
           </div>
-          <div class="modal-footer">
+          <div class="modal-footer">  
             <button type="button" class="btn btn-primary footerBtn" id="cardModalOK" disabled="true">확인</button>
             <button type="button" class="btn btn-secondary footerBtn" id="cardModalNO">취소</button>
           </div>
@@ -921,8 +915,8 @@
             <div></div>
           </div>
           <div class="modal-footer">
-            <button class="btn btn-primary footerBtn" onclick="openCamera()" id="scaModal_1">예</button>
-            <button type="button" class="btn btn-secondary footerBtn" id="scamModal_cancle" data-bs-dismiss="modal">아니요</button>
+            <button class="btn btn-primary footerBtn" onclick="window.location.href = '/'" id="scaModal_1">예</button>
+            <button type="button" class="btn btn-secondary footerBtn" id="scamModal_cancel" data-bs-dismiss="modal">아니요</button>
           </div>
         </div>
       </div>
@@ -944,8 +938,8 @@
               <div></div>
             </div>
             <div class="modal-footer">
-              <button class="btn btn-primary footerBtn" onclick="openCamera()" id="scamModal_check">예</button>
-              <button type="button" class="btn btn-secondary footerBtn" id="scamModal_cancle" data-bs-dismiss="modal">아니요</button>
+              <button class="btn btn-primary footerBtn" onclick="window.location.href = '/'" id="scamModal_check">예</button>
+              <button type="button" class="btn btn-secondary footerBtn" id="scamModal_cancel" data-bs-dismiss="modal">아니요</button>
             </div>
           </div>
         </div>
@@ -964,8 +958,8 @@
               <div></div>
             </div>
             <div class="modal-footer">
-              <button class="btn btn-primary footerBtn" onclick="openCamera()" id="scamModal_check">예</button>
-              <button type="button" class="btn btn-secondary footerBtn" id="scamModal_cancle" data-bs-dismiss="modal">아니요</button>
+              <button class="btn btn-primary footerBtn" onclick="window.location.href='https://www.fss.or.kr/fss/main/contents.do?menuNo=200366'" id="scamModal_check">예</button>
+              <button type="button" class="btn btn-secondary footerBtn" id="scamModal_cancel" data-bs-dismiss="modal">아니요</button>
             </div>
           </div>
         </div>
@@ -1401,11 +1395,9 @@ addressInput.addEventListener("input", onInput)
           })
 
       async function logItems(target) {
-       var answer_list = await target;
-        var num = answer_list.slice(0, 1)
-        answer_list = answer_list.slice(1,)
-        console.log("answer: ", answer_list, "texts : ", inputValue, "num : ", num);
-        make_body(answer_list, inputValue, num)
+        var target_num = await target;
+        var speech_list = target_num.slice(1,)
+      make_body(speech_list, inputValue, 0)
       }
       logItems(target)
       return;
