@@ -42,12 +42,13 @@ flag_1 = flag_2 = flag_3 = flag_4 = flag_5 = flag_6 = flag_7 = flag_8 = flag_9 =
 		$('#cardModal').modal('hide');
 		$('#fakeModal').modal('hide');
 		$('#makePasswdModal').modal('hide');
+		$('#checkPasswdModal').modal('hide');
 		$('#addressModal').modal('hide');
 		$('#issueModal').modal('hide');
   
-		if (flag_1 == 0)
-		  addChat(["취소 버튼을 눌렀습니다. 홈 화면으로 복귀합니다."])
-  
+		if (flag_1 == 1)
+        return;
+      	addChat(["취소 버튼을 눌렀습니다. 시작 화면으로 복귀합니다."])
 		flag_1 = 1;
 		setTimeout(() => {
 			  window.location.href = '/';
@@ -97,7 +98,7 @@ flag_1 = flag_2 = flag_3 = flag_4 = flag_5 = flag_6 = flag_7 = flag_8 = flag_9 =
 			  addChat([amount + ' 원을 송금합니다.'])
 			  
 			addChat(["이용해 주셔서 감사합니다!"])
-			addChat(["5초 후 자동으로 초기 화면으로 복귀합니다. 안녕히 가십시오."])
+			addChat(["5초 후 자동으로 시작 화면으로 복귀합니다. 안녕히 가십시오."])
 			password = "";
 			setTimeout(() => {
 			  window.location.href = '/';
@@ -146,8 +147,8 @@ flag_1 = flag_2 = flag_3 = flag_4 = flag_5 = flag_6 = flag_7 = flag_8 = flag_9 =
 		}
 		if (cardFlag === 1)
 		{
-			addChat(["발급을 원하시는 카드를 선택해주세요."])
-			$('#cardModal').modal('show');
+			addChat(["카드를 발급받으시겠습니까?"])
+            $('#issueModal').modal('show');
 			return ;
 		}
 		addChat(["카드를 배송받을 주소를 입력해주세요."])
@@ -191,8 +192,8 @@ flag_1 = flag_2 = flag_3 = flag_4 = flag_5 = flag_6 = flag_7 = flag_8 = flag_9 =
 		flag_12 = 1
 		//cardFlag = 1;
 		setTimeout(() => {
-			addChat(["카드를 배송받을 주소를 입력해주세요."])
-			$('#addressModal').modal('show');
+			addChat(["발급을 원하시는 카드를 선택해주세요."])
+            $('#cardModal').modal('show');
 		}, 1000);
 	}
   
@@ -237,7 +238,7 @@ flag_1 = flag_2 = flag_3 = flag_4 = flag_5 = flag_6 = flag_7 = flag_8 = flag_9 =
 		flag_14 = 1
 		setTimeout( () => {
 			addChat(["이용해 주셔서 감사합니다!"])
-			addChat(["5초 후 자동으로 초기 화면으로 복귀합니다. 안녕히 가십시오."])
+			addChat(["5초 후 자동으로 시작 화면으로 복귀합니다. 안녕히 가십시오."])
 			newPassword = "";
 			setTimeout(() => {
 				window.location.href = '/';
@@ -254,7 +255,7 @@ flag_1 = flag_2 = flag_3 = flag_4 = flag_5 = flag_6 = flag_7 = flag_8 = flag_9 =
 		flag_5 = 1
 		setTimeout(() => {
 			addChat(["이용해 주셔서 감사합니다!"])
-			addChat(["5초 후 자동으로 초기 화면으로 복귀합니다. 안녕히 가십시오."])
+			addChat(["5초 후 자동으로 시작 화면으로 복귀합니다. 안녕히 가십시오."])
 			setTimeout(() => {
 				window.location.href = '/';
 			  },7000);
