@@ -32,18 +32,6 @@
             </div>
             <div class="padding"></div>
           </div>
-          {% comment %} <div class="receive">
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#passwdModal">모달</button>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#amountModal">모달</button>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#balanceModal">모달</button>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#termsModal">모달</button>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cardModal">모달</button>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#issueModal">모달</button>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addressModal">모달</button>
-          </div> {% endcomment %}
-          {% comment %} <div class="receive">
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loadTerms">모달</button>
-          </div> {% endcomment %}
           <div class="clear"></div>
         </section>
         </div>
@@ -560,20 +548,9 @@
     })
   }
       
-  flag_1 = 0
-  flag_2 = 0
-  flag_3 = 0
-  flag_4 = 0
-  flag_5 = 0
-  flag_6 = 0
-  flag_7 = 0
-  flag_8 = 0
-  flag_9 = 0
-  flag_10 = 0
-  flag_11 = 0
-  flag_12 = 0
-  flag_13 = 0
-  flag_14 = 0
+  flag_1 = flag_2 = flag_3 = flag_4 = flag_5 = flag_6 = flag_7 = flag_8 = flag_9 = flag_10 = flag_11 = flag_12 = flag_13 = flag_14 = flag_15 = 0
+
+
       
   {% comment %} https://elvanov.com/2597 {% endcomment %}
   function make_body(answer, texts, target_num) {
@@ -586,20 +563,30 @@
     const objBody = document.querySelector(".chatbot-body");
     const amountModalOK = document.querySelector('#amountModalOK');
     const passwordModalOK = document.querySelector('#passwordModalOK');
-    const checkPasswdModalOK = document.querySelector('#checkPasswdModalOK');
     const accountModalOK = document.querySelector('#accountModalOK');
     const balanceModalOK = document.querySelector('#balanceModalOK');
+    const balanceModalSEND = document.querySelector('#balanceModalSEND');
+    const balanceModalWithdraw = document.querySelector('#balanceModalWithdraw');
     const termsModalOK = document.querySelector('#termsModalOK');
     const cardModalOK = document.querySelector('#cardModalOK');
+    const fakeModalOK = document.querySelector('#fakeModalOK');
+    const makePasswdModalOK = document.querySelector('#makePasswdModalOK');
+    const checkPasswdModalOK = document.querySelector('#checkPasswdModalOK');
+    const issueModalOK = document.querySelector('#issueModalOK');
+    const addressModalOK = document.querySelector('#addressModalOK');
+    
     // 각 모달의 취소 버튼 태그
     const amountModalNO = document.querySelector('#amountModalNO');
     const passwordModalNO = document.querySelector('#passwordModalNO');
-    const checkPasswdModalNO = document.querySelector('#checkPasswdModalNO');
     const accountModalNO = document.querySelector('#accountModalNO');
     const balanceModalNO = document.querySelector('#balanceModalNO');
     const termsModalNO = document.querySelector('#termsModalNO');
     const cardModalNO = document.querySelector('#cardModalNO');
-        
+    const makePasswdModalNO = document.querySelector('#makePasswdModalNO');
+    const checkPasswdModalNO = document.querySelector('#checkPasswdModalNO');
+    const issueModalNO = document.querySelector('#issueModalNO');
+    const addressModalNO = document.querySelector('#addressModalNO');
+
       // tts 포함하여 receive 채팅 추가
     function addChat(sentence, check=false) {
       chatBody.innerHTML += '<div class="from-them"><p style="margin-bottom: 0px;">' + sentence + '</p></div><div class="clear"></div>'
@@ -622,12 +609,12 @@
       $('#cardModal').modal('hide');
       $('#fakeModal').modal('hide');
       $('#makePasswdModal').modal('hide');
+      $('#checkPasswdModal').modal('hide');
       $('#addressModal').modal('hide');
       $('#issueModal').modal('hide');
-
-      if (flag_1 == 0)
-        addChat(["취소 버튼을 눌렀습니다. 홈 화면으로 복귀합니다."])
-
+      if (flag_1 == 1)
+        return;
+      addChat(["취소 버튼을 눌렀습니다. 홈 화면으로 복귀합니다."])
       flag_1 = 1;
       setTimeout(() => {
             window.location.href = '/';
@@ -722,8 +709,8 @@
         }
         if (cardFlag === 1)
           {
-            addChat(["발급을 원하시는 카드를 선택해주세요."])
-            $('#cardModal').modal('show');
+            addChat(["카드를 발급받으시겠습니까?"])
+            $('#issueModal').modal('show');
             return ;
           }
           addChat(["카드를 배송받을 주소를 입력해주세요."])
@@ -755,6 +742,7 @@
           return true;
         }
 
+
         function closeissueModal() {
           $('#issueModal').modal('hide');
           if (flag_12 == 1)
@@ -762,8 +750,8 @@
           flag_12 = 1
           //cardFlag = 1;
           setTimeout(() => {
-            addChat(["카드를 배송받을 주소를 입력해주세요."])
-            $('#addressModal').modal('show');
+            addChat(["발급을 원하시는 카드를 선택해주세요."])
+            $('#cardModal').modal('show');
           }, 1000);
         }
 
@@ -771,7 +759,7 @@
         function closeTermsModal() {
           $('#termsModal').modal('hide');
           if (flag_11 == 1)
-            return;
+            return ;
           flag_11 = 1
           setTimeout(() => {
             addChat(["신분증을 촬영해주세요."])
@@ -779,6 +767,8 @@
           }, 1000);
           return true;
         }
+
+
 
         // 약관 모듈 띄우기(카드 모달 -> 약관 모달)
         function closeCardModal() {

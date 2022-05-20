@@ -1,3 +1,0 @@
-#!C:\Users\user\Desktop\front_project\2\chanhyle\Scripts\python.exe
-from numba.pycc import main
-main()
