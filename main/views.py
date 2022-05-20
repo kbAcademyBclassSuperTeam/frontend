@@ -84,6 +84,8 @@ def model_predict(texts):
             answer_list.append("저는 AI 행원 루나스 입니다.")
         elif texts == '사랑합니다':
             answer_list.append("네 저도 사랑해요")
+        elif texts == '루나스':
+            answer_list.append("네 말씀하세요")
         else:
             answer_list.append("이용해주셔서 감사합니다")
     return answer_list

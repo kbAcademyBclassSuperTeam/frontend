@@ -1469,22 +1469,22 @@ addressInput.addEventListener("input", onInput)
 
             // $('#emotion_Modal').modal('show');
 
-            var y = scam_dict['scam'] * 40 + emotion_score_dict[scam_dict['vgg']] * 20
+            var y = scam_dict['scam'] * 45 + emotion_score_dict[scam_dict['vgg']] * 20
             console.log("y값은:"+y)
             
 
             // 감정 분석 모델 사용 (고객의 감정 수준에 따라 실제 행원 연결)
-            if ( y<37 && (scam_dict['vgg'] == 0 || scam_dict['vgg'] == 1)) {
+            if ( y<35 && (scam_dict['vgg'] == 0 || scam_dict['vgg'] == 1)) {
               $('#emotion_Modal').modal('show');
               
             }
-            else if(37<=y &&y<50) { // 0.3*50 + 0.4*20 = 23  // 0.5*50 + 0.6*20 = 37
+            else if(35<=y &&y<50) { // 0.3*50 + 0.4*20 = 23  // 0.5*50 + 0.6*20 = 37
               $('#scaModal_1').modal('show');
             }
-            else if (50<=y && y<75) { // 0.5*50 + 0.6*20 = 37 // 0.9*50 + 0.4*20 = 53
+            else if (50<=y && y<65) { // 0.5*50 + 0.6*20 = 37 // 0.9*50 + 0.4*20 = 53
               $('#scaModal_2').modal('show');
             }
-            else if (y>=75) { // 0.9*50 + 0.4*20 = 53
+            else if (y>=65) { // 0.9*50 + 0.4*20 = 53
               $('#scaModal_3').modal('show');
             }
         
